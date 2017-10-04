@@ -2,6 +2,8 @@
 
 using namespace std;
 
+// hi
+
 int CPACalculator(){
   char letterGrade;
   float totalNumGrade = 0.0;
