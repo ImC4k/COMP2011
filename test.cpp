@@ -1,50 +1,65 @@
 #include <iostream>
-#include <string>
-#include <vector>
-#include <fstream>
-//#include "tutorial1_c++.cpp"
 
 using namespace std;
 
-int print_maze(char maze[], const int HEIGHT, const int WIDTH){
-  for(int i = 0; i<HEIGHT*WIDTH; i++){
-    cout<<maze[i];
-    if(i%WIDTH==17){
-      cout<<endl;
-    }
-  }
-  return 0;
+const int GAMEBOARDSIZE = 18;
+
+const int SAMPLEGAMEBOARD[GAMEBOARDSIZE][GAMEBOARDSIZE] = {
+	{1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+	{1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0},
+	{0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0},
+	{0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0},
+	{0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0},
+	{0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0},
+	{0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0},
+	{0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
+};
+
+void printGameBoard(const int gameBoard[][GAMEBOARDSIZE]) {
+	for(int i = 0; i< GAMEBOARDSIZE; i++){
+		for(int j = 0; j< GAMEBOARDSIZE; j++){
+			if(gameBoard[i][j])
+				cout<<'X';
+			else
+				cout<<' ';
+		}
+		cout<<endl;
+	}
 }
 
-int addNumber(int a, int b = 3){
-  cout<<"a+b== "<< a+b<<endl;
-  return a+b;
-}
+int getLiveNeighbors(const int gameBoard[][GAMEBOARDSIZE], int x, int y) {
 
-int addNumber(int a, int b, int c){ //test for overloading
-  cout<<"a+b+c= "<<a+b+c<<endl;
-  return a+b+c;
-}
+	int neighbors = 0;
+	for(int i = x-1; i <= x+1; i++){
+		for(int j = y-1; j<= y+1; j++){
+			int scan_x;
+			int scan_y;
 
-int loginPermission(){
-  int in;
-  cout<< "Type in password: " <<endl;
-  cin >> in;
-  if(in==347511){
-    cout<< "Welcome Professor." <<endl;
-    cout<< "You may proceed."<<endl;
-    return 0;
-  }
-  else{
-    cout<< "Error, intruder alert!" <<endl;
-    return -1;
-  }
-}
+			if(i < 0) scan_x = GAMEBOARDSIZE-1;
+			else if(i > GAMEBOARDSIZE-1) scan_x = 0;
+			else scan_x = i;
 
-int update(int &a, int b){
-  int c = a;
-  a+=b;
-  return c;
+			if(j < 0) scan_y = GAMEBOARDSIZE-1;
+			else if(j > GAMEBOARDSIZE-1) scan_y = 0;
+			else scan_y = j;
+
+			if(gameBoard[scan_x][scan_y] == 1){
+				neighbors += 1;
+			}
+		}
+	}
+	if(gameBoard[x][y] == 1) neighbors -= 1;
+	return neighbors;
 }
 
 int gcd(int a, int b){
@@ -68,16 +83,9 @@ int m_inverse(const int TARGET, const int MOD_SPACE){
 
 int main(){
 
-  int in_a, in_b;
-  cout<<"input 2 int to calculate multiplicative inverse"<<endl;
-  cin>>in_a>>in_b;
-  int out = gcd(in_a, in_b);
-  cout<< "GCD of "<<in_a<<" and "<<in_b<<" is "<<out<<endl;
-  if(gcd(in_a,in_b)!= 1){
-    cout<<"There is no such inverse."<<endl;
-    return 0;
-  }
-  cout<< "Inverse of "<<in_a<<" and "<<in_b<<" is "<< m_inverse(in_a, in_b)<<endl;
+  printGameBoard(SAMPLEGAMEBOARD);
+  cout<<endl;
+  cout<<getLiveNeighbors(SAMPLEGAMEBOARD, 0, 1)<<endl;
 
 
   return 0;
