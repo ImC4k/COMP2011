@@ -22,6 +22,15 @@ int m_inverse(const int TARGET, const int MOD_SPACE){
 }
 
 int main(){
-
+  int num1, num2;
+  cout<<"Input 2 numbers: "<<endl;
+  cin>>num1>>num2;
+  if(num1>num2){
+    int temp = num1;
+    num1 = num2;
+    num2 = temp;
+  }
+  cout<<"GCD of "<<num1<<" and "<<num2<< " is "<<gcd(num1, num2)<<endl;
+  cout<<"Inverse of "<<num1<<" in modulo space "<<num2<<" is "<<m_inverse(num1,num2);
   return 0;
 }
