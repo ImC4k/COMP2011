@@ -75,11 +75,7 @@ bool check_solution(int board[][BOARD_SIZE]){
 
 bool solve(int board[][BOARD_SIZE], int i, int j) {
 
-	if (i == 9 && j == 9 && board[i][j] != 0) {		//if the board go to the end and not zero, it means solved
-		cout << "hello" << endl;
-		return true;
-	}
-	else if (i==10||j==10) {
+	if (i==10) {									//if the i board go to 10
 		return true;
 	}
 	else if(board[i][j]!=0){						//if the cell is 0, skip it
