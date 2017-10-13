@@ -126,6 +126,9 @@ bool check_solution(int board[][BOARD_SIZE]){
 bool solve(int board[][BOARD_SIZE], int i, int j){
   // TODO
   if(i == BOARD_SIZE && j == BOARD_SIZE){ // reaching bottom most (base case)
+    if(board[i][j] != 0){
+      return true;
+    }
     int k = 1;
     while(true){
       board[i][j] = k;
