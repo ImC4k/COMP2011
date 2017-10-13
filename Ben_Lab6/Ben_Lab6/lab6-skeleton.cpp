@@ -1,4 +1,5 @@
 #include <iostream>
+
 using namespace std;
 
 const int BOARD_SIZE = 9;
@@ -72,9 +73,88 @@ bool check_solution(int board[][BOARD_SIZE]){
 	return true;
 }
 
-bool solve(int board[][BOARD_SIZE], int i, int j){
+bool solve(int board[][BOARD_SIZE], int i, int j) {
+
+	if (i == 9 && j == 9 && board[i][j] != 0) {		//if the board go to the end and not zero, it means solved
+		cout << "hello" << endl;
+		return true;
+	}
+	else if (i==10||j==10) {
+		return true;
+	}
+	else if(board[i][j]!=0){						//if the cell is 0, skip it
+		return solve(board, i+((j+1)/9), (j + 1) % 9);
+	}
+	else {											//if the cell is not 0 and not the end of board
+		for (int test = 1; true; test++) {			//test the cell starting from 1
+			board[i][j] = test;						//asign the cell to #test
+			if (test == 10) {
+				board[i][j] = 0;
+				return false;						//if all route is not correct, then return false
+			}
+			if (check_solution(board)) {			//check valid or not
+				if (solve(board, i + ((j + 1) / 9), (j + 1) % 9)) {//if valid, check whether this route is the solution
+					return true;					//if the route is correct, return true
+				}
+				else {								//if the route is wrong, try next number
+					board[i][j] = 0;				//reset to 0
+					continue;
+				}
+			}
+			else {
+				board[i][j] = 0;					//reset to 0 if not valid
+				continue;
+			}
+		}
+	}
+
 	return false;
 }
+
+//bool solve(int board[][BOARD_SIZE], int i, int j){
+//	//check if it is zero
+//	if (!board[i][j]) { //if it is zero
+//		if((j + 1) != 9){
+//			return solve(board, i, j + 1);
+//		}
+//		else{
+//			return solve(board, i + 1, 0);
+//		}
+//	}
+//	else { //if it is not zero
+//		if (i == 9 && j == 9) { // the end of board
+//			return true;
+//		}
+//		else if (j == 9) { // the end of a line
+//			return solve(board, i + 1, 0);
+//		}
+//	}
+//	/*
+//	the logic:
+//
+//	try the first step
+//		-> if first step ok, then return next step
+//		
+//		-> if not ok for this number, try next number
+//
+//		-> if all is not ok, then return false and back one step
+//
+//	*/
+//
+//
+//	for (int test = 1; true; test++) {
+//		board[i][j] = test;
+//		if (test == 10) {
+//			board[i][j] = 0;
+//			return false;
+//		}
+//		else if (check_solution(board)) {
+//			return solve(board, i, j + 1); //return next step
+//		}
+//	}
+//
+//	return false;
+//}
 
 bool solve_sudoku(int board[][BOARD_SIZE]){
     return solve(board, 0, 0);
