@@ -73,17 +73,21 @@ bool check_solution(int board[][BOARD_SIZE]){
 	return true;
 }
 
-bool solve(int board[][BOARD_SIZE], int i, int j) {
+int count = 0;
 
-	if (i==10) {									//if the i board go to 10
+bool solve(int board[][BOARD_SIZE], int i, int j) {
+	
+	if (i==9) {										//if the i board go to 9 which means finish checking all
+		//cout << "This tried: " << count << " times to figure out the solution" << endl;
 		return true;
 	}
 	else if(board[i][j]!=0){						//if the cell is 0, skip it
-		return solve(board, i+((j+1)/9), (j + 1) % 9);
+		return solve(board, i+((j+1)/9), (j + 1) % 9);//go the check next cell
 	}
 	else {											//if the cell is not 0 and not the end of board
 		for (int test = 1; true; test++) {			//test the cell starting from 1
 			board[i][j] = test;						//asign the cell to #test
+			//count++;								//count the trials
 			if (test == 10) {
 				board[i][j] = 0;
 				return false;						//if all route is not correct, then return false
@@ -103,7 +107,6 @@ bool solve(int board[][BOARD_SIZE], int i, int j) {
 			}
 		}
 	}
-
 	return false;
 }
 
