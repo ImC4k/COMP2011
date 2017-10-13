@@ -91,7 +91,7 @@ bool check_every_row(int board[][BOARD_SIZE]){
 bool check_single_column(int board[][BOARD_SIZE], int i, int j){ // this can be used in task 2 too
   // target = board[i][j];
   for(int k = 0; k<BOARD_SIZE; k++){ // check column index, actually can skip checking previous items
-    if(k==j){
+    if(k==i){
       continue;
     }
     if(board[k][j] == board[i][j]){
@@ -133,42 +133,31 @@ bool check_solution(int board[][BOARD_SIZE]){
 
 bool solve(int board[][BOARD_SIZE], int i, int j){
   // TODO
-  // int tempSol;
-  // if(!check_element_condition(board, i, j)){
-  //   return false;
-  // }
-  // if(board[i][j]==0){
-  //   // tempSol = k;
-  //   int count = 0;
-  //   int k = count % 9 +1;
-  //   board[i][j] = k;
-  //   if(check_element_condition(board, i, j)){
-  //     return solve(board, i, j+1);
-  //   }
-  // }
-  // board[i][j] = tempSol;
-  if(j >= BOARD_SIZE){
+  if(i == BOARD_SIZE && j == BOARD_SIZE){ // reaching bottom most (base case)
+    return true;
+  }
+  if(i < BOARD_SIZE && j >= BOARD_SIZE){
     i += 1;
     j = 0;
   }
-  if(j<0){
-    i -= 1;
-    j = BOARD_SIZE-1;
+
+  if(board[i][j] !=0){
+    return solve(board, i, j+1);
   }
 
   int k = 1;
-  if(board[i][j]==0){
-    do{
-      if(k >= BOARD_SIZE){
-        return solve(board, i, j-1);
-      }
-      board[i][j] = k++;
+  while(true){
+    board[i][j] = k;
+    if(check_element_condition(board, i, j) && solve(board, i, j+1)){
+      return true;
     }
-    while(!check_element_condition(board, i, j));
-    return solve(board, i, j+1);
+    if(!check_element_condition(board, i, j) && k == 9){
+      return false;
+    }
+    else{
+      k++;
+    }
   }
-  if(solve(board, i, j))
-    return true;
 }
 
 bool solve_sudoku(int board[][BOARD_SIZE]){
