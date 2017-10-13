@@ -166,8 +166,8 @@ bool solve(int board[][BOARD_SIZE], int i, int j){
     print_board(board);
     cout<<"i = "<<i<<", j = "<<j<<endl;
     if(k>9){
-      board[i][j] = 0;
-      return false;
+      board[i][j] = 0;    /*I think this if statement can be removed */
+      return false;		  /*because if k=9 and condition wrong, below if statement will return false*/
     }
     if(k==9 && !check_element_condition(board, i, j)){
       board[i][j] = 0;
@@ -177,14 +177,14 @@ bool solve(int board[][BOARD_SIZE], int i, int j){
       k++;
       continue;
     }
-    if(check_element_condition(board, i, j) && solve(board, i, j+1)){
-      return true;
-    }
-    else if(check_element_condition(board, i, j) && !solve(board, i, j+1)){
-      board[i][j] = 0;
-      return false;
-    }
-  }
+    if(check_element_condition(board, i, j) && solve(board, i, j+1)){		/*better not to call two function(it maybe correct) */
+      return true;															/*in the same if statement, I think*/
+    }																		/*there maybe some problem in ordering as*/
+    else if(check_element_condition(board, i, j) && !solve(board, i, j+1)){/*don't know which one execute first*/
+      board[i][j] = 0;														/*if need to use two recursion*/
+      return false;															/*this is better:  bool check1 = check_element(...)*/
+    }																		/*					bool check 2 = solve(...)*/
+  }																			/*					if(check1 && check2)*/
 }
 
 bool solve_sudoku(int board[][BOARD_SIZE]){
