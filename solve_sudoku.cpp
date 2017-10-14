@@ -42,25 +42,6 @@ const int simpler_board[SIZE][SIZE] = { {1,0,2},
                                   {7,0,0}
                                 };
 
-// // API
-// // for checking
-// bool check_single_region(int[][BOARD_SIZE], int, int);
-// bool check_every_region(int[][BOARD_SIZE]);
-// bool check_single_row(int[][BOARD_SIZE], int, int);
-// bool check_every_row(int[][BOARD_SIZE]);
-// bool check_single_column(int[][BOARD_SIZE], int, int);
-// bool check_every_column(int[][BOARD_SIZE]);
-// bool check_element_condition(int[][BOARD_SIZE], int, int);
-// bool check_solution(int[][BOARD_SIZE]);
-// // for solving
-// bool solve(int[][BOARD_SIZE], int, int);
-// bool solve_sudoku(int[][BOARD_SIZE]);
-// // for debugging
-// void print_board(int[][BOARD_SIZE]);
-// // for converting string to array board
-// void fill_board(int[][BOARD_SIZE], char[]);
-
-
 
 
 // FUNCTIONS
@@ -190,16 +171,6 @@ bool solve(int board[][BOARD_SIZE], int i, int j){
   i = temp/BOARD_SIZE;
   j = temp%BOARD_SIZE;
 
-  // if(j>=9){
-  //   i += 1;
-  //   j = 0;
-  // }
-
-  // debug
-  //  cout<<"\t\t\ttemp = "<<temp<<", i = "<<i<<", j = "<<j<<", board[i][j] = "<<board[i][j]<<endl;
-  // cout<<"i = "<<i<<", j = "<<j<<endl;
-  // debug end
-  // cout<<"Reached here"<<endl;
   if(i >= BOARD_SIZE-1 && j >= BOARD_SIZE-1){ // reaching bottom most (base case)
     if(board[i][j] != 0){
       return true;
@@ -213,7 +184,6 @@ bool solve(int board[][BOARD_SIZE], int i, int j){
           return false;
         }
         board[i][j] = k;
-        // bool bool_check_element = check_element_condition(board, i, j);
         // debug
         // cout<<"\n\n\n\n\n\n\n";
         // void print_board(int[][BOARD_SIZE]);
@@ -229,24 +199,9 @@ bool solve(int board[][BOARD_SIZE], int i, int j){
           k++;
           continue;
         }
-
-        // old attempt
-        // if(k > 9){
-        //   board[i][j] = 0;
-        //   return false;
-        // }
-        // if(k <= 9 && !check_element_condition(board, i, j)){
-        //   k++;
-        //   continue;
-        // }
-        // if(check_element_condition(board, i, j)){
-        //   return true;
-        // }
-
       }
     }
   }
-
 
   else if(board[i][j] !=0){ // if already solved, then just give the answer of next element
     return solve(board, i, j+1);
@@ -261,13 +216,6 @@ bool solve(int board[][BOARD_SIZE], int i, int j){
         return false;
       }
       board[i][j] = k; // attempt: put k into the element and start to test
-      // bool bool_check_element = check_element_condition(board, i, j); // check if the attempt element fits the board
-      // bool bool_check_next_element = solve(board, i, j+1); // check if used "this" element, whether next element is possible
-
-      // if(k > 9){ // if attempt is pass 9, then this element fails, then tell previous call that its' unsuccessful
-      //   board[i][j] = 0;
-      //   return false;
-      // }
 
       // debug
       // cout<<"\n\n\n\n\n\n\n";
@@ -277,57 +225,13 @@ bool solve(int board[][BOARD_SIZE], int i, int j){
       // debug end
 
       // newest attempt
-      /*I think this if statement can be removed */
-      /*because if k=9 and condition wrong, below if statement will return false*/
       if(check_element_condition(board, i, j)){
         if(solve(board, i, j)){
           return true;
         }
-        // else{
-        //   k++;
-        //   continue;
-        // }
       }
-      // else{
-      //   k++;
-      //   continue;
-      // }
       k++;
       continue;
-
-      // original attempt
-      // if(k > 9){
-      // board[i][j] = 0;
-      // return false;
-      // }
-      // if(k==9 && !bool_check_element){
-      //   board[i][j] = 0;
-      //   return false;
-      // }
-      // if(k<9 && !bool_check_element){
-      //   k++;
-      //   continue;
-      // }
-      //
-      // if(bool_check_element && bool_check_next_element){
-      //   return true;
-      // }
-      // /*better not to call two function(it maybe correct) */
-      // /*in the same if statement, I think*/
-      // /*there maybe some problem in ordering as*/
-      // /*don't know which one execute first*/
-      // /*if need to use two recursion*/
-      // /*this is better:  bool check1 = check_element(...)*/
-      // /*bool check 2 = solve(...)*/
-      // /*if(check1 && check2)*/
-      // //resolved
-      //
-      // if(bool_check_element && !bool_check_next_element){
-      //   // board[i][j] = 0;
-      //   // return false;
-      //   k++;
-      //   continue;
-      // }
     }
   }
 }
@@ -378,8 +282,5 @@ int main(){
       print_board(inputBoardArray);
     }
   }
-  // bool truth = solve_sudoku(board);
-  // print_board(board);
-  // cout<<boolalpha<<truth<<endl;
   return 0;
 }
