@@ -74,7 +74,26 @@ void initBoard(char board[BOARD_SIZE][BOARD_SIZE]) {
  *
  */
 int getSmallestBlock(const int blocks[], int size) {
-    return 0;
+  // TODO finished
+  if(size == 0){
+    if(blocks[size] != 0){
+      return size;
+    }
+    else{
+      return BOARD_SIZE + 1;
+    }
+  }
+  else{
+    if(getSmallestBlock(blocks, size -1) != BOARD_SIZE + 1){
+      return getSmallestBlock(blocks, size -1);
+    }
+    else if(blocks[size] != 0){
+      return size;
+    }
+    else{
+      return BOARD_SIZE + 1;
+    }
+  }
 }
 
 
