@@ -131,10 +131,62 @@ bool check_solution(int board[][BOARD_SIZE]){
   return false;
 }
 
+// bool solve(int board[][BOARD_SIZE], int i, int j){
+//   // TODO
+//   if(i == BOARD_SIZE && j == BOARD_SIZE){ // reaching bottom most (base case)
+//     return true;
+//   }
+//   if(i < BOARD_SIZE && j >= BOARD_SIZE){
+//     i += 1;
+//     j = 0;
+//   }
+//
+//   if(board[i][j] !=0){
+//     return solve(board, i, j+1);
+//   }
+//
+//   int k = 1;
+//   while(true){
+//     board[i][j] = k;
+//     if(check_element_condition(board, i, j) && solve(board, i, j+1)){
+//       return true;
+//     }
+//     if(!check_element_condition(board, i, j) && k == 9){
+//       return false;
+//     }
+//     else{
+//       k++;
+//     }
+//   }
+// }
+// beta solve program
 bool solve(int board[][BOARD_SIZE], int i, int j){
   // TODO
   if(i == BOARD_SIZE && j == BOARD_SIZE){ // reaching bottom most (base case)
-    return true;
+    if(board[i][j] != 0){
+      return true;
+    }
+    int k = 1;
+    while(true){
+      board[i][j] = k;
+      // debug
+      cout<<"\n\n\n\n\n\n\n";
+      void print_board(int[][BOARD_SIZE]);
+      print_board(board);
+      cout<<"i = "<<i<<", j = "<<j<<endl;
+      //debug end
+      if(k > 9){
+        board[i][j] = 0;
+        return false;
+      }
+      if(k <= 9 && !check_element_condition(board, i, j)){
+        k++;
+        continue;
+      }
+      if(check_element_condition(board, i, j)){
+        return true;
+      }
+    }
   }
   if(i < BOARD_SIZE && j >= BOARD_SIZE){
     i += 1;
@@ -148,16 +200,35 @@ bool solve(int board[][BOARD_SIZE], int i, int j){
   int k = 1;
   while(true){
     board[i][j] = k;
-    if(check_element_condition(board, i, j) && solve(board, i, j+1)){
-      return true;
+    cout<<"\n\n\n\n\n\n\n";
+    // debug
+    void print_board(int[][BOARD_SIZE]);
+    print_board(board);
+    cout<<"i = "<<i<<", j = "<<j<<endl;
+    // debug end
+    if(k>9){
+      board[i][j] = 0;    /*I think this if statement can be removed */
+      return false;		  /*because if k=9 and condition wrong, below if statement will return false*/
     }
-    if(!check_element_condition(board, i, j) && k == 9){
+    if(k==9 && !check_element_condition(board, i, j)){
+      board[i][j] = 0;
       return false;
     }
-    else{
+    if(k<9 && !check_element_condition(board, i, j)){
       k++;
+      continue;
     }
-  }
+    bool bool_check_element = check_element_condition(board, i, j);
+    bool bool_check_next_element = solve(board, i, j+1);
+    if(bool_check_element && bool_check_next_element){		/*better not to call two function(it maybe correct) */
+      return true;															/*in the same if statement, I think*/
+    }																		/*there maybe some problem in ordering as*/
+    else if(bool_check_element && !bool_check_next_element){/*don't know which one execute first*/
+      // board[i][j] = 0;														/*if need to use two recursion*/
+      // return false;
+      k++;  													/*this is better:  bool check1 = check_element(...)*/
+    }																		/*					bool check 2 = solve(...)*/
+  }																			/*					if(check1 && check2)*/
 }
 
 bool solve_sudoku(int board[][BOARD_SIZE]){

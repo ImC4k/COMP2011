@@ -125,17 +125,35 @@ bool check_solution(int board[][BOARD_SIZE]){
 
 bool solve(int board[][BOARD_SIZE], int i, int j){
   // TODO
+
   if(i == BOARD_SIZE && j == BOARD_SIZE){ // reaching bottom most (base case)
     if(board[i][j] != 0){
       return true;
     }
     int k = 1;
     while(true){
+      bool bool_check_element = check_element_condition(board, i, j);
       board[i][j] = k;
-      cout<<"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+      // debug
+      cout<<"\n\n\n\n\n\n\n";
       void print_board(int[][BOARD_SIZE]);
       print_board(board);
       cout<<"i = "<<i<<", j = "<<j<<endl;
+      //debug end
+      // attempt newest
+      // if(k > 9){
+      //   board[i][j] = 0;
+      //   return false;
+      // }
+      // else{
+      //   if(bool_check_element){
+      //     return true;
+      //   }
+      //   else{
+      //     k++;
+      //     continue;
+      //   }
+      // }
       if(k > 9){
         board[i][j] = 0;
         return false;
@@ -149,25 +167,55 @@ bool solve(int board[][BOARD_SIZE], int i, int j){
       }
     }
   }
-  if(i < BOARD_SIZE && j >= BOARD_SIZE){
-    i += 1;
-    j = 0;
-  }
+
+  int temp = i*BOARD_SIZE+j;
+  i = temp/BOARD_SIZE;
+  j = temp%BOARD_SIZE;
+
 
   if(board[i][j] !=0){
     return solve(board, i, j+1);
   }
 
+
   int k = 1;
+
   while(true){
+    bool bool_check_element = check_element_condition(board, i, j);
+    bool bool_check_next_element = solve(board, i, j+1);
     board[i][j] = k;
-    cout<<"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+    cout<<"\n\n\n\n\n\n\n";
+    // debug
     void print_board(int[][BOARD_SIZE]);
     print_board(board);
     cout<<"i = "<<i<<", j = "<<j<<endl;
-    if(k>9){
-      board[i][j] = 0;    /*I think this if statement can be removed */
-      return false;		  /*because if k=9 and condition wrong, below if statement will return false*/
+    // debug end
+
+    //attempt newest
+    // if(k>9){
+    //   board[i][j] = 0;    /*I think this if statement can be removed */
+    //   return false;		  /*because if k=9 and condition wrong, below if statement will return false*/
+    // }
+    // else{
+    //   if(bool_check_element){
+    //     if(bool_check_next_element){
+    //       return true;
+    //     }
+    //     else{
+    //       k++;
+    //       continue;
+    //     }
+    //   }
+    //   else{
+    //     k++;
+    //     continue;
+    //   }
+    // }
+
+    // original attempt
+    if(k > 9){
+    board[i][j] = 0;
+    return false;
     }
     if(k==9 && !check_element_condition(board, i, j)){
       board[i][j] = 0;
@@ -177,14 +225,26 @@ bool solve(int board[][BOARD_SIZE], int i, int j){
       k++;
       continue;
     }
-    if(check_element_condition(board, i, j) && solve(board, i, j+1)){		/*better not to call two function(it maybe correct) */
-      return true;															/*in the same if statement, I think*/
-    }																		/*there maybe some problem in ordering as*/
-    else if(check_element_condition(board, i, j) && !solve(board, i, j+1)){/*don't know which one execute first*/
-      board[i][j] = 0;														/*if need to use two recursion*/
-      return false;															/*this is better:  bool check1 = check_element(...)*/
-    }																		/*					bool check 2 = solve(...)*/
-  }																			/*					if(check1 && check2)*/
+
+    if(bool_check_element && bool_check_next_element){
+      return true;
+    }
+    /*better not to call two function(it maybe correct) */
+    /*in the same if statement, I think*/
+    /*there maybe some problem in ordering as*/
+    /*don't know which one execute first*/
+    /*if need to use two recursion*/
+    /*this is better:  bool check1 = check_element(...)*/
+    /*bool check 2 = solve(...)*/
+    /*if(check1 && check2)*/
+
+    else if(bool_check_element && !bool_check_next_element){
+      // board[i][j] = 0;
+      // return false;
+      k++;
+      continue;
+    }
+  }
 }
 
 bool solve_sudoku(int board[][BOARD_SIZE]){
@@ -223,15 +283,15 @@ int main(){
                                       {6,1,9,2,7,5,8,4,3},
                                       {8,5,4,3,9,6,1,2,7}};
 
-  int zero_board[BOARD_SIZE][BOARD_SIZE] = {{0,0,0,0,0,0,0,0,0},
-                                      {0,0,0,0,0,0,0,0,0},
-                                      {0,0,0,0,0,0,0,0,0},
-                                      {0,0,0,0,0,0,0,0,0},
-                                      {0,0,0,0,0,0,0,0,0},
-                                      {0,0,0,0,0,0,0,0,0},
-                                      {0,0,0,0,0,0,0,0,0},
-                                      {0,0,0,0,0,0,0,0,0},
-                                      {0,0,0,0,0,0,0,0,0}};
+  int debug_board[BOARD_SIZE][BOARD_SIZE] = {{5,3,4,6,7,8,9,1,2},
+                                      {6,7,2,1,9,5,3,4,8},
+                                      {1,9,8,3,9,0,0,6,0},
+                                      {8,0,0,0,6,0,0,0,3},
+                                      {4,0,0,8,0,3,0,0,1},
+                                      {7,0,0,0,2,0,0,0,6},
+                                      {0,6,0,0,0,0,2,8,0},
+                                      {0,0,0,4,1,9,0,0,5},
+                                      {0,0,0,0,8,0,0,7,9}};
 
 
   int simpler_board[SIZE][SIZE] = { {1,0,2},
@@ -240,7 +300,7 @@ int main(){
                                   };
 
   print_board(board);
-  bool truth = solve_sudoku(board);
+  bool truth = solve_sudoku(debug_board);
   print_board(board);
   cout<<boolalpha<<truth<<endl;
   return 0;
