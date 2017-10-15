@@ -115,7 +115,32 @@ int getSmallestBlock(const int blocks[], int size) {
  * You need to complete this function with recursion.
  */
 bool placeBlock(char board[BOARD_SIZE][BOARD_SIZE], int row, int col, direction d, int size) {
-    return false;
+  // TODO finished
+  if(size == 1){ // base case
+    if(board[row][col] == EMPTY){
+      board[row][col] = OCCUPIED;
+      return true;
+    }
+  }
+  else{
+    if(d == DOWN){
+      if(board[row][col] == EMPTY){
+        if(placeBlock(board, row + 1, col, d, size -1)){
+          board[row][col] = OCCUPIED;
+          return true;
+        }
+      }
+    }
+    else{ // d == RIGHT
+      if(board[row][col] == EMPTY){
+        if(placeBlock(board, row, col + 1, d, size - 1)){
+          board[row][col] = OCCUPIED;
+          return true;
+        }
+      }
+    }
+  }
+  return false;
 }
 
 
@@ -137,7 +162,13 @@ bool placeBlock(char board[BOARD_SIZE][BOARD_SIZE], int row, int col, direction 
  *
  */
 bool cannotFitThisBlock (char board[BOARD_SIZE][BOARD_SIZE], int row, int col, int size) {
+  // TODO finished
+  bool cannotFitThisBlock_recursion_part(char[BOARD_SIZE][BOARD_SIZE], int, int, int, int);
+  if(size > BOARD_SIZE)
     return true;
+  else if(size == BOARD_SIZE)
+    return !(row == 0 || col == 0);
+  return cannotFitThisBlock_recursion_part(board, row, col, DOWN, size) && cannotFitThisBlock_recursion_part(board, row, col, RIGHT, size);
 }
 
 
@@ -246,4 +277,27 @@ int main() {
     printBoard(board);
     cout << "Player " << (turn + 1) << ":no more move, game over!" << endl;
 
+}
+
+
+// helper function v2
+bool cannotFitThisBlock_recursion_part(char board[BOARD_SIZE][BOARD_SIZE], int row, int col, int d, int size){
+  if(size == 1){ // base case
+    if(board[row][col] == EMPTY){
+      return false;
+    }
+  }
+  else{
+    if(d == DOWN){
+      if(board[row][col] == EMPTY){
+        return cannotFitThisBlock_recursion_part(board, row + 1, col, d,  size - 1);
+      }
+    }
+    else{ // d == RIGHT
+      if(board[row][col] == EMPTY){
+        return cannotFitThisBlock_recursion_part(board, row, col + 1, d, size - 1);
+      }
+    }
+  }
+  return true;
 }
