@@ -120,6 +120,7 @@ bool check_solution(int board[][BOARD_SIZE]){
   return false;
 }
 
+int countR = 0;
 bool solve(int board[][BOARD_SIZE], int i, int j){
   // TODO
   // debug
@@ -143,6 +144,7 @@ bool solve(int board[][BOARD_SIZE], int i, int j){
           return false;
         }
         board[i][j] = k;
+        // countR++;
         // debug
         // cout<<"\n\n\n\n\n\n\n";
         // void print_board(int[][BOARD_SIZE]);
@@ -172,10 +174,12 @@ bool solve(int board[][BOARD_SIZE], int i, int j){
 
     while(true){ // if attempt doesn't work, this loop updates k and retry, until k > 9
       if(k > 9){
+
         board[i][j] = 0;
         return false;
       }
       board[i][j] = k; // attempt: put k into the element and start to test
+      // countR++;
 
       // debug
       // cout<<"\n\n\n\n\n\n\n";
@@ -197,7 +201,10 @@ bool solve(int board[][BOARD_SIZE], int i, int j){
 }
 
 bool solve_sudoku(int board[][BOARD_SIZE]){
-    return solve(board, 0, 0);
+    bool solved = solve(board, 0, 0);
+    // cout<<countR<<endl;
+    countR = 0;
+    return solved;
 }
 
 

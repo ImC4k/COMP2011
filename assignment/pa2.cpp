@@ -117,6 +117,10 @@ int getSmallestBlock(const int blocks[], int size) {
 bool placeBlock(char board[BOARD_SIZE][BOARD_SIZE], int row, int col, direction d, int size) {
   bool findPlace_recursion_part(char[BOARD_SIZE][BOARD_SIZE], int, int, direction, int);
   bool placeBlock_recursion_part(char[BOARD_SIZE][BOARD_SIZE], int, int, direction, int);
+  if(size > BOARD_SIZE - ((d)? col : row)){
+    cout<<"returned false"<<endl;
+    return false;
+  }
   switch(d){
     case DOWN:
       if(findPlace_recursion_part(board, row, col, DOWN, size)){
@@ -254,84 +258,120 @@ bool placeBlock(char board[BOARD_SIZE][BOARD_SIZE], int row, int col, direction 
  */
 
 bool checkMate (char board[BOARD_SIZE][BOARD_SIZE], int& row, int& col, direction& d, int blocks[BOARD_SIZE], int& size) {
+  // TODO problematic
+  blocks[size-1]--;
+
+  int temp = BOARD_SIZE*row + col;
+  if(temp > BOARD_SIZE*BOARD_SIZE){
     return false;
+  }
+  row = temp/BOARD_SIZE;
+  col = temp%BOARD_SIZE;
+
+  if(getSmallestBlock(blocks, BOARD_SIZE) == BOARD_SIZE + 1){
+    return false;
+  }
+  if(placeBlock(board, row, col, DOWN, size)){
+    if(cannotFitThisBlock(board, row, col, getSmallestBlock(blocks, BOARD_SIZE))){
+      return true;
+    }
+  }
+  else if(placeBlock(board, row, col, RIGHT, size)){
+    if(cannotFitThisBlock(board, row, col, getSmallestBlock(blocks, BOARD_SIZE))){
+      return true;
+    }
+  }
+  else if(size < BOARD_SIZE){
+    blocks[size-1]++;
+    col += 1;
+    if(checkMate(board, row, col, d, blocks, size)){
+      return true;
+    }
+    col -= 1;
+    size += 1;
+    if(checkMate(board, row, col, d, blocks, size)){
+      return true;
+    }
+    size -= 1;
+  }
+  return false;
 }
 
 int main() {
-    char board[BOARD_SIZE][BOARD_SIZE];
-    int blocks[BOARD_SIZE];
-    int turn = 0; // 0 for player 1; 1 for player 2;
+  char board[BOARD_SIZE][BOARD_SIZE];
+  int blocks[BOARD_SIZE];
+  int turn = 0; // 0 for player 1; 1 for player 2;
 
-    //initialize game board
-    initBoard(board);
+  //initialize game board
+  initBoard(board);
 
-    //initialize number blocks
-    for (int i = 0; i < BOARD_SIZE - 1; i++) {
-	blocks[i] = 2;
-    }
-    blocks[BOARD_SIZE - 1] = 1;
-
-
-    do {
-	cout << "It is your turn, player " << (turn + 1) << endl;
-	printBoard(board);
-	cout << "Remaining Blocks" << endl;
-	for (int i = 0; i < BOARD_SIZE; i++)
-	    cout << (i+1) << " ";
-	cout << endl;
-	for (int i = 0; i < BOARD_SIZE; i++)
-	    cout << blocks[i] << " ";
-	cout << endl;
-
-	int row = 0, col = 0;
-	int size = 1;
-	int d = 0;
-
-	direction dir = RIGHT;
-	if (checkMate(board, row, col, dir, blocks, size)) {
-	    cout << "There is check mate move: (" << row << ", " << col << "), place size " << size <<
-		    ((dir == RIGHT)? " to right": " down") << endl;
-	}
-
-	while (1) {
-	    cout << "Please enter the coordinate: row col" << endl;
-	    cin >> row >> col;
-	    if (row >= 0 && row < BOARD_SIZE && col >= 0 && col < BOARD_SIZE)
-		break;
-	    cout << "Invalid input" << endl;
-	}
-
-	while (1) {
-	    cout << "Please enter the size of the block: (1 to "<< BOARD_SIZE <<")" << endl;
-	    cin >> size;
-	    if (size > 0 && size <= BOARD_SIZE && blocks[size - 1] != 0)
-		break;
-	    cout << "Invalid input or block of that size are used up." << endl;
-	}
-
-	while (1) {
-	    cout << "Direction? 1 for Right, 0 for Down: " << endl;
-	    cin >> d;
-	    if (d == 0 || d == 1)
-		break;
-	    cout << "Invalid input" << endl;
-	}
+  //initialize number blocks
+  for (int i = 0; i < BOARD_SIZE - 1; i++) {
+    blocks[i] = 2;
+  }
+  blocks[BOARD_SIZE - 1] = 1;
 
 
-	if (!placeBlock(board, row, col, static_cast<direction>(d) , size))
-	    cout << "Cannot place the block, please try again" << endl;
-	else {
-	    turn = (turn + 1) % 2 ;
-	    blocks[size - 1]--;
-	}
-	if (getSmallestBlock(blocks, BOARD_SIZE) > BOARD_SIZE) {
-	    printBoard(board);
-	    cout << "Game over. Block completed. " << endl;
-	}
-// cout<<boolalpha<<"smallest block:"<<getSmallestBlock(blocks,BOARD_SIZE)<<'\n'<<"returning boolean:"<<cannotFitThisBlock(board, 0, 0, getSmallestBlock(blocks, BOARD_SIZE))<<endl;
-    }  while(!cannotFitThisBlock(board, 0, 0, getSmallestBlock(blocks, BOARD_SIZE)));
+  do {
+    cout << "It is your turn, player " << (turn + 1) << endl;
     printBoard(board);
-    cout << "Player " << (turn + 1) << ":no more move, game over!" << endl;
+    cout << "Remaining Blocks" << endl;
+    for (int i = 0; i < BOARD_SIZE; i++)
+    cout << (i+1) << " ";
+    cout << endl;
+    for (int i = 0; i < BOARD_SIZE; i++)
+    cout << blocks[i] << " ";
+    cout << endl;
+
+    int row = 0, col = 0;
+    int size = 1;
+    int d = 0;
+
+    direction dir = RIGHT;
+    if (checkMate(board, row, col, dir, blocks, size)) {
+      cout << "There is check mate move: (" << row << ", " << col << "), place size " << size <<
+      ((dir == RIGHT)? " to right": " down") << endl;
+    }
+
+    while (1) {
+      cout << "Please enter the coordinate: row col" << endl;
+      cin >> row >> col;
+      if (row >= 0 && row < BOARD_SIZE && col >= 0 && col < BOARD_SIZE)
+      break;
+      cout << "Invalid input" << endl;
+    }
+
+    while (1) {
+      cout << "Please enter the size of the block: (1 to "<< BOARD_SIZE <<")" << endl;
+      cin >> size;
+      if (size > 0 && size <= BOARD_SIZE && blocks[size - 1] != 0)
+      break;
+      cout << "Invalid input or block of that size are used up." << endl;
+    }
+
+    while (1) {
+      cout << "Direction? 1 for Right, 0 for Down: " << endl;
+      cin >> d;
+      if (d == 0 || d == 1)
+      break;
+      cout << "Invalid input" << endl;
+    }
+
+
+    if (!placeBlock(board, row, col, static_cast<direction>(d) , size))
+    cout << "Cannot place the block, please try again" << endl;
+    else {
+      turn = (turn + 1) % 2 ;
+      blocks[size - 1]--;
+    }
+    if (getSmallestBlock(blocks, BOARD_SIZE) > BOARD_SIZE) {
+      printBoard(board);
+      cout << "Game over. Block completed. " << endl;
+    }
+    // cout<<boolalpha<<"smallest block:"<<getSmallestBlock(blocks,BOARD_SIZE)<<'\n'<<"returning boolean:"<<cannotFitThisBlock(board, 0, 0, getSmallestBlock(blocks, BOARD_SIZE))<<endl;
+  }  while(!cannotFitThisBlock(board, 0, 0, getSmallestBlock(blocks, BOARD_SIZE)));
+  printBoard(board);
+  cout << "Player " << (turn + 1) << ":no more move, game over!" << endl;
 
 }
 // NOTE: ask if line 226 in skeleton code is correct
