@@ -24,6 +24,60 @@ const int BOARD_SIZE = 4; // we will assign BOARD_SIZE to
 const char EMPTY = '.';  // symbol that represents an EMPTY spot
 const char OCCUPIED = 'x'; // symbol that represents an OCCUPIED spot
 enum direction {DOWN, RIGHT}; //a block is placed to right (RIGHT)  or downward (DOWN).
+
+// self-defined functions
+
+void placeBlock_recursion_part(char board[BOARD_SIZE][BOARD_SIZE], int row, int col, int size, direction d){
+  if(size == 1){ // base case
+    board[row][col] = OCCUPIED;
+
+  }
+  else{
+    board[row][col] = OCCUPIED;
+    if(d == DOWN){
+      placeBlock_recursion_part(board, row + 1, col, size - 1, d);
+    }
+    else{
+      placeBlock_recursion_part(board, row, col + 1, size - 1, d);
+    }
+  }
+  return;
+}
+
+bool find_local_place_recursion_part(char board[BOARD_SIZE][BOARD_SIZE], int row, int col, int size, direction d){ // return true if no place
+  if(row < BOARD_SIZE){
+    switch(d){
+      case RIGHT:
+        if(col >= BOARD_SIZE){
+          return true;
+        }
+        if(size == 1){
+          return !(board[row][col] == EMPTY);
+        }
+        else{
+          if(board[row][col] == EMPTY){
+            return find_local_place_recursion_part(board, row, col + 1, size - 1, d);
+          }
+          else return true;
+        }
+      case DOWN:
+        if(row >= BOARD_SIZE){
+          return true;
+        }
+        if(size == 1){
+          return !(board[row][col] == EMPTY);
+        }
+        else{
+          if(board[row][col] == EMPTY){
+            return find_local_place_recursion_part(board, row + 1, col, size - 1, d);
+          }
+          else return true;
+        }
+    }
+  }
+  return true;
+}
+
 /**
  * Given function. To print the game board.
  * It is already completed. Do not modify it.
@@ -87,7 +141,7 @@ void initBoard(char board[BOARD_SIZE][BOARD_SIZE]) {
      if(previous != BOARD_SIZE + 1){
        return previous;
      }
-     else if(block[size] != 0){
+     else if(blocks[size] != 0){
        return size + 1;
      }
      else return BOARD_SIZE + 1;
@@ -113,9 +167,24 @@ void initBoard(char board[BOARD_SIZE][BOARD_SIZE]) {
  *
  * You need to complete this function with recursion.
  */
-bool placeBlock(char board[BOARD_SIZE][BOARD_SIZE], int row, int col, direction d, int size) {
-    return false;
-}
+ bool placeBlock(char board[BOARD_SIZE][BOARD_SIZE], int row, int col, direction d, int size) {
+   if(size > BOARD_SIZE - ((d == RIGHT)? col : row)){
+     return false;
+   }
+   switch(d){
+     case RIGHT:
+       if(!find_local_place_recursion_part(board, row, col, size, RIGHT)){
+         placeBlock_recursion_part(board, row, col, size, d);
+         return true;
+       }
+     case DOWN:
+       if(!find_local_place_recursion_part(board, row, col, size, DOWN)){
+         placeBlock_recursion_part(board, row, col, size, d);
+         return true;
+       }
+   }
+   return false;
+ }
 
 
 /**
@@ -135,9 +204,25 @@ bool placeBlock(char board[BOARD_SIZE][BOARD_SIZE], int row, int col, direction 
  * to construct your recursion.
  *
  */
-bool cannotFitThisBlock (char board[BOARD_SIZE][BOARD_SIZE], int row, int col, int size) {
-    return true;
-}
+ bool cannotFitThisBlock(char board[BOARD_SIZE][BOARD_SIZE], int row, int col, int size){
+   // this function checks if there is any way to place a block of size "size"
+   // update coordinate
+   int update_coor_index = BOARD_SIZE*row + col;
+   row = update_coor_index/BOARD_SIZE;
+   col = update_coor_index%BOARD_SIZE;
+
+   if(update_coor_index < BOARD_SIZE*BOARD_SIZE){ // if coordinate is still inside the board
+     if(board[row][col] == EMPTY){
+       if(!find_local_place_recursion_part(board, row, col, size, DOWN) || !find_local_place_recursion_part(board, row, col, size, RIGHT)){
+         return false;
+       }
+     }
+     else{
+       return cannotFitThisBlock(board, row, col + 1, size);
+     }
+   }
+   return true;
+ }
 
 
 /**
