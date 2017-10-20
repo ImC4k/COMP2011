@@ -304,11 +304,9 @@ bool checkMate (char board[BOARD_SIZE][BOARD_SIZE], int& row, int& col, directio
   row = update_coor_index/BOARD_SIZE;
   col = update_coor_index%BOARD_SIZE;
 
-  if(getSmallestBlock(blocks, 0) == BOARD_SIZE + 1){
-    return true;
-  }
   if(!cannotFitThisBlock(board, row, col, size)){
-
+    placeBlock_recursion_part(board, row, col, size);
+    if(cannotFitThisBlock(board, 0, 0, getSmallestBlock(blocks)))
   }
 
   else{

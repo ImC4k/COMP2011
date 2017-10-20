@@ -43,32 +43,86 @@ void placeBlock_recursion_part(char board[BOARD_SIZE][BOARD_SIZE], int row, int 
   }
   return;
 }
+// current version
+// bool find_local_place_recursion_part(char board[BOARD_SIZE][BOARD_SIZE], int row, int col, int size, direction d){ // return true if no place
+//   if(row < BOARD_SIZE){
+//     switch(d){
+//       case RIGHT:
+//         if(col >= BOARD_SIZE){
+//           return true;
+//         }
+//         if(size == 1){
+//           return !(board[row][col] == EMPTY);
+//         }
+//         else{
+//           if(board[row][col] == EMPTY){
+//             return find_local_place_recursion_part(board, row, col + 1, size - 1, d);
+//           }
+//           else return true;
+//         }
+//       case DOWN:
+//         if(row >= BOARD_SIZE){
+//           return true;
+//         }
+//         if(size == 1){
+//           return !(board[row][col] == EMPTY);
+//         }
+//         else{
+//           if(board[row][col] == EMPTY){
+//             return find_local_place_recursion_part(board, row + 1, col, size - 1, d);
+//           }
+//           else return true;
+//         }
+//     }
+//   }
+//   return true;
+// }
 
+// debug version
 bool find_local_place_recursion_part(char board[BOARD_SIZE][BOARD_SIZE], int row, int col, int size, direction d){ // return true if no place
+  cout<<"checking row = ["<<row<<"] col = ["<<col<<"]"<<endl;
+  cout<<"size to be checked right now is "<<size<<endl;
   if(row < BOARD_SIZE){
     switch(d){
       case RIGHT:
+        cout<<"running RIGHT direction"<<endl;
         if(col >= BOARD_SIZE){
+          cout<<"exceeded boundary for RIGHT, returned true"<<endl;
           return true;
         }
         if(size == 1){
-          return !(board[row][col] == EMPTY);
+          cout<<"checking size == 1"<<endl;
+          if(board[row][col] == EMPTY){
+            cout<<"EMPTY, returned false"<<endl;
+            return false;
+          }
+          else{
+            cout<<"OCCUPIED, returned true"<<endl;
+            return true;
+          }
         }
         else{
           if(board[row][col] == EMPTY){
+            cout<<"size not yet 1, row = ["<<row<<"] col = ["<<col<<"] is EMPTY"<<endl;
+            cout<<"commencing to obtain value of next element"<<endl;
             return find_local_place_recursion_part(board, row, col + 1, size - 1, d);
           }
           else return true;
         }
       case DOWN:
+        cout<<"running DOWN direction"<<endl;
         if(row >= BOARD_SIZE){
+          cout<<"exceeded boundary for DOWN, returned true"<<endl;
           return true;
         }
         if(size == 1){
+          cout<<"checking size == 1"<<endl;
           return !(board[row][col] == EMPTY);
         }
         else{
           if(board[row][col] == EMPTY){
+            cout<<"size not yet 1, row = ["<<row<<"] col = ["<<col<<"] is EMPTY"<<endl;
+            cout<<"commencing to obtain value of next element"<<endl;
             return find_local_place_recursion_part(board, row + 1, col, size - 1, d);
           }
           else return true;
@@ -330,68 +384,4 @@ int main() {
     printBoard(board);
     cout << "Player " << (turn + 1) << ":no more move, game over!" << endl;
 
-}
-
-
-// helper function
-
-bool findPlace_recursion_part(char board[BOARD_SIZE][BOARD_SIZE], int row, int col, direction d, int size){
-  // TODO
-  if(size > BOARD_SIZE){
-    return true;
-  }
-  if(size == 1){
-    if(board[row][col] == EMPTY){
-      return false;
-    }
-  }
-  switch(d){
-    case DOWN:
-    if(board[row][col] == EMPTY){
-      return findPlace_recursion_part(board, row + 1, col, d, size - 1);
-    }
-    case RIGHT:
-    if(board[row][col] == EMPTY){
-      return findPlace_recursion_part(board, row, col + 1, d, size - 1);
-    }
-  }
-  return true;
-}
-
-bool placeBlock_recursion_part(char board[BOARD_SIZE][BOARD_SIZE], int row, int col, direction d, int size){
-  if(size == 1){
-    if(board[row][col] == EMPTY){
-      board[row][col] = OCCUPIED;
-      return true;
-    }
-    // else{
-    //   switch(d){
-    //     case DOWN:
-    //       board[row - 1][col] = EMPTY;
-    //       return false;
-    //     case RIGHT:
-    //       board[row][col - 1] = EMPTY;
-    //       return false;
-    //   }
-    // }
-  }
-  else{
-    if(board[row][col] == EMPTY){
-      switch(d){
-        case DOWN:
-          if(placeBlock_recursion_part(board, row + 1, col, d, size - 1)){
-            board[row][col] = OCCUPIED;
-            return true;
-          }
-          break;
-        case RIGHT:
-          if(placeBlock_recursion_part(board, row, col + 1, d, size - 1)){
-            board[row][col] = OCCUPIED;
-            return true;
-          }
-          break;
-      }
-    }
-  }
-  return false;
 }
