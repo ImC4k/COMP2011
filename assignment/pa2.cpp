@@ -66,35 +66,34 @@ void initBoard(char board[BOARD_SIZE][BOARD_SIZE]) {
  *
  * When this function is called in the main program, the variable "size" is always set as BOARD_SIZE.
  *
- * Example, assume the blocks array is {0, 1, 0, 2}; this should return 1;
- *                 the blocks array is {2, 0, 0, 1}; this should return 0;
- *                 the blocks array is {0, 0, 1, 2}; this should return 2; etc.
+ * //UPDATED HERE @ 18/10/2017
+ * Example, assume the blocks array is {0, 1, 0, 2}; this should return 2;
+ *                 the blocks array is {2, 0, 0, 1}; this should return 1;
+ *                 the blocks array is {0, 0, 1, 2}; this should return 3; etc.
  *
  * Note, if the blocks array contains only 0s (all blocks are used), this should return BOARD_SIZE + 1.
  *
  */
-int getSmallestBlock(const int blocks[], int size) {
-  // TODO finished
-  if(size == 0){
-    if(blocks[size] != 0){
-      return size;
-    }
-    else{
-      return BOARD_SIZE + 1;
-    }
-  }
-  else{
-    if(getSmallestBlock(blocks, size -1) != BOARD_SIZE + 1){
-      return getSmallestBlock(blocks, size -1);
-    }
-    else if(blocks[size] != 0){
-      return size;
-    }
-    else{
-      return BOARD_SIZE + 1;
-    }
-  }
-}
+ int getSmallestBlock(const int blocks[], int size) {
+   // TODO finished
+   if(size == 0){
+     if(blocks[size] != 0){
+       return size + 1;
+     }
+     else return BOARD_SIZE + 1;
+   }
+   else{
+     int previous = getSmallestBlock(blocks, size - 1);
+     if(previous != BOARD_SIZE + 1){
+       return previous;
+     }
+     else if(block[size] != 0){
+       return size + 1;
+     }
+     else return BOARD_SIZE + 1;
+   }
+   return 0;
+ }
 
 
 
@@ -115,28 +114,7 @@ int getSmallestBlock(const int blocks[], int size) {
  * You need to complete this function with recursion.
  */
 bool placeBlock(char board[BOARD_SIZE][BOARD_SIZE], int row, int col, direction d, int size) {
-  bool findPlace_recursion_part(char[BOARD_SIZE][BOARD_SIZE], int, int, direction, int);
-  bool placeBlock_recursion_part(char[BOARD_SIZE][BOARD_SIZE], int, int, direction, int);
-  if(size > BOARD_SIZE - ((d)? col : row)){
-    cout<<"returned false"<<endl;
     return false;
-  }
-  switch(d){
-    case DOWN:
-      if(findPlace_recursion_part(board, row, col, DOWN, size)){
-        return false;
-      }
-      break;
-    case RIGHT:
-      if(findPlace_recursion_part(board, row, col, RIGHT, size)){
-        return false;
-      }
-      break;
-  }
-  if(placeBlock_recursion_part(board, row, col, d, size)){
-    return true;
-  }
-  return false;
 }
 
 
@@ -157,79 +135,9 @@ bool placeBlock(char board[BOARD_SIZE][BOARD_SIZE], int row, int col, direction 
  * to construct your recursion.
  *
  */
-
- bool cannotFitThisBlock(char board[BOARD_SIZE][BOARD_SIZE], int row, int col, int size){
-   size++;
-   bool findPlace_recursion_part(char[BOARD_SIZE][BOARD_SIZE], int, int, direction, int);
-   int temp = row*BOARD_SIZE+col;
-   if(temp > BOARD_SIZE * BOARD_SIZE){
-     return true;
-   }
-   row = temp / BOARD_SIZE;
-   col = temp % BOARD_SIZE;
-   if(size > BOARD_SIZE - row && size > BOARD_SIZE - col){
-     return true;
-   }
-   else if(row == BOARD_SIZE && col == BOARD_SIZE){
-     return board[row][col] == EMPTY;
-   }
-   else{
-     if(board[row][col] == EMPTY){
-       if(!findPlace_recursion_part(board, row, col, DOWN, size) || !findPlace_recursion_part(board, row, col, RIGHT, size)){
-         return false;
-       }
-       else{
-         return cannotFitThisBlock(board, row, col + 1, size);
-       }
-     }
-     else{
-       return cannotFitThisBlock(board, row, col + 1, size);
-     }
-   }
-   return true;
- }
-
- // bool cannotFitThisBlock(char board[BOARD_SIZE][BOARD_SIZE], int row, int col, int size){
- //   size++;
- //   bool findPlace_recursion_part(char[BOARD_SIZE][BOARD_SIZE], int, int, direction, int);
- //   int temp = row*BOARD_SIZE+col;
- //   if(temp > BOARD_SIZE * BOARD_SIZE){
- //     cout<<"too early?"<<endl;
- //     return true;
- //   }
- //   row = temp / BOARD_SIZE;
- //   col = temp % BOARD_SIZE;
- //   cout<<"now row is "<<row<<", col is "<<col<<endl;
- //   if(size > BOARD_SIZE - row && size > BOARD_SIZE - col){
- //     cout<<"size is out of board, returned true at "<<row<<", "<<col<<endl;
- //     return true;
- //   }
- //   else if(row == BOARD_SIZE && col == BOARD_SIZE){
- //     cout<<"reaching bottom case"<<endl;
- //     return board[row][col] == EMPTY;
- //   }
- //   else{
- //     if(board[row][col] == EMPTY){
- //       cout<<"board["<<row<<"]["<<col<<"] is EMPTY"<<endl;
- //       if(!findPlace_recursion_part(board, row, col, DOWN, size) || !findPlace_recursion_part(board, row, col, RIGHT, size)){
- //         cout<<"there is a solution for findPlace_recursion_part(board, "<<row<<", "<<col<<", DOWN or RIGHT, "<<size<<")"<<endl;
- //         return false;
- //       }
- //       else{
- //         cout<<"no solution found for findPlace_recursion_part(board, "<<row<<", "<<col<<", DOWN or RIGHT, "<<size<<")"<<endl;
- //         cout<<"going to next element space"<<endl;
- //         return cannotFitThisBlock(board, row, col + 1, size);
- //       }
- //     }
- //     else{
- //       cout<<"board["<<row<<"]["<<col<<"] is NOT EMPTY"<<endl;
- //       cout<<"going to next element space"<<endl;
- //       return cannotFitThisBlock(board, row, col + 1, size);
- //     }
- //   }
- //   cout<<"no way found, returned true at "<<row<<", "<<col<<endl;
- //   return true;
- // }
+bool cannotFitThisBlock (char board[BOARD_SIZE][BOARD_SIZE], int row, int col, int size) {
+    return true;
+}
 
 
 /**
@@ -258,173 +166,145 @@ bool placeBlock(char board[BOARD_SIZE][BOARD_SIZE], int row, int col, direction 
  */
 
 bool checkMate (char board[BOARD_SIZE][BOARD_SIZE], int& row, int& col, direction& d, int blocks[BOARD_SIZE], int& size) {
-  // TODO problematic
-  blocks[size-1]--;
-
-  int temp = BOARD_SIZE*row + col;
-  if(temp > BOARD_SIZE*BOARD_SIZE){
     return false;
-  }
-  row = temp/BOARD_SIZE;
-  col = temp%BOARD_SIZE;
-
-  if(getSmallestBlock(blocks, BOARD_SIZE) == BOARD_SIZE + 1){
-    return false;
-  }
-  if(placeBlock(board, row, col, DOWN, size)){
-    if(cannotFitThisBlock(board, row, col, getSmallestBlock(blocks, BOARD_SIZE))){
-      return true;
-    }
-  }
-  else if(placeBlock(board, row, col, RIGHT, size)){
-    if(cannotFitThisBlock(board, row, col, getSmallestBlock(blocks, BOARD_SIZE))){
-      return true;
-    }
-  }
-  else if(size < BOARD_SIZE){
-    blocks[size-1]++;
-    col += 1;
-    if(checkMate(board, row, col, d, blocks, size)){
-      return true;
-    }
-    col -= 1;
-    size += 1;
-    if(checkMate(board, row, col, d, blocks, size)){
-      return true;
-    }
-    size -= 1;
-  }
-  return false;
 }
 
 int main() {
-  char board[BOARD_SIZE][BOARD_SIZE];
-  int blocks[BOARD_SIZE];
-  int turn = 0; // 0 for player 1; 1 for player 2;
+    char board[BOARD_SIZE][BOARD_SIZE];
+    int blocks[BOARD_SIZE];
+    int turn = 0; // 0 for player 1; 1 for player 2;
 
-  //initialize game board
-  initBoard(board);
+    //initialize game board
+    initBoard(board);
 
-  //initialize number blocks
-  for (int i = 0; i < BOARD_SIZE - 1; i++) {
-    blocks[i] = 2;
-  }
-  blocks[BOARD_SIZE - 1] = 1;
+    //initialize number blocks
+    for (int i = 0; i < BOARD_SIZE - 1; i++) {
+	blocks[i] = 2;
+    }
+    blocks[BOARD_SIZE - 1] = 1;
 
 
-  do {
-    cout << "It is your turn, player " << (turn + 1) << endl;
+    do {
+	cout << "It is your turn, player " << (turn + 1) << endl;
+	printBoard(board);
+	cout << "Remaining Blocks" << endl;
+	for (int i = 0; i < BOARD_SIZE; i++)
+	    cout << (i+1) << " ";
+	cout << endl;
+	for (int i = 0; i < BOARD_SIZE; i++)
+	    cout << blocks[i] << " ";
+	cout << endl;
+
+	int row = 0, col = 0;
+	int size = 1;
+	int d = 0;
+
+	direction dir = RIGHT;
+	if (checkMate(board, row, col, dir, blocks, size)) {
+	    cout << "There is check mate move: (" << row << ", " << col << "), place size " << size <<
+		    ((dir == RIGHT)? " to right": " down") << endl;
+	}
+
+	while (1) {
+	    cout << "Please enter the coordinate: row col" << endl;
+	    cin >> row >> col;
+	    if (row >= 0 && row < BOARD_SIZE && col >= 0 && col < BOARD_SIZE)
+		break;
+	    cout << "Invalid input" << endl;
+	}
+
+	while (1) {
+	    cout << "Please enter the size of the block: (1 to "<< BOARD_SIZE <<")" << endl;
+	    cin >> size;
+	    if (size > 0 && size <= BOARD_SIZE && blocks[size - 1] != 0)
+		break;
+	    cout << "Invalid input or block of that size are used up." << endl;
+	}
+
+	while (1) {
+	    cout << "Direction? 1 for Right, 0 for Down: " << endl;
+	    cin >> d;
+	    if (d == 0 || d == 1)
+		break;
+	    cout << "Invalid input" << endl;
+	}
+
+
+	if (!placeBlock(board, row, col, static_cast<direction>(d) , size))
+	    cout << "Cannot place the block, please try again" << endl;
+	else {
+	    turn = (turn + 1) % 2 ;
+	    blocks[size - 1]--;
+	}
+	if (getSmallestBlock(blocks, BOARD_SIZE) > BOARD_SIZE) {
+	    printBoard(board);
+	    cout << "Game over. Block completed. " << endl;
+	}
+
+    }  while(!cannotFitThisBlock (board, 0, 0, getSmallestBlock(blocks, BOARD_SIZE)));
     printBoard(board);
-    cout << "Remaining Blocks" << endl;
-    for (int i = 0; i < BOARD_SIZE; i++)
-    cout << (i+1) << " ";
-    cout << endl;
-    for (int i = 0; i < BOARD_SIZE; i++)
-    cout << blocks[i] << " ";
-    cout << endl;
-
-    int row = 0, col = 0;
-    int size = 1;
-    int d = 0;
-
-    direction dir = RIGHT;
-    if (checkMate(board, row, col, dir, blocks, size)) {
-      cout << "There is check mate move: (" << row << ", " << col << "), place size " << size <<
-      ((dir == RIGHT)? " to right": " down") << endl;
-    }
-
-    while (1) {
-      cout << "Please enter the coordinate: row col" << endl;
-      cin >> row >> col;
-      if (row >= 0 && row < BOARD_SIZE && col >= 0 && col < BOARD_SIZE)
-      break;
-      cout << "Invalid input" << endl;
-    }
-
-    while (1) {
-      cout << "Please enter the size of the block: (1 to "<< BOARD_SIZE <<")" << endl;
-      cin >> size;
-      if (size > 0 && size <= BOARD_SIZE && blocks[size - 1] != 0)
-      break;
-      cout << "Invalid input or block of that size are used up." << endl;
-    }
-
-    while (1) {
-      cout << "Direction? 1 for Right, 0 for Down: " << endl;
-      cin >> d;
-      if (d == 0 || d == 1)
-      break;
-      cout << "Invalid input" << endl;
-    }
-
-
-    if (!placeBlock(board, row, col, static_cast<direction>(d) , size))
-    cout << "Cannot place the block, please try again" << endl;
-    else {
-      turn = (turn + 1) % 2 ;
-      blocks[size - 1]--;
-    }
-    if (getSmallestBlock(blocks, BOARD_SIZE) > BOARD_SIZE) {
-      printBoard(board);
-      cout << "Game over. Block completed. " << endl;
-    }
-    // cout<<boolalpha<<"smallest block:"<<getSmallestBlock(blocks,BOARD_SIZE)<<'\n'<<"returning boolean:"<<cannotFitThisBlock(board, 0, 0, getSmallestBlock(blocks, BOARD_SIZE))<<endl;
-  }  while(!cannotFitThisBlock(board, 0, 0, getSmallestBlock(blocks, BOARD_SIZE)));
-  printBoard(board);
-  cout << "Player " << (turn + 1) << ":no more move, game over!" << endl;
+    cout << "Player " << (turn + 1) << ":no more move, game over!" << endl;
 
 }
-// NOTE: ask if line 226 in skeleton code is correct
 
-// helper function v2
+
+// helper function
+
 bool findPlace_recursion_part(char board[BOARD_SIZE][BOARD_SIZE], int row, int col, direction d, int size){
-  // TODO problematic
+  // TODO
   if(size > BOARD_SIZE){
     return true;
   }
-
-  if(size == 1){ // base case
+  if(size == 1){
     if(board[row][col] == EMPTY){
       return false;
     }
   }
-  else{
-    if(d == DOWN){
-      if(board[row][col] == EMPTY){
-        return findPlace_recursion_part(board, row + 1, col, d,  size - 1);
-      }
+  switch(d){
+    case DOWN:
+    if(board[row][col] == EMPTY){
+      return findPlace_recursion_part(board, row + 1, col, d, size - 1);
     }
-    else{ // d == RIGHT
-      if(board[row][col] == EMPTY){
-        return findPlace_recursion_part(board, row, col + 1, d, size - 1);
-      }
+    case RIGHT:
+    if(board[row][col] == EMPTY){
+      return findPlace_recursion_part(board, row, col + 1, d, size - 1);
     }
   }
   return true;
 }
 
 bool placeBlock_recursion_part(char board[BOARD_SIZE][BOARD_SIZE], int row, int col, direction d, int size){
-  if(size == 1){ // base case
+  if(size == 1){
     if(board[row][col] == EMPTY){
       board[row][col] = OCCUPIED;
       return true;
     }
+    // else{
+    //   switch(d){
+    //     case DOWN:
+    //       board[row - 1][col] = EMPTY;
+    //       return false;
+    //     case RIGHT:
+    //       board[row][col - 1] = EMPTY;
+    //       return false;
+    //   }
+    // }
   }
   else{
-    if(d == DOWN){
-      if(board[row][col] == EMPTY){
-        if(placeBlock_recursion_part(board, row + 1, col, d, size -1)){
-          board[row][col] = OCCUPIED;
-          return true;
-        }
-      }
-    }
-    else{ // d == RIGHT
-      if(board[row][col] == EMPTY){
-        if(placeBlock_recursion_part(board, row, col + 1, d, size - 1)){
-          board[row][col] = OCCUPIED;
-          return true;
-        }
+    if(board[row][col] == EMPTY){
+      switch(d){
+        case DOWN:
+          if(placeBlock_recursion_part(board, row + 1, col, d, size - 1)){
+            board[row][col] = OCCUPIED;
+            return true;
+          }
+          break;
+        case RIGHT:
+          if(placeBlock_recursion_part(board, row, col + 1, d, size - 1)){
+            board[row][col] = OCCUPIED;
+            return true;
+          }
+          break;
       }
     }
   }

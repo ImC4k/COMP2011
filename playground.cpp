@@ -2,50 +2,30 @@
 
 using namespace std;
 
-// int num_digits(int n = 0){
-//   if(n/10 == 0){
-//     return 1;
-//   }
-//   else{
-//     return 1+ num_digits(n/10);
-//   }
-// }
+const int BOARD_SIZE = 4;
 
-// int reverse(int n, int d){
-//   if(d == 0){
-//     return n;
-//   }
-//   else{
-//     int power = 1;
-//     for(int i = 1; i < d; i++){
-//       power *= 10;
-//     }
-//     return n%10*power+reverse(n/10, d-1);
-//   }
-// }
-
-// int increment(int x, int step = 1){
-//   return x+step;
-// }
-
-
-
-
-int i = 10;
-
-void fun1(){
-  cout<<i<<endl;
-}
-
-void fun2(){
-  int i = 20;
-  cout<<i<<endl;
+int getSmallestBlock(const int blocks[], int size) {
+  if(size == 0){
+    if(blocks[size] != 0){
+      return size + 1;
+    }
+    else return BOARD_SIZE + 1;
+  }
+  else{
+    int previous = getSmallestBlock(blocks, size - 1);
+    if(previous != BOARD_SIZE + 1){
+      return previous;
+    }
+    else if(blocks[size] != 0){
+      return size + 1;
+    }
+    else return BOARD_SIZE + 1;
+  }
+  return 0;
 }
 
 int main(){
-  int i = 5;
-  cout<<i<<endl;
-  fun1();
-  fun2();
+  int blocks[] = {0, 0, 0, 0};
+  cout<<getSmallestBlock(blocks, BOARD_SIZE);
   return 0;
 }
