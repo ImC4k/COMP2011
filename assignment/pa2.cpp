@@ -82,7 +82,7 @@ void placeBlock_recursion_part(char board[BOARD_SIZE][BOARD_SIZE], int row, int 
 bool find_local_place_recursion_part(char board[BOARD_SIZE][BOARD_SIZE], int row, int col, int size, direction d){ // return true if no place
   cout<<"checking row = ["<<row<<"] col = ["<<col<<"]"<<endl;
   cout<<"size to be checked right now is "<<size<<endl;
-  if(row < BOARD_SIZE){
+  if(row < BOARD_SIZE && col < BOARD_SIZE){ // NOTE ******************
     switch(d){
       case RIGHT:
         cout<<"running RIGHT direction"<<endl;
@@ -105,7 +105,10 @@ bool find_local_place_recursion_part(char board[BOARD_SIZE][BOARD_SIZE], int row
           if(board[row][col] == EMPTY){
             cout<<"size not yet 1, row = ["<<row<<"] col = ["<<col<<"] is EMPTY"<<endl;
             cout<<"commencing to obtain value of next element"<<endl;
-            return find_local_place_recursion_part(board, row, col + 1, size - 1, d);
+            if(!find_local_place_recursion_part(board, row, col + 1, size - 1, d)){ // NOTE ******************
+              return false;
+            }
+            break; // NOTE ******************
           }
           else return true;
         }
@@ -123,10 +126,14 @@ bool find_local_place_recursion_part(char board[BOARD_SIZE][BOARD_SIZE], int row
           if(board[row][col] == EMPTY){
             cout<<"size not yet 1, row = ["<<row<<"] col = ["<<col<<"] is EMPTY"<<endl;
             cout<<"commencing to obtain value of next element"<<endl;
-            return find_local_place_recursion_part(board, row + 1, col, size - 1, d);
+            if(!find_local_place_recursion_part(board, row + 1, col, size - 1, d)){ // NOTE ******************
+              return false;
+            }
+            break; // NOTE ******************
           }
           else return true;
         }
+        break;
     }
   }
   return true;
