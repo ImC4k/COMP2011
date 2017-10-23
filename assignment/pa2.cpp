@@ -261,6 +261,7 @@ bool checkMate (char board[BOARD_SIZE][BOARD_SIZE], int& row, int& col, directio
   if(size >= 1 && size <= BOARD_SIZE && row < BOARD_SIZE && col < BOARD_SIZE){ // make sure the search of size and location is inside boundary
     if(placeBlock(board, row, col, RIGHT, size)){ // check putting a block in direction RIGHT
       blocks[size - 1]--; // update blocks array after putting one block
+      d = RIGHT;
       if(cannotFitThisBlock(board, 0, 0, getSmallestBlock(blocks, BOARD_SIZE))){ // if next player cannot place anything
         blocks[size - 1]++; // add back the block into blocks array
         placeBlock_recursion_part(board, row, col, size, RIGHT, EMPTY); // remove the effect of placeBlock after testing place-ability
@@ -276,6 +277,7 @@ bool checkMate (char board[BOARD_SIZE][BOARD_SIZE], int& row, int& col, directio
     }
     if(placeBlock(board, row, col, DOWN, size)){ // if the block cannot be place in RIGHT direction, then test DOWN direction
       blocks[size - 1]--; // update blocks array after putting one block
+      d = DOWN;
       if(cannotFitThisBlock(board, 0, 0, getSmallestBlock(blocks, BOARD_SIZE))){ // if next player cannot place anything
         blocks[size - 1]++; // add back the block into blocks array
         placeBlock_recursion_part(board, row, col, size, DOWN, EMPTY); // remove the effect of placeBlock after testing place-ability
@@ -302,7 +304,13 @@ bool checkMate (char board[BOARD_SIZE][BOARD_SIZE], int& row, int& col, directio
       col = update_coor_index%BOARD_SIZE;
       return true;
     }
-    else return false;
+    else{
+      row = 0; // buggy line 308-311
+      col = 0;
+      d = RIGHT;
+      size = 1;
+      return false;
+    }
   }
   return false;
 }
