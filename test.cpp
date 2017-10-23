@@ -260,11 +260,7 @@ bool cannotFitThisBlock(char board[BOARD_SIZE][BOARD_SIZE], int row, int col, in
       }
     }
     return cannotFitThisBlock(board, row, col + 1, size);
-    // else{
-    //   // cout<<"row = ["<<row<<"] col = ["<<col<<"] returned true"<<endl;
-    //   // cout<<"commencing to row = ["<<row<<"] col = ["<<col + 1<<"]"<<endl;
-    //   return cannotFitThisBlock(board, row, col + 1, size);
-    // }
+
   }
   // cout<<"every element ran, no result, returned true"<<endl;
   return true;
@@ -444,10 +440,16 @@ bool checkMate (char board[BOARD_SIZE][BOARD_SIZE], int& row, int& col, directio
       }
     }
     if(checkMate(board, row, col, d, blocks, ++size)){ // if both DOWN and RIGHT cannot satisfy using this size and coordinate, first check next size in the same coor
+      update_coor_index = BOARD_SIZE*row + col;
+      row = update_coor_index/BOARD_SIZE;
+      col = update_coor_index%BOARD_SIZE;
       return true;
     }
     size = 1;
     if(checkMate(board, row, ++col, d, blocks, size)){ // if not size can be put for this local element, then check the next element
+      update_coor_index = BOARD_SIZE*row + col;
+      row = update_coor_index/BOARD_SIZE;
+      col = update_coor_index%BOARD_SIZE;
       return true;
     }
     else return false;
@@ -457,23 +459,29 @@ bool checkMate (char board[BOARD_SIZE][BOARD_SIZE], int& row, int& col, directio
 
 int main(){
   char board[BOARD_SIZE][BOARD_SIZE];
-  int blocks[BOARD_SIZE] = {2, 2, 2, 1};
+  int blocks[BOARD_SIZE] = {2, 0, 0, 0};
   int row = 0, col = 0;
   direction d = RIGHT;
   int size = 1;
     initBoard(board); // i modified this function, now the function will fill with OCCUPIED first
     printBoard(board);
+    board[0][0] = OCCUPIED;
     board[0][1] = OCCUPIED;
     board[0][2] = OCCUPIED;
     board[0][3] = OCCUPIED;
     board[1][0] = OCCUPIED;
+    board[1][1] = OCCUPIED;
     board[1][2] = OCCUPIED;
     board[1][3] = OCCUPIED;
+    board[2][0] = OCCUPIED;
+    board[2][1] = OCCUPIED;
     board[2][2] = OCCUPIED;
-    board[2][3] = OCCUPIED;
-    board[3][3] = OCCUPIED;
-    cout<<boolalpha<<cannotFitThisBlock(board, 0, 0, 2)<<endl;
+    board[3][0] = OCCUPIED;
+    board[3][1] = OCCUPIED;
+    board[3][2] = OCCUPIED;
+    cout<<boolalpha<<placeBlock(board, 2, 3, RIGHT, 2)<<endl;
     printBoard(board);
+    cout<<boolalpha<<getSmallestBlock(blocks, BOARD_SIZE)<<endl;
     // and then I put some slots on the board
     // cout<<getSmallestBlock(blocks, BOARD_SIZE)<<endl;
     // cout<<cannotFitThisBlock(board, 0, 0, getSmallestBlock(blocks, BOARD_SIZE))<<endl; // false

@@ -264,6 +264,9 @@ bool checkMate (char board[BOARD_SIZE][BOARD_SIZE], int& row, int& col, directio
       if(cannotFitThisBlock(board, 0, 0, getSmallestBlock(blocks, BOARD_SIZE))){ // if next player cannot place anything
         blocks[size - 1]++; // add back the block into blocks array
         placeBlock_recursion_part(board, row, col, size, RIGHT, EMPTY); // remove the effect of placeBlock after testing place-ability
+        update_coor_index = BOARD_SIZE*row + col;
+        row = update_coor_index/BOARD_SIZE;
+        col = update_coor_index%BOARD_SIZE;
         return true;
       }
       else{ // if after putting the block, player 2 can still put the smallest block
@@ -276,6 +279,9 @@ bool checkMate (char board[BOARD_SIZE][BOARD_SIZE], int& row, int& col, directio
       if(cannotFitThisBlock(board, 0, 0, getSmallestBlock(blocks, BOARD_SIZE))){ // if next player cannot place anything
         blocks[size - 1]++; // add back the block into blocks array
         placeBlock_recursion_part(board, row, col, size, DOWN, EMPTY); // remove the effect of placeBlock after testing place-ability
+        update_coor_index = BOARD_SIZE*row + col;
+        row = update_coor_index/BOARD_SIZE;
+        col = update_coor_index%BOARD_SIZE;
         return true; // return true to the call function
       }
       else{ // if after putting the block, player 2 can still put the smallest block
@@ -284,10 +290,16 @@ bool checkMate (char board[BOARD_SIZE][BOARD_SIZE], int& row, int& col, directio
       }
     }
     if(checkMate(board, row, col, d, blocks, ++size)){ // if both DOWN and RIGHT cannot satisfy using this size and coordinate, first check next size in the same coor
+      update_coor_index = BOARD_SIZE*row + col;
+      row = update_coor_index/BOARD_SIZE;
+      col = update_coor_index%BOARD_SIZE;
       return true;
     }
     size = 1;
     if(checkMate(board, row, ++col, d, blocks, size)){ // if not size can be put for this local element, then check the next element
+      update_coor_index = BOARD_SIZE*row + col;
+      row = update_coor_index/BOARD_SIZE;
+      col = update_coor_index%BOARD_SIZE;
       return true;
     }
     else return false;
