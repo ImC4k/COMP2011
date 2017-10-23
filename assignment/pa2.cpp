@@ -265,15 +265,18 @@ bool checkMate (char board[BOARD_SIZE][BOARD_SIZE], int& row, int& col, directio
   //     return true;
   //   }
   // }
-  if(row >= BOARD_SIZE){
-    // row = 0;
-    col = 0;
-    d = RIGHT;
-    size = 1;
-    return false;
-  }
+  // if(row >= BOARD_SIZE){
+  //   // row = 0;
+  //   col = 0;
+  //   d = RIGHT;
+  //   size = 1;
+  //   return false;
+  // }
 
-  if(blocks[size - 1] != 0 && size >= 1 && size <= BOARD_SIZE && row < BOARD_SIZE && col < BOARD_SIZE){ // make sure the search of size and location is inside boundary
+  if(size >= 1 && size <= BOARD_SIZE && row < BOARD_SIZE && col < BOARD_SIZE){ // make sure the search of size and location is inside boundary
+    if(blocks[size - 1] == 0){
+      return checkMate(board, row, col, d, blocks, ++size);
+    }
     if(placeBlock(board, row, col, RIGHT, size)){ // check putting a block in direction RIGHT
       blocks[size - 1]--; // update blocks array after putting one block
       d = RIGHT;
@@ -314,9 +317,9 @@ bool checkMate (char board[BOARD_SIZE][BOARD_SIZE], int& row, int& col, directio
     }
     size = 1;
     if(checkMate(board, row, ++col, d, blocks, size)){ // if not size can be put for this local element, then check the next element
-      // update_coor_index = BOARD_SIZE*row + col;
-      // row = update_coor_index/BOARD_SIZE;
-      // col = update_coor_index%BOARD_SIZE;
+      update_coor_index = BOARD_SIZE*row + col;
+      row = update_coor_index/BOARD_SIZE;
+      col = update_coor_index%BOARD_SIZE;
       return true;
     }
     else{
