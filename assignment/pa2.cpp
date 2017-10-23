@@ -257,8 +257,23 @@ bool checkMate (char board[BOARD_SIZE][BOARD_SIZE], int& row, int& col, directio
   int update_coor_index = BOARD_SIZE*row + col;
   row = update_coor_index/BOARD_SIZE;
   col = update_coor_index%BOARD_SIZE;
+  // if(row == BOARD_SIZE - 1 && col == BOARD_SIZE - 1 && size == BOARD_SIZE){ // ultimate base case, everything checked
+  //   if(placeBlock(board, row, col, RIGHT, size)){
+  //     return true;
+  //   }
+  //   else if(placeBlock(board, row, col, DOWN, size)){
+  //     return true;
+  //   }
+  // }
+  if(row >= BOARD_SIZE){
+    // row = 0;
+    col = 0;
+    d = RIGHT;
+    size = 1;
+    return false;
+  }
 
-  if(size >= 1 && size <= BOARD_SIZE && row < BOARD_SIZE && col < BOARD_SIZE){ // make sure the search of size and location is inside boundary
+  if(blocks[size - 1] != 0 && size >= 1 && size <= BOARD_SIZE && row < BOARD_SIZE && col < BOARD_SIZE){ // make sure the search of size and location is inside boundary
     if(placeBlock(board, row, col, RIGHT, size)){ // check putting a block in direction RIGHT
       blocks[size - 1]--; // update blocks array after putting one block
       d = RIGHT;
@@ -292,26 +307,27 @@ bool checkMate (char board[BOARD_SIZE][BOARD_SIZE], int& row, int& col, directio
       }
     }
     if(checkMate(board, row, col, d, blocks, ++size)){ // if both DOWN and RIGHT cannot satisfy using this size and coordinate, first check next size in the same coor
-      update_coor_index = BOARD_SIZE*row + col;
-      row = update_coor_index/BOARD_SIZE;
-      col = update_coor_index%BOARD_SIZE;
+      // update_coor_index = BOARD_SIZE*row + col;
+      // row = update_coor_index/BOARD_SIZE;
+      // col = update_coor_index%BOARD_SIZE;
       return true;
     }
     size = 1;
     if(checkMate(board, row, ++col, d, blocks, size)){ // if not size can be put for this local element, then check the next element
-      update_coor_index = BOARD_SIZE*row + col;
-      row = update_coor_index/BOARD_SIZE;
-      col = update_coor_index%BOARD_SIZE;
+      // update_coor_index = BOARD_SIZE*row + col;
+      // row = update_coor_index/BOARD_SIZE;
+      // col = update_coor_index%BOARD_SIZE;
       return true;
     }
     else{
-      row = 0; // buggy line 308-311
-      col = 0;
-      d = RIGHT;
-      size = 1;
+      // row = 0; // buggy line 308-311
+      // col = 0;
+      // d = RIGHT;
+      // size = 1;
       return false;
     }
   }
+  // row = 1; col = 0; d = RIGHT; size = 1;
   return false;
 }
 
@@ -352,7 +368,9 @@ int main() {
       ((dir == RIGHT)? " to right": " down") << endl;
     }
 
-    while (1) {
+    cout<<"row = "<<row<<", col = "<<col<<", direction = "<<dir<<", size = "<<size<<endl;
+
+    while (1) { // line 356
       cout << "Please enter the coordinate: row col" << endl;
       cin >> row >> col;
       if (row >= 0 && row < BOARD_SIZE && col >= 0 && col < BOARD_SIZE)
