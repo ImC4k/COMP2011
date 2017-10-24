@@ -2,7 +2,7 @@
 
 using namespace std;
 
-static const int size = 4;
+static const int size = 7;
 
 int setDeterminant(int arr[][size], int size){
 	
@@ -47,7 +47,8 @@ void printMatrix(int arr[][size]){
 
 int main(){
 	
-	int arr[size][size] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
+	int arr[size][size] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,
+,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49};
 	printMatrix(arr);
 	setDeterminant(arr, size);
 	return 0;
