@@ -616,31 +616,31 @@ bool checkMate(char board[BOARD_SIZE][BOARD_SIZE], int& row, int& col, direction
 }
 
 int main(){
-  char board[BOARD_SIZE][BOARD_SIZE];
-  int blocks[BOARD_SIZE] = {2, 0, 0, 0};
-  int row = 0, col = 0;
-  direction d = RIGHT;
-  int size = 1;
-    initBoard(board); // i modified this function, now the function will fill with OCCUPIED first
-    printBoard(board);
-    board[0][0] = OCCUPIED;
-    board[0][1] = OCCUPIED;
-    board[0][2] = OCCUPIED;
-    board[0][3] = OCCUPIED;
-    board[1][0] = OCCUPIED;
-    board[1][1] = OCCUPIED;
-    board[1][2] = OCCUPIED;
-    board[1][3] = OCCUPIED;
-    board[2][0] = OCCUPIED;
-    board[2][1] = OCCUPIED;
-    board[2][2] = OCCUPIED;
-    board[3][0] = OCCUPIED;
-    board[3][1] = OCCUPIED;
-    board[3][2] = OCCUPIED;
-    cout<<boolalpha<<cannotFitThisBlock(board, 0, 0, 3)<<endl;
-    printBoard(board);
-    cout<<"row = "<<row<<", col = "<<col<<", direction = "<<d<<endl;
-    cout<<boolalpha<<getSmallestBlock(blocks, BOARD_SIZE)<<endl;
+  // char board[BOARD_SIZE][BOARD_SIZE];
+  // int blocks[BOARD_SIZE] = {2, 0, 0, 0};
+  // int row = 0, col = 0;
+  // direction d = RIGHT;
+  // int size = 1;
+  //   initBoard(board); // i modified this function, now the function will fill with OCCUPIED first
+  //   printBoard(board);
+  //   board[0][0] = OCCUPIED;
+  //   board[0][1] = OCCUPIED;
+  //   board[0][2] = OCCUPIED;
+  //   board[0][3] = OCCUPIED;
+  //   board[1][0] = OCCUPIED;
+  //   board[1][1] = OCCUPIED;
+  //   board[1][2] = OCCUPIED;
+  //   board[1][3] = OCCUPIED;
+  //   board[2][0] = OCCUPIED;
+  //   board[2][1] = OCCUPIED;
+  //   board[2][2] = OCCUPIED;
+  //   board[3][0] = OCCUPIED;
+  //   board[3][1] = OCCUPIED;
+  //   board[3][2] = OCCUPIED;
+  //   cout<<boolalpha<<cannotFitThisBlock(board, 0, 0, 3)<<endl;
+  //   printBoard(board);
+  //   cout<<"row = "<<row<<", col = "<<col<<", direction = "<<d<<endl;
+  //   cout<<boolalpha<<getSmallestBlock(blocks, BOARD_SIZE)<<endl;
     // and then I put some slots on the board
     // cout<<getSmallestBlock(blocks, BOARD_SIZE)<<endl;
     // cout<<cannotFitThisBlock(board, 0, 0, getSmallestBlock(blocks, BOARD_SIZE))<<endl; // false
@@ -653,6 +653,8 @@ int main(){
     // printBoard(board);
     // cout<<"testing fit(7, 3, 3)\n"<<boolalpha<<cannotFitThisBlock(board, 7, 3, 3)<<endl; // true
     // printBoard(board);
+    double a = static_cast<double>(1.0/3);
+    cout<<a<<endl;
   return 0;
 }
 

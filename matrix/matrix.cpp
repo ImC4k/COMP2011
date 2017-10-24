@@ -5,9 +5,13 @@
 using namespace std;
 
 
+int input_size = 0;
+int SIZE = &input_size;
+
 int main(){
-  // SIZE = get_matrix_size();
-  int matrix[][3] = {{1, 0, 0},
+
+  input_size = get_matrix_size(input_size);
+  int matrix[][*SIZE] = {{1, 0, 0},
                             {0, 1, 0},
                             {0, 0, 1}};
 
