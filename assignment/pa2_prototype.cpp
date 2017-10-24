@@ -19,7 +19,7 @@ using namespace std;
 * the size of game board, the char of an EMPTY spot and the char of an OCCUPIED spot.
 *
 */
-const int BOARD_SIZE = 9; // we will assign BOARD_SIZE to
+const int BOARD_SIZE = 4; // we will assign BOARD_SIZE to
 // different values (>=3) to test your program.
 const char EMPTY = '.';  // symbol that represents an EMPTY spot
 const char OCCUPIED = 'x'; // symbol that represents an OCCUPIED spot

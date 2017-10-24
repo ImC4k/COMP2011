@@ -245,24 +245,43 @@ bool placeBlock(char board[BOARD_SIZE][BOARD_SIZE], int row, int col, direction 
  * to construct your recursion.
  *
  */
-bool cannotFitThisBlock(char board[BOARD_SIZE][BOARD_SIZE], int row, int col, int size){
+
+// bool cannotFitThisBlock(char board[BOARD_SIZE][BOARD_SIZE], int row, int col, int size){
+//   // this function checks if there is any way to place a block of size "size"
+//   // update coordinate
+//   int update_coor_index = BOARD_SIZE*row + col;
+//   row = update_coor_index/BOARD_SIZE;
+//   col = update_coor_index%BOARD_SIZE;
+//   cout<<"row = ["<<row<<"] col = ["<<col<<"]"<<endl;
+//   if(row < BOARD_SIZE && col < BOARD_SIZE){ // if coordinate is still inside the board
+//     if(board[row][col] == EMPTY){
+//       if(!find_local_place_recursion_part(board, row, col, size, DOWN) || !find_local_place_recursion_part(board, row, col, size, RIGHT)){
+//         cout<<"row = ["<<row<<"] col = ["<<col<<"] returned false"<<endl;
+//         return false;
+//       }
+//     }
+//     return cannotFitThisBlock(board, row, col + 1, size);
+//
+//   }
+//   // cout<<"every element ran, no result, returned true"<<endl;
+//   return true;
+// }
+bool cannotFitThisBlock (char board[BOARD_SIZE][BOARD_SIZE], int row, int col, int size) {
+  // TODO finished
   // this function checks if there is any way to place a block of size "size"
   // update coordinate
   int update_coor_index = BOARD_SIZE*row + col;
   row = update_coor_index/BOARD_SIZE;
   col = update_coor_index%BOARD_SIZE;
-  cout<<"row = ["<<row<<"] col = ["<<col<<"]"<<endl;
-  if(row < BOARD_SIZE && col < BOARD_SIZE){ // if coordinate is still inside the board
+
+  if(update_coor_index < BOARD_SIZE*BOARD_SIZE){ // if coordinate is still inside the board
     if(board[row][col] == EMPTY){
-      if(!find_local_place_recursion_part(board, row, col, size, DOWN) || !find_local_place_recursion_part(board, row, col, size, RIGHT)){
-        cout<<"row = ["<<row<<"] col = ["<<col<<"] returned false"<<endl;
+      if(!find_local_place_recursion_part(board, row, col, size, DOWN) || !find_local_place_recursion_part(board, row, col, size, RIGHT)){ // check the local element if there is space to put the block
         return false;
       }
     }
-    return cannotFitThisBlock(board, row, col + 1, size);
-
+    return cannotFitThisBlock(board, row, col + 1, size); // if no place for this local element, then check the next element
   }
-  // cout<<"every element ran, no result, returned true"<<endl;
   return true;
 }
 
@@ -618,7 +637,7 @@ int main(){
     board[3][0] = OCCUPIED;
     board[3][1] = OCCUPIED;
     board[3][2] = OCCUPIED;
-    cout<<boolalpha<<placeBlock(board, 2, 3, RIGHT, 2)<<endl;
+    cout<<boolalpha<<cannotFitThisBlock(board, 0, 0, 3)<<endl;
     printBoard(board);
     cout<<"row = "<<row<<", col = "<<col<<", direction = "<<d<<endl;
     cout<<boolalpha<<getSmallestBlock(blocks, BOARD_SIZE)<<endl;
