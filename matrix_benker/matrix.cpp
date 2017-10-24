@@ -5,16 +5,16 @@
 //default constructor
 matrix::matrix(){
 	arr = NULL;
-	r-size = -1;
-	c-size = -1;
+	r_size = -1;
+	c_size = -1;
 	determinant = -1;
 }
 
 //constructor with parameters
 matrix::matrix(int **p, int row, int col){
 	arr = p;
-	r-size = row;
-	c-size = col;
+	r_size = row;
+	c_size = col;
 	determinant = -1;
 }
 
@@ -30,8 +30,8 @@ bool matrix::setMatrix(int **p, int row, int col){
 		return false;
 	}
 	arr = p;
-	r-size = row;
-	c-size = col;
+	r_size = row;
+	c_size = col;
 	return true;
 }
 

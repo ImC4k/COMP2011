@@ -6,8 +6,8 @@ class matrix{
 
 	private:
 		int **arr;	//This store the value of matrix in integer type only
-		int r-size;	//This store the size of matrix (row)
-		int c-size;	//This store the size of matrix (col)
+		int r_size;	//This store the size of matrix (row)
+		int c_size;	//This store the size of matrix (col)
 		int determinant; //This store the determinant of the matrix, determinant should be -1 indicate not initialized
 	public:
 		matrix();							//This is the default constructor of matrix object (nothing)
