@@ -7,11 +7,11 @@ using namespace std;
 const int SIZE;
 
 int get_matrix_size();
-void print_matrix(int[][SIZE]);
-void row_scaling(int[][SIZE], const int, const int);
-void row_interchange(int[][SIZE], const int, const int);
-void row_replacement(int[][SIZE], const int, const int, const int);
-double determinent(int[][SIZE]);
+void print_matrix(double[][SIZE]);
+void row_scaling(double[][SIZE], const int, const double);
+void row_interchange(double[][SIZE], const int, const int);
+void row_replacement(double[][SIZE], const int, const int, const double);
+double determinent(double[][SIZE]);
 
 
 int get_matrix_size(int &input_size){
@@ -27,7 +27,7 @@ int get_matrix_size(int &input_size){
   return input_size;
 }
 
-void print_matrix(int matrix[][SIZE]){
+void print_matrix(double matrix[][SIZE]){
   for(int i = 0; i < SIZE; i++){
     for(int j = 0; j < SIZE; j++){
       cout<<matrix[i][j];
@@ -41,13 +41,13 @@ void print_matrix(int matrix[][SIZE]){
 
 
 
-void row_scaling(int matrix[][SIZE], const int num_row, const int scaler){
+void row_scaling(double matrix[][SIZE], const int num_row, const double scaler){
   for(int i = 0; i < SIZE; i++){
     matrix[num_row - 1][i] *= scaler;
   }
 }
 
-void row_interchange(int matrix[][SIZE], const int num_row_1, const int num_row_2){
+void row_interchange(double matrix[][SIZE], const int num_row_1, const int num_row_2){
   for(int i = 0; i < SIZE; i++){
     int temp = matrix[num_row_1 - 1][i];
     matrix[num_row_1 - 1][i] = matrix[num_row_2 - 1][i];
@@ -55,28 +55,51 @@ void row_interchange(int matrix[][SIZE], const int num_row_1, const int num_row_
   }
 }
 
-void row_replacement(int matrix[][SIZE], const int target_row, const int add_row, const int scaler){
+void row_replacement(double matrix[][SIZE], const int target_row, const int add_row, const double scaler){
   for(int i = 0; i < SIZE; i++){
     matrix[target_row - 1][i] += matrix[add_row - 1][i]*scaler;
   }
 }
 
-double determinent(int matrix[][SIZE]){
-  int determinent = 0;
-  for(int i = 0; i < 3; i++){
-    int diagonal_product_p = 1;
-    for(int j = 0; j < 3; j++){
-      diagonal_product_p *= matrix[(i+j)%SIZE][j];
-    }
-    determinent += diagonal_product_p;
+double matrix_determinent(double matrix[][SIZE], int size, sign& s, double& scaler){
+  cout<<"function is run, size is "<<size<<endl;
+  print_matrix(matrix, size);
+  if(size == 2){
+    return (matrix[0][0]*matrix[1][1]-matrix[1][0]*matrix[0][1])*scaler*((s == POSITIVE)? 1 : -1);
   }
-  for(int i = 0; i < 3; i++){
-    int diagonal_product_n = 1;
-    for(int j = 0; j < 3; j++){
-      diagonal_product_n *= matrix[(i-j+2)%SIZE][j];
+  else{
+    if(matrix[size - 1][size - 1] != 0){
+      cout<<"row_scaling required"<<endl;
+      scaler *=matrix[size - 1][size - 1];
+      row_scaling(matrix, size - 1, 1.0/matrix[size - 1][size - 1]);
+      print_matrix(matrix, size);
     }
-    determinent -= diagonal_product_n;
+    else{
+      cout<<"row_interchange required"<<endl;
+      int i = 0;
+      for(; i < size - 1; i++){
+        if(matrix[i][size - 1] != 0){
+          break;
+        }
+      }
+      row_interchange(matrix, i, size - 1);
+      (s == POSITIVE)? s = NEGATIVE : s = POSITIVE; // change sign after row_interchange
+      cout<<"sign is "<<s<<endl;
+      print_matrix(matrix, size);
+      if(matrix[size - 1][size - 1] != 1){
+        cout<<"row_scaling required"<<endl;
+        scaler *=matrix[size - 1][size - 1];
+        row_scaling(matrix, size - 1, static_cast<double>(1.0/matrix[size - 1][size - 1]));
+        print_matrix(matrix, size);
+      }
+    }
+    cout<<"row_replacement commencing"<<endl;
+    for(int j = 0; j < size - 1; j++){
+      if(matrix[j][size - 1] != 0){
+        row_replacement(matrix, j, size - 1, -1.0*matrix[j][size - 1]);
+      }
+    }
+    print_matrix(matrix, size);
+    return matrix_determinent(matrix, size - 1, s, scaler);
   }
-
-  return determinent;
 }
