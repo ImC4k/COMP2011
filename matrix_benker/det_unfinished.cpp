@@ -44,7 +44,6 @@ void printMatrix(int arr[][size]){
 	cout << "============================================================" << endl;
 }
 
-
 void initPointer(int ***p, int s){
 	*p = new int*[s];
 	for(int i=0; i<s; i++){
