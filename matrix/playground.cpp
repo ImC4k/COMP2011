@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -6,6 +7,44 @@ int SIZE = 0;
 
 enum sign{NEGATIVE = -1, POSITIVE = 1};
 
+void init_Dynamic_Matrix(double ***matrix, bool I=false){
+	if(!I){
+		cout << "Input the size of array:";
+		cin >> SIZE;
+	}
+	*matrix = new double*[SIZE];
+	for(int i=0; i<SIZE; i++){
+		matrix[0][i] = new double[SIZE];
+	}
+	if(!I)
+		cout << "Now input the value of the matrix cell..." << endl;
+	for(int i=0; i<SIZE; i++){
+		for(int j=0; j<SIZE; j++){
+			if(!I){
+				cout << "Input value of (" << i << "," << j << "): ";
+				cin >> matrix[0][i][j];
+			}else{
+				if(i==j){
+					matrix[0][i][j]=1;
+				}else{
+					matrix[0][i][j]=0;
+				}
+			}
+		}
+	}
+}
+
+void clearMem(double ***matrix){
+	if(matrix[0]==NULL){
+		return;
+	}
+	for(int i=0; i<SIZE; i++){
+		delete []matrix[0][i];
+	}
+	delete matrix[0];
+	matrix[0] = NULL;
+	return;
+}
 
 
 void print_matrix(double **matrix, int size){
@@ -13,7 +52,7 @@ void print_matrix(double **matrix, int size){
     for(int j = 0; j < size; j++){
       cout<<matrix[i][j];
       if(j != size - 1){
-        cout<<' ';
+        cout<<'\t';
       }
     }
     cout<<endl;
@@ -90,45 +129,65 @@ void gen_matrix(double **matrix){
   }
 }
 
-void init_Dynamic_Matrix(double ***matrix){
-	cout << "Input the size of array:";
-	cin >> SIZE;
-	*matrix = new double*[SIZE];
-	for(int i=0; i<SIZE; i++){
-		matrix[0][i] = new double[SIZE];
-	}
-	cout << "Now input the value of the matrix cell..." << endl;
-	for(int i=0; i<SIZE; i++){
-		for(int j=0; j<SIZE; j++){
-			cout << "Input value of (" << i << "," << j << "): ";
-			cin >> matrix[0][i][j];
-		}
-	}
+void copy_matrix(double **matrix_scr, double **matrix_des){
+  for(int i = 0; i < SIZE; i++){
+    for(int j = 0; j < SIZE; j++){
+      matrix_des[i][j] = matrix_scr[i][j];
+    }
+  }
 }
 
-void clearMem(double ***matrix){
-	if(matrix[0]==NULL){
-		return;
-	}
-	for(int i=0; i<SIZE; i++){
-		delete []matrix[0][i];
-	}
-	delete matrix[0];
-	matrix[0] = NULL;
+void get_inverse(double **matrix_a, double **matrix_b){
+  double **matrixForDeterminant = NULL;
+  init_Dynamic_Matrix(&matrixForDeterminant, true);
+  copy_matrix(matrix_a, matrixForDeterminant);
+  sign s = POSITIVE;
+  double scaler = 1;
+  double determinant = matrix_determinent(matrixForDeterminant, SIZE, s, scaler);
+  if( determinant == 0){
+    cout<<"There is a singular matrix"<<endl;
 	return;
+  }
+  cout<<endl<<"Determinant of matrix is "<<determinant<<endl<<endl;
+  for(int j = 0; j < SIZE; j++){
+    if(matrix_a[j][j] == 0){
+      int i = j;
+      for(; i < SIZE; i++){
+        if(matrix_a[i][j] != 0){
+          break;
+        }
+      }
+      row_interchange(matrix_a, j, i);
+      row_interchange(matrix_b, j, i);
+    }
+    double scaler = 1/matrix_a[j][j];
+    if(scaler != 1){
+      row_scaling(matrix_a, j, scaler);
+      row_scaling(matrix_b, j, scaler);
+    }
+    for(int i = 0; i < SIZE; i++){ // row_replacement to create RREF
+      if(i == j || matrix_a[i][j] == 0) continue;
+      double scaler = -1.0*matrix_a[i][j];
+      row_replacement(matrix_a, i, j, scaler);
+      row_replacement(matrix_b, i, j, scaler);
+    }
+  }
+  	cout << "Inverse Matrix is:" << endl << endl;
+	print_matrix(matrix_b, SIZE);
+	clearMem(&matrixForDeterminant);
 }
 
 int main(){
 	
-	double **matrix = NULL;
-	init_Dynamic_Matrix(&matrix);
-
-  sign s = POSITIVE;
-  double scaler = 1;
-  double determinent = matrix_determinent(matrix, SIZE, s, scaler);
-  cout<<"determinent is "<<determinent<<endl;
-
-	clearMem(&matrix);
+	double **matrix_a = NULL;
+	double **matrix_b = NULL;
+	init_Dynamic_Matrix(&matrix_a);
+	init_Dynamic_Matrix(&matrix_b, true);
+	get_inverse(matrix_a, matrix_b);
+	
+	clearMem(&matrix_a);
+	clearMem(&matrix_b);
+	system("pause");
 
   return 0;
 }
