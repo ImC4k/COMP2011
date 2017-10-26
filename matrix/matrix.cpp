@@ -123,11 +123,6 @@ double matrix_determinent(double **matrix, int size, sign& s, double& scaler){
   }
 }
 
-void gen_matrix(double **matrix){
-  for(int i = 0; i < SIZE*SIZE; i++){
-    cout<<i+1<<", ";
-  }
-}
 
 void copy_matrix(double **matrix_scr, double **matrix_des){
   for(int i = 0; i < SIZE; i++){
@@ -192,7 +187,7 @@ void multiply_matrix(double matrix_a[SIZE][SIZE_2], double matrix_b[SIZE_2][SIZE
 */
 
 void getInputValue(double **matrix){
-	
+
 	cout << endl;
 	cout << "=================================" << endl;
 	cout << "Your input are:" << endl;
@@ -203,21 +198,21 @@ void getInputValue(double **matrix){
 	}
 	cout << endl << "=================================" << endl;
 	cout << endl << endl;
-	
+
 }
 
 
 
 int main(){
-	
+
 	double **matrix_a = NULL;
 	double **matrix_b = NULL;
-		
+
 	init_Dynamic_Matrix(&matrix_a);
 	getInputValue(matrix_a);
 	init_Dynamic_Matrix(&matrix_b, true);
 	get_inverse(matrix_a, matrix_b);
-	
+
 	clearMem(&matrix_a);
 	clearMem(&matrix_b);
 	system("pause");
