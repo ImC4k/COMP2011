@@ -2,9 +2,9 @@
 
 using namespace std;
 
-const int SIZE = 3;
-const int SIZE_2 = 3;
-const int SIZE_3 = 3;
+const int SIZE = 5;
+const int SIZE_2 = 5;
+const int SIZE_3 = 5;
 
 enum sign{NEGATIVE = -1, POSITIVE = 1};
 
@@ -111,6 +111,7 @@ void get_inverse(double matrix_a[SIZE][SIZE], double matrix_b[SIZE][SIZE]){
   double determinant = matrix_determinant(matrixForDeterminant, SIZE, s, scaler);
   if( determinant == 0){
     cout<<"There is a singular matrix"<<endl;
+    return;
   }
   // cout<<"Determinant of matrix is "<<determinant<<endl<<endl;
   for(int j = 0; j < SIZE; j++){
@@ -179,20 +180,24 @@ int main(){
 
   // double matrix[][SIZE] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
   // double matrix[][SIZE] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100};
-  double matrix_a[SIZE][SIZE_2] = {{8, 6, 3}, {4, 4, 4},{ 1, 2, 3}};
+  double matrix[][SIZE] = {1, 2, 0, 0, 0, 2, 1, 2, 0, 0, 0, 2, 1, 2, 0, 0, 0, 2, 1, 2, 0, 0, 0, 2, 1};
+  // double matrix_a[SIZE][SIZE_2] = {{8, 6, 3}, {4, 4, 4},{ 1, 2, 3}};
   double matrix_b[SIZE][SIZE] = {};
   double product_ab[SIZE][SIZE] = {};
   double matrixForInverse[SIZE][SIZE_2] = {};
-  copy_matrix(matrix_a, matrixForInverse);
-  set_identity(matrix_b);
-  set_identity(product_ab);
-  get_inverse(matrixForInverse, matrix_b);
+  sign s = POSITIVE;
+  double scaler = 1;
+  cout<<matrix_determinant(matrix, SIZE, s, scaler)<<endl;
+  // copy_matrix(matrix_a, matrixForInverse);
+  // set_identity(matrix_b);
+  // set_identity(product_ab);
+  // get_inverse(matrixForInverse, matrix_b);
   // print_matrix(matrix_a, SIZE);
   // cout<<"\n\n\n\n\n";
   // cout<<"inverse is "<<endl;
   // print_matrix(matrix_b);
 
-  multiply_matrix(matrix_a, matrix_b);
+  // multiply_matrix(matrix_a, matrix_b);
   // multiply_matrix(matrix_a, matrix_b, product_ab);
   //
   // cout<<"when matrix_a \n";
