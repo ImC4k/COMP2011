@@ -1,6 +1,1 @@
 *.out
-LeetCodeTest.cpp
-polymorphism_tutorial_c++.cpp
-test_referencing.cpp
-Car.h
-CarFunctions.cpp
