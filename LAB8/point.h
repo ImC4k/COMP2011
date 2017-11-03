@@ -9,6 +9,6 @@ struct Point{
 };
 
 // Function prototypes
-float euclidean_distance(const Point&, const Point&);
+float euclidean_distance(const Point &, const Point &);
 
 #endif /* LAB8_POINT_H_ */

@@ -8,6 +8,8 @@
 #include "cafe.h"
 
 
+
+
 float calc_avg_rating(const Cafe& c)
 {
 	// Calculate average rating
@@ -65,16 +67,76 @@ void recommend_based_on_rating(const Cafe cafes[], int cafe_num)
 void recommend_based_on_distance(const Cafe cafes[], const Point& my_location, int cafe_num, int N)
 {
 	// TODO 4: According to Part 5 in the lab description. Return the N nearest cafes (no need to sort).
-	int nearest_cafe_index = -1;
-	for(int i = 0; i < N; i++){
+
+	// int nearest_cafe_index = -1;
+	// float previous_shortest_distance = 0; // won't continue in first loop
+	// for(int i = 0; i < N; i++){
+	// 	for(int j = 0; j < cafe_num+1; j++){
+	// 		// cout<<"best index: "<<nearest_cafe_index<<endl;
+	// 		// cout<<"pending index: "<<j<<endl;
+	// 		float pending_distance = euclidean_distance(my_location, cafes[j].location);
+	// 		if(j == nearest_cafe_index || (i != 0 && pending_distance >= previous_shortest_distance)){
+	// 			continue;
+	// 		}
+	//
+	// 		// cout<<"pending_distance is "<<pending_distance<<endl;
+	// 		float closest_distance = euclidean_distance(my_location, cafes[nearest_cafe_index].location);
+	// 		// cout<<"closest_distance is "<<closest_distance<<endl;
+	// 		if(pending_distance - closest_distance < 0){
+	// 			nearest_cafe_index = j;
+	// 		}
+	// 	}
+	// 	previous_shortest_distance = euclidean_distance(my_location, cafes[nearest_cafe_index].location);
+	// 	print_cafe(cafes[nearest_cafe_index]);
+	// 	nearest_cafe_index = -1;
+	// }
+
+	// int previous_shortest_distance_cafe_index = 0;
+	// for(int i = 0; i < N; i++){
+	// 	float previous_shortest_distance = euclidean_distance(my_location, cafes[previous_shortest_distance_cafe_index].location);
+	// 	for(int j = 0; j < cafe_num; j++){
+	// 		float pending_distance = euclidean_distance(my_location, cafes[j].location);
+	// 		if(pending_distance <= previous_shortest_distance){
+	// 			continue;
+	// 		}
+	// 		float shortest_distance = euclidean_distance(my_location, cafes[shortest_distance_cafe_index].location);
+	// 		if(pending_distance - shortest_distance < 0){
+	// 			shortest_distance_cafe_index = j;
+	// 		}
+	// 	}
+	// 	print_cafe(cafes[shortest_distance_cafe_index]);
+	// 	previous_shortest_distance_cafe_index = shortest_distance_cafe_index;
+	// 	shortest_distance_cafe_index = 0;
+	// }
+
+	float distance_to_my_location[MAX_CAFE_NUM] = {}; // create array to store distance from my_location to each destination
+	for(int i = 0; i < cafe_num; i++){
+		float distance = euclidean_distance(my_location, cafes[i].location);
+		distance_to_my_location[i] = distance;
+		// cout<<i<<" hahahahahahahaha "<<distance<<endl;
+	}
+	float shortest_distance;
+
+	for(int i = 0,x=0; i < N; i++){ 									//TODO: find N shortest distance from "distance_to_my_location" array
+		int shortest_distance_cafe_index = 0;
 		for(int j = 0; j < cafe_num; j++){
-			if(j == nearest_cafe_index){
+			if(distance_to_my_location[j] == -1){ //if the index is printed already, then just skip this iteration
 				continue;
 			}
-			if(euclidean_distance(my_location, cafes[j].location) < euclidean_distance(my_location, cafes[nearest_cafe_index].location)){
-				nearest_cafe_index = j;
+			if(!x){
+				shortest_distance = distance_to_my_location[j];
+				x++;
+			}
+			if(distance_to_my_location[j] < shortest_distance){
+				shortest_distance = distance_to_my_location[j];
+				shortest_distance_cafe_index = j;
 			}
 		}
-		print_cafe(cafes[nearest_cafe_index]);
+		print_cafe(cafes[shortest_distance_cafe_index]);
+		distance_to_my_location[shortest_distance_cafe_index] = -1; // whenever the shortest_distance_cafe_index is printed, its corresponding distance saved in array "distance_to_my_location" is assigned -1
+		if(shortest_distance != distance_to_my_location[0]){
+			shortest_distance = distance_to_my_location[0];
+		}
+		else shortest_distance = distance_to_my_location[1];
 	}
 }

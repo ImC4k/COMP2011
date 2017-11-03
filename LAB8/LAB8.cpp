@@ -8,6 +8,7 @@
 #include "cafe.h"
 
 
+
 int main() {
 
 	// An array of Cafe which stores the information of all cafes.
@@ -41,7 +42,7 @@ int main() {
 		cout << "3. Change your location" << endl;
 		cout << "4. Recommend w.r.t rating" << endl;
 		cout << "5. Recommend w.r.t distance" << endl;
-		cout << "6. Recommend w.r.t {distance,rating}" << endl;
+		// cout << "6. Recommend w.r.t {distance,rating}" << endl;
 		cin >> choice;
 
 		while (choice < 0 || choice > 5) {
