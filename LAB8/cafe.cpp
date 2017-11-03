@@ -117,13 +117,14 @@ void recommend_based_on_distance(const Cafe cafes[], const Point& my_location, i
 	}
 	float shortest_distance;
 
-	for(int i = 0,x=0; i < N; i++){ 									//TODO: find N shortest distance from "distance_to_my_location" array
+	for(int i = 0; i < N; i++){ 									//TODO: find N shortest distance from "distance_to_my_location" array
 		int shortest_distance_cafe_index = 0;
-		for(int j = 0; j < cafe_num; j++){
+		for(int j = 0,x=0; j < cafe_num; j++){
 			if(distance_to_my_location[j] == -1){ //if the index is printed already, then just skip this iteration
 				continue;
 			}
 			if(!x){
+				shortest_distance_cafe_index = j;			/*	 Changed by Ben		*/
 				shortest_distance = distance_to_my_location[j];
 				x++;
 			}
@@ -134,9 +135,10 @@ void recommend_based_on_distance(const Cafe cafes[], const Point& my_location, i
 		}
 		print_cafe(cafes[shortest_distance_cafe_index]);
 		distance_to_my_location[shortest_distance_cafe_index] = -1; // whenever the shortest_distance_cafe_index is printed, its corresponding distance saved in array "distance_to_my_location" is assigned -1
-		if(shortest_distance != distance_to_my_location[0]){
-			shortest_distance = distance_to_my_location[0];
-		}
-		else shortest_distance = distance_to_my_location[1];
+		/*	Comment by Ben	*/
+		//if(shortest_distance != distance_to_my_location[0]){
+		//	shortest_distance = distance_to_my_location[0];
+		//}
+		//else shortest_distance = distance_to_my_location[1];
 	}
 }
