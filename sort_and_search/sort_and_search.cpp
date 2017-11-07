@@ -19,6 +19,10 @@ bool binary_search(double* arr, int size, double search_num){
   int search_index = size/2;
   int up_bound_index = size;
   int low_bound_index = 0;
+  if(search_num == arr[0] || search_num == arr[size - 1]){
+    cout<<"number exists!"<<endl;
+    return true;
+  }
   while(true){
     if(search_index == up_bound_index || search_index == low_bound_index){
       cout<<"no such number"<<endl;
