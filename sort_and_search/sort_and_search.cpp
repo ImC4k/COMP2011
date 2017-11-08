@@ -45,6 +45,17 @@ bool binary_search(double* arr, int size, double search_num){
   }
 }
 
+bool linear_search(double* arr, int size, double search_num){
+	for(int i = 0; i < size; i++){
+		if(arr[i] == search_num){
+			cout<<"number exists!"<<endl;
+			return true;
+		}
+	}
+	cout<<"no such number!"<<endl;
+	return false;
+}
+
 void print_array(double* arr, int size){
   for(int i = 0; i < size; i++){
     cout<<arr[i]<<endl;
