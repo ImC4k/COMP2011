@@ -10,8 +10,6 @@ const int MAX_NAME_LENGTH = 10;
 const int MAX_CAFE_NUM = 10;
 const int MAX_RATINGS_NUM = 10;
 
-int* cafe_num;
-
 
 // TODO 1: Add the necessary Cafe struct here
 // DONE

@@ -60,14 +60,18 @@ void load_rating(Cafe cafes[], int cafe_num, User users[], int num_users, string
 // add a Cafe object to the Cafe array, cafes.
 void add_cafe(Cafe cafes[], int* cafe_num, const char cafe_name[],  const Point* location)
 {
+	cout<<*cafe_num<<endl;
 	//TODO 2 Add Your Code Here
-	Cafe* new_cafe = new Cafe;
-	strcpy(new_cafe->name, cafe_name);
-	new_cafe->location = *location;
-	new_cafe->num_of_ratings = 0;
+	if(*cafe_num >= MAX_CAFE_NUM){
+		cout<<"Too many cafe"<<endl;
+		return;
+	}
+	Cafe new_cafe;
+	strcpy(new_cafe.name, cafe_name);
+	new_cafe.location = *location;
+	new_cafe.num_of_ratings = 0;
+	cafes[*cafe_num] = new_cafe;
 	(*cafe_num)++;
-	delete new_cafe;
-	new_cafe = nullptr;
 }
 
 // Add a Rating object to the Cafe c.
@@ -75,6 +79,10 @@ void add_cafe(Cafe cafes[], int* cafe_num, const char cafe_name[],  const Point*
 void add_rating(Cafe *c, User *user, float rating)
 {
 	//TODO 2 Add Your Code Here
+	if(c->num_of_ratings >= MAX_RATINGS_NUM){
+		cout<<"Too many ratings"<<endl;
+		return;
+	}
 	Rating new_rating; // Create a new Rating structure
 	new_rating.user_ptr = user; // assign user_ptr
 	new_rating.rating = rating; // assign corresponding rating
@@ -95,11 +103,11 @@ void print_cafe(const Cafe* c)
 void print_cafe_rating_by_user(const Cafe* c)
 {
 	//TODO 2 Add Your Code Here
-	cout << "< " << c->name << ", Coordinates: (" << c->location.x << "," << c->location.y <<")"<<endl;
+	cout << c->name << ", Coordinates: (" << c->location.x << "," << c->location.y <<")"<<endl;
 	for(int i = 0; i < c->num_of_ratings; i++){
 		cout<<c->ratings[i].user_ptr->name<<" Rating: "<<c->ratings[i].rating<<endl;
 	}
-	cout<<"AVG_rating: "<<calc_avg_rating(c)<<endl;
+	cout<<"AVG_rating: "<<calc_avg_rating(c)<<endl<<endl;
 
 }
 
@@ -107,4 +115,31 @@ void print_cafe_rating_by_user(const Cafe* c)
 void recommend_best_options(const Cafe cafes[], const Point* my_location, int cafe_num)
 {
 	//TODO 2 Add Your Code Here
+	float cafe_distances[MAX_CAFE_NUM] = {}; // for comparing distance
+	for(int i = 0; i < cafe_num; i++){ // create distance array
+		cafe_distances[i] = euclidean_distance(*my_location, cafes[i].location);
+	}
+	float shortest_distance = cafe_distances[0];
+	for(int i = 1; i < cafe_num; i++){
+		if(cafe_distances[i] < shortest_distance){
+			shortest_distance = cafe_distances[i];
+		}
+	}
+
+	float cafe_ratings[MAX_CAFE_NUM] = {};
+	for(int i = 0; i < cafe_num; i++){
+		cafe_ratings[i] = calc_avg_rating(&cafes[i]);
+	}
+	float highest_rating = cafe_ratings[0];
+	for(int i = 0; i < cafe_num; i++){
+		if(cafe_ratings[i] > highest_rating){
+			highest_rating = cafe_ratings[i];
+		}
+	}
+	// cout<<"shortest distance: "<<shortest_distance<<endl<<"highest rating: "<<highest_rating<<endl;
+	for(int i = 0; i < cafe_num; i++){
+		if(cafe_distances[i] == shortest_distance || cafe_ratings[i] == highest_rating){
+			print_cafe(&cafes[i]);
+		}
+	}
 }
