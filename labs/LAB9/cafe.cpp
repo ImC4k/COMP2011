@@ -142,4 +142,55 @@ void recommend_best_options(const Cafe cafes[], const Point* my_location, int ca
 			print_cafe(&cafes[i]);
 		}
 	}
+	
+	
+	/*
+		if (cafe_num == 0)
+		return;
+	else if (cafe_num == 1) {
+		print_cafe(&cafes[0]);
+		return;
+	}
+
+	
+	//		use an array to save the cafe index which it is both 2 condition are not as good 
+	//		as some other cafe.
+
+	//		when printing, skip those cafe in the index array
+
+
+	int *index = new int[cafe_num];
+	int cafeIgnore = 0;
+
+	for (int i = 0; i < cafe_num; i++) {
+		index[i] = -1;
+	}
+
+	for (int i = 0; i < cafe_num; i++) {
+
+		for (int j = 0; j < cafe_num; j++) {
+			if (i == j)
+				continue;
+			if (calc_avg_rating(&cafes[i]) < calc_avg_rating(&cafes[j]) &&
+				euclidean_distance(cafes[i].location, *my_location) > euclidean_distance(cafes[j].location, *my_location)) {
+			
+				index[cafeIgnore] = i;
+				cafeIgnore++;
+				break;
+			}
+		}
+
+	}
+
+	for (int i = 0, count = 0; i < cafe_num; i++) {
+		if (i == index[count]) {
+			count++;
+			continue;
+		}
+		print_cafe(&cafes[i]);
+	}
+
+	delete[]index;
+	return;
+	*/
 }
