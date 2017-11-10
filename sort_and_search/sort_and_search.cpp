@@ -16,6 +16,10 @@ void bubble_sort(double* arr, int size){
 }
 
 bool binary_search(double* arr, int size, double search_num){
+  if(size == 0){
+    cout<<"There is no number in this array!"<<endl;
+    return false;
+  }
   int search_index = size/2;
   int up_bound_index = size;
   int low_bound_index = 0;

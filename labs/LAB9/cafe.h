@@ -1,0 +1,52 @@
+#ifndef CAFE_H_
+#define CAFE_H_
+
+// TODO 6: Include appropriate header
+#include "user.h"
+
+
+// TODO 4: Add and Definie all the appropriate global variables here
+const int MAX_NAME_LENGTH = 10;
+const int MAX_CAFE_NUM = 10;
+const int MAX_RATINGS_NUM = 10;
+
+int* cafe_num;
+
+
+// TODO 1: Add the necessary Cafe struct here
+// DONE
+struct Rating{
+	User *user_ptr;
+	float rating;
+};
+
+struct Cafe{
+	char name[MAX_NAME_LENGTH+1];
+	Point location;
+	Rating ratings[MAX_RATINGS_NUM];	//use the struct Rating instead of float
+	int num_of_ratings;
+};
+
+
+
+
+
+// TODO 5: Add the appropriate function declarations here.
+float calc_avg_rating(const Cafe*);  // given
+void load_cafe(Cafe[], int*, string);  // given
+void load_rating(Cafe[], int, User[], int, string);  // given
+
+void add_cafe(Cafe[], int*, const char[], const Point*);
+void add_rating(Cafe*, User*, float);
+void print_cafe(const Cafe*);
+void print_cafe_rating_by_user(const Cafe*);
+void recommend_best_options(const Cafe[], const Point*, int);
+
+
+
+
+
+
+
+
+#endif /* CAFE_H_ */

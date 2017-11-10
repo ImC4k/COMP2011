@@ -22,16 +22,12 @@ struct Student_Record{
 
 
 int main(){
-  Student_Record rec = {"Calvin", 20429422, male, CSE, {2017, 10, 30}};
+  Date* new_date = new Date;
+  new_date -> year = 4444;
+  new_date -> month = 12;
+  new_date -> day = 31;
+  cout<<new_date->year<<endl<<new_date->month<<endl<<new_date->day<<endl<<endl;
+  delete new_date;
+  new_date = NULL;
   return 0;
-}
-
-int& pre_increment(int & x){
-  x+=1;
-  return x;
-}
-
-int post_increment(int & x){
-  x+=1;
-  return x-1;
 }
