@@ -1,7 +1,7 @@
 #include "minesweeper.h"
 
 
-minesweeper::minesweeper(void){
+minesweeper::minesweeper(){
   continue_game = true;
   int width, height, num_bomb;
   cout<<"Input board dimension (width, height): "<<endl;
@@ -20,6 +20,9 @@ minesweeper::minesweeper(void){
       information_board[i][j] = BLANK;
     }
   }
+  place_bomb();
+  place_numbers();
+
   this->hider_board = new char*[height]; // create a 2d pointer array to store hider board
   for(int i = 0; i < height; i++){
     hider_board[i] = new char[width];
@@ -29,7 +32,7 @@ minesweeper::minesweeper(void){
   }
 }
 
-minesweeper::~minesweeper(void){
+minesweeper::~minesweeper(){
   delete this->information_board;
   this->information_board = nullptr;
 }
@@ -75,4 +78,50 @@ void minesweeper::place_bomb(){
       bomb_count--;
     }
   }
+}
+
+void minesweeper::place_numbers(){
+  for(int i = 0; i < this->board_height; i++){
+    for(int j = 0; j < this->board_width; j++){
+      if(information_board[i][j] == BOMB) continue;
+      int neighbour_bomb_count = 0;
+      for(int si = i-1; si <= i+1; si++){
+        if(si < 0 || si >= this->board_height) continue;
+        for(int sj = j-1; sj <= j+1; sj++){
+          if(sj < 0 || sj >= this->board_width) continue;
+          if(information_board[si][sj] == BOMB){
+            neighbour_bomb_count++;
+          }
+        }
+      }
+      switch(neighbour_bomb_count){
+        case 1: information_board[i][j] = '1'; break;
+        case 2: information_board[i][j] = '2'; break;
+        case 3: information_board[i][j] = '3'; break;
+        case 4: information_board[i][j] = '4'; break;
+        case 5: information_board[i][j] = '5'; break;
+        case 6: information_board[i][j] = '6'; break;
+        case 7: information_board[i][j] = '7'; break;
+        case 8: information_board[i][j] = '8'; break;
+        default: information_board[i][j] = BLANK;
+      }
+    }
+  }
+}
+
+void minesweeper::flag_position(int x, int y){
+  if(hider_board[y][x] == FLAG){
+    hider_board[y][x] = HIDDEN;
+  }
+  else if(hider_board[y][x] != HIDDEN){
+    return;
+  }
+  else hider_board[y][x] = FLAG;
+}
+
+void minesweeper::detonate_position(int x, int y){
+  if(hider_board[y][x] == FLAG || hider_board[y][x] != HIDDEN){ // wont detonate any flagged positions, nor positions that were detonated
+    return;
+  }
+  
 }
