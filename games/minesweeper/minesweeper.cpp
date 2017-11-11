@@ -2,7 +2,7 @@
 
 
 minesweeper::minesweeper(){
-  continue_game = true;
+  this->continue_game = true;
   int width, height, num_bomb;
   cout<<"Input board dimension (width, height): "<<endl;
   cin>>width>>height;
@@ -20,8 +20,6 @@ minesweeper::minesweeper(){
       information_board[i][j] = BLANK;
     }
   }
-  place_bomb();
-  place_numbers();
 
   this->hider_board = new char*[height]; // create a 2d pointer array to store hider board
   for(int i = 0; i < height; i++){
@@ -30,6 +28,11 @@ minesweeper::minesweeper(){
       hider_board[i][j] = HIDDEN;
     }
   }
+
+  cout<<"Please wait for the board to generate"<<endl;
+  place_bomb();
+  place_numbers();
+  cout<<"Done!"<<endl;
 }
 
 minesweeper::~minesweeper(){
@@ -109,19 +112,95 @@ void minesweeper::place_numbers(){
   }
 }
 
-void minesweeper::flag_position(int x, int y){
-  if(hider_board[y][x] == FLAG){
-    hider_board[y][x] = HIDDEN;
+void minesweeper::flag_position(int row, int col){
+  if(hider_board[row][col] == FLAG){
+    hider_board[row][col] = HIDDEN;
   }
-  else if(hider_board[y][x] != HIDDEN){
+  else if(hider_board[row][col] != HIDDEN){
     return;
   }
-  else hider_board[y][x] = FLAG;
+  else hider_board[row][col] = FLAG;
 }
 
-void minesweeper::detonate_position(int x, int y){
-  if(hider_board[y][x] == FLAG || hider_board[y][x] != HIDDEN){ // wont detonate any flagged positions, nor positions that were detonated
+void minesweeper::copy_position(int row, int col){
+  hider_board[row][col] = information_board[row][col];
+}
+
+void minesweeper::recursion_for_det_blank(int row, int col){ // TODO: segmentation fault 11
+  copy_position(row, col);
+  for(int i = row-1; i <= row+1; i++){
+    if(i < 0 || i >= this->board_height) continue;
+    for(int j = col-1; j <= col+1; j++){
+      if(j < 0 || j >= this->board_width) continue;
+      if(information_board[i][j] == BLANK){
+        recursion_for_det_blank(i, j);
+      }
+      // else if(information_board[i][j] == '1' || information_board[i][j] == '2' || information_board[i][j] == '3' || information_board[i][j] == '4' ||
+      //  information_board[i][j] == '5' || information_board[i][j] == '6' || information_board[i][j] == '7' || information_board[i][j] == '8'){
+      //    copy_position(i,j);
+      //    return;
+      //  }
+      switch(information_board[i][j]){
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8': copy_position(i, j);
+        default: return;
+      }
+    }
+  }
+}
+
+void minesweeper::detonate_position(int row, int col){
+  if(hider_board[row][col] == FLAG || hider_board[row][col] != HIDDEN){ // wont detonate any flagged positions, nor positions that were detonated
     return;
   }
-  
+  if(information_board[row][col] == BOMB){ // expose entire board, if bomb is flagged, keep the flag, if flagged wrong, turn to O; is_gameover set to true
+    for(int i = 0; i < this->board_height; i++){
+      for(int j = 0; j < this->board_width; j++){
+        if(hider_board[i][j] == FLAG && information_board[i][j] == BOMB){
+          continue;
+        }
+        else if(hider_board[i][j] == FLAG && information_board[i][j] != BOMB){
+          hider_board[i][j] = 'O';
+        }
+        else copy_position(i,j);
+      }
+    }
+    print_hider_board();
+    cout<<"YOU'VE LOST"<<endl;
+    this->continue_game = false;
+    return;
+  }
+  else if(information_board[row][col] == BLANK){ // keep print neighbour until a number is hit or there is a bomb
+    recursion_for_det_blank(row, col);
+  }
+  else if(information_board[row][col] == '1' || information_board[row][col] == '2' || information_board[row][col] == '3' || information_board[row][col] == '4' ||
+   information_board[row][col] == '5' || information_board[row][col] == '6' || information_board[row][col] == '7' || information_board[row][col] == '8'){
+     copy_position(row,col);
+     return;
+   }
+}
+
+bool minesweeper::is_finished_game(){
+  // TODO
+  for(int i = 0; i < this->board_height; i++){
+    for(int j = 0; j < this->board_width; j++){
+      if(information_board[i][j] == BOMB){
+        continue;
+      }
+      if(information_board[i][j] != hider_board[i][j]){
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+bool minesweeper::is_gameover(){
+  return !this->continue_game;
 }
