@@ -120,25 +120,62 @@ void recommend_best_options(const Cafe cafes[], const Point* my_location, int ca
 		cafe_distances[i] = euclidean_distance(*my_location, cafes[i].location);
 	}
 	float shortest_distance = cafe_distances[0];
+	int shortest_distance_index = 0; // second attempt
 	for(int i = 1; i < cafe_num; i++){
 		if(cafe_distances[i] < shortest_distance){
 			shortest_distance = cafe_distances[i];
+			shortest_distance_index = i; // second attempt
 		}
 	}
-
+	cout<<"---------------debug---------------"<<endl;
 	float cafe_ratings[MAX_CAFE_NUM] = {};
 	for(int i = 0; i < cafe_num; i++){
 		cafe_ratings[i] = calc_avg_rating(&cafes[i]);
+		cout<<cafes[i].name<<"\t"<<cafe_distances[i]<<"\t"<<cafe_ratings[i]<<endl;
 	}
 	float highest_rating = cafe_ratings[0];
-	for(int i = 0; i < cafe_num; i++){
+	int highest_rating_index = 0;
+	for(int i = 1; i < cafe_num; i++){
 		if(cafe_ratings[i] > highest_rating){
 			highest_rating = cafe_ratings[i];
+			highest_rating_index = i;
 		}
 	}
-	// cout<<"shortest distance: "<<shortest_distance<<endl<<"highest rating: "<<highest_rating<<endl;
+	cout<<"\nshortest distance (corresponding rating): "<<shortest_distance<< " ("<<cafe_ratings[shortest_distance_index]<<") "<<endl<<"highest rating: "<<highest_rating<<endl;
+	cout<<"---------------debug---------------"<<endl;
+
+	bool will_print_cafes[MAX_CAFE_NUM] = {};
+	for(int i = 0; i < MAX_CAFE_NUM; i++){
+		will_print_cafes[i] = true;
+	}
+	// will_print_cafes[shortest_distance_index] = true;
+	// will_print_cafes[highest_rating_index] = true;
+	// for(int i = 0; i < cafe_num; i++){
+	// 	if(cafe_distances[i] == shortest_distance || cafe_ratings[i] == highest_rating){ // must print shortest_distance and highest rating
+	// 		print_cafe(&cafes[i]);
+	// 		will_print_cafes[i] = true;
+	// 	}
+	// 	// else{
+	// 	// 	if(cafe_ratings[i] > cafe_ratings[shortest_distance_index] || cafe_distances[i] < cafe_distances[highest_rating_index]){
+	// 	// 		print_cafe(&cafes[i]);
+	// 	// 	}
+	// 	// }
+	// 	// if(cafe_distances[i] == shortest_distance || cafe_ratings[i] >= cafe_ratings[shortest_distance_index]){ // second attempt
+	// 	// 	print_cafe(&cafes[i]);
+	// 	// }
+	// }
 	for(int i = 0; i < cafe_num; i++){
-		if(cafe_distances[i] == shortest_distance || cafe_ratings[i] == highest_rating){
+		for(int j = 0; j < cafe_num; j++){
+			// if(j == shortest_distance_index || j == highest_rating_index) continue;
+			if(will_print_cafes[j] == false) continue;
+			if(cafe_distances[i] > cafe_distances[j] && cafe_ratings[i] < cafe_ratings[j]){
+				will_print_cafes[i] = false;
+				break;
+			}
+		}
+	}
+	for(int i = 0; i < cafe_num; i++){
+		if(will_print_cafes[i]){
 			print_cafe(&cafes[i]);
 		}
 	}
