@@ -20,6 +20,7 @@ private:
 public:
   minesweeper(void);                          // done
   ~minesweeper(void);                         // done
+  void get_dimension(int &a, int &b);
   void print_hider_board();                   // done
   void print_information_board();             // done
   void fill_board(const char);                // done NOTE: seems useless

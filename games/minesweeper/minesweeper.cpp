@@ -6,8 +6,8 @@ minesweeper::minesweeper(){
   int width, height, num_bomb;
   cout<<"Input board dimension (width, height): "<<endl;
   cin>>width>>height;
-  this->board_width = width;
-  this->board_height = height;
+  this->board_width = static_cast<int>(width);
+  this->board_height = static_cast<int>(height);
 
   cout<<"Input bombs you want to place: "<<endl;
   cin>>num_bomb;
@@ -38,6 +38,11 @@ minesweeper::minesweeper(){
 minesweeper::~minesweeper(){
   delete this->information_board;
   this->information_board = nullptr;
+}
+
+void minesweeper::get_dimension(int &height, int &width){
+  height = this->board_height;
+  width = this->board_width;
 }
 
 void minesweeper::print_hider_board(){
