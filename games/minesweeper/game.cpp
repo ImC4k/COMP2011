@@ -19,7 +19,7 @@ int main(){
       case 'f': new_game->flag_position(row, col); break;
       case 'd': new_game->detonate_position(row, col);
     }
-    if(new_game->is_finished_game()){
+    if(new_game->is_finished_game() && !new_game->is_gameover()){
       cout<<"YOU WON!"<<endl;
       break;
     }

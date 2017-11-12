@@ -27,9 +27,9 @@ public:
   void place_numbers();                       // done
   void flag_position(int, int);               // done
   void copy_position(int, int);               // done NOTE: use: copy the char from information_board to hider_board
-  void recursion_for_det_blank(int, int);     // TODO: segmentation fault 11 NOTE: use: recursively find neighbour blank space to print
+  void recursion_for_det_blank(int, int);     // done NOTE: use: recursively find neighbour blank space to print
   void detonate_position(int, int);           // done
-  bool is_finished_game();                    // TODO: check if every position except bombs are exposed
+  bool is_finished_game();                    // done NOTE: check if every position except bombs are exposed
   bool is_gameover();                         // done
 
 };
