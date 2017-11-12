@@ -41,24 +41,30 @@ minesweeper::~minesweeper(){
 }
 
 void minesweeper::print_hider_board(){
+  cout<<"\t\t"; for(int i = 0; i < this->board_width; i++){ cout<<i; if(i != this->board_width) cout<<"\t";} cout<<endl;
+  cout<<"\t\t"; for(int i = 0; i < this->board_width; i++){ cout<<"-\t";}cout<<endl;
   for(int i = 0; i < this->board_height; i++){
+    cout<<i<<"\t|\t";
     for(int j = 0; j < this->board_width; j++){
       cout<<hider_board[i][j]<<"\t";
     }
-    cout<<endl;
+    cout<<endl<<endl;
   }
 }
 
 void minesweeper::print_information_board(){
+  cout<<"\t\t"; for(int i = 0; i < this->board_width; i++){ cout<<i; if(i != this->board_width) cout<<"\t";} cout<<endl;
+  cout<<"\t\t"; for(int i = 0; i < this->board_width; i++){ cout<<"-\t";}cout<<endl;
   for(int i = 0; i < this->board_height; i++){
+    cout<<i<<"\t|\t";
     for(int j = 0; j < this->board_width; j++){
       cout<<information_board[i][j]<<"\t";
     }
-    cout<<endl;
+    cout<<endl<<endl;
   }
 }
 
-void minesweeper::fill_board(char filling){
+void minesweeper::fill_board(char filling){ // seems useless
   for(int i = 0; i < this->board_height; i++){
     for(int j = 0; j < this->board_width; j++){
       information_board[i][j] = filling;
@@ -126,31 +132,37 @@ void minesweeper::copy_position(int row, int col){
   hider_board[row][col] = information_board[row][col];
 }
 
-void minesweeper::recursion_for_det_blank(int row, int col){ // TODO: segmentation fault 11
+void minesweeper::recursion_for_det_blank(int row, int col){ // TODO: segmentation fault 11, need to handle flagged case
   copy_position(row, col);
+  print_hider_board();
   for(int i = row-1; i <= row+1; i++){
-    if(i < 0 || i >= this->board_height) continue;
+    if(i < 0 || i >= this->board_height) continue; // if out of bound, then skip the search
     for(int j = col-1; j <= col+1; j++){
-      if(j < 0 || j >= this->board_width) continue;
-      if(information_board[i][j] == BLANK){
-        recursion_for_det_blank(i, j);
-      }
+      if(j < 0 || j >= this->board_width) continue; // if out of bound, then skip the search
+      if(i == row && j == col) continue; // if
+      // if(information_board[i][j] == BLANK && hider_board[i][j] == HIDDEN){ // if not yet opened and
+      //   recursion_for_det_blank(i, j);
+      // }
       // else if(information_board[i][j] == '1' || information_board[i][j] == '2' || information_board[i][j] == '3' || information_board[i][j] == '4' ||
       //  information_board[i][j] == '5' || information_board[i][j] == '6' || information_board[i][j] == '7' || information_board[i][j] == '8'){
       //    copy_position(i,j);
       //    return;
       //  }
-      switch(information_board[i][j]){
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':
-        case '8': copy_position(i, j);
-        default: return;
+      if(hider_board[i][j] == HIDDEN){ // if the position is HIDDEN
+        switch(information_board[i][j]){ // look at information_board
+          case BLANK: recursion_for_det_blank(i, j); break; // if it's BLANK, do recursion_for_det_blank() at that position
+          case '1':
+          case '2':
+          case '3':
+          case '4':
+          case '5':
+          case '6':
+          case '7':
+          case '8': copy_position(i, j); // if it's a number, copy the number to hider_board and return
+          default: return; // if it's bomb, just return
+        }
       }
+      else return;
     }
   }
 }

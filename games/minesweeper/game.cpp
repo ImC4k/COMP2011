@@ -7,6 +7,7 @@ int main(){
   new_game->print_information_board();
   cout<<"------------debug------------"<<endl;
   cout<<"\n\n\n\n\n"<<endl;
+  // new_game->print_hider_board();
   cout<<"============MINESWEEPER============\n\n\n"<<endl;
   while(!new_game->is_gameover()){
     char toggle_f_and_d;
