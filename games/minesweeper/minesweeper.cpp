@@ -74,16 +74,17 @@ void minesweeper::fill_board(char filling){ // seems useless
 
 void minesweeper::place_bomb(){
   int bomb_count = this->num_bomb;
+  srand(time(NULL));
   while(bomb_count){
+    int row = rand()%(this->board_height);
     srand(time(NULL));
-    int x_pos = rand()%(this->board_width);
-    srand(time(NULL));
-    int y_pos = rand()%(this->board_height);
-    if(information_board[y_pos][x_pos] == BOMB){
+    int col = rand()%(this->board_width);
+    if(information_board[row][col] == BOMB){
       continue;
     }
     else{
-      information_board[y_pos][x_pos] = BOMB;
+      information_board[row][col] = BOMB;
+      cout<<this->num_bomb-bomb_count<<". a bomb is in ["<<row<<"]["<<col<<"]"<<endl;
       bomb_count--;
     }
   }
@@ -133,38 +134,6 @@ void minesweeper::copy_position(int row, int col){
 }
 
 void minesweeper::recursion_for_det_blank(int row, int col){ // TODO: segmentation fault 11, need to handle flagged case
-  // copy_position(row, col);
-  // print_hider_board();
-  // for(int i = row-1; i <= row+1; i++){
-  //   if(i < 0 || i >= this->board_height) continue; // if out of bound, then skip the search
-  //   for(int j = col-1; j <= col+1; j++){
-  //     if(j < 0 || j >= this->board_width) continue; // if out of bound, then skip the search
-  //     if(i == row && j == col) continue; // if
-  //     // if(information_board[i][j] == BLANK && hider_board[i][j] == HIDDEN){ // if not yet opened and
-  //     //   recursion_for_det_blank(i, j);
-  //     // }
-  //     // else if(information_board[i][j] == '1' || information_board[i][j] == '2' || information_board[i][j] == '3' || information_board[i][j] == '4' ||
-  //     //  information_board[i][j] == '5' || information_board[i][j] == '6' || information_board[i][j] == '7' || information_board[i][j] == '8'){
-  //     //    copy_position(i,j);
-  //     //    return;
-  //     //  }
-  //     if(hider_board[i][j] == HIDDEN){ // if the position is HIDDEN
-  //       switch(information_board[i][j]){ // look at information_board
-  //         case BLANK: recursion_for_det_blank(i, j); break; // if it's BLANK, do recursion_for_det_blank() at that position
-  //         case '1':
-  //         case '2':
-  //         case '3':
-  //         case '4':
-  //         case '5':
-  //         case '6':
-  //         case '7':
-  //         case '8': copy_position(i, j); // if it's a number, copy the number to hider_board and return
-  //         default: return; // if it's bomb, just return
-  //       }
-  //     }
-  //     else return;
-  //   }
-  // }
   if(hider_board[row][col] == HIDDEN){
     switch(information_board[row][col]){
       case '1':
