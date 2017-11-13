@@ -5,10 +5,7 @@ ll_node::ll_node(int data, ll_node* next_ptr){
   this->next_ptr = next_ptr;
 }
 
-ll_node::~ll_node(){
-  // if(this != nullptr)
-  //   delete this;
-  // this->next_ptr = nullptr;
+ll_node::~ll_node(){ // no manual destruction required
 }
 
 void ll_node::set_data(int data){

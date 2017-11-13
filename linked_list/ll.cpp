@@ -1,10 +1,7 @@
 #include "ll.h"
 
-ll::ll(){
-  cout<<"type in number you want to store: "<<endl;
-  int data;
-  cin>>data;
-  ll_node* node = new ll_node(data);
+ll::ll(int num){
+  ll_node* node = new ll_node(num);
   size = 1;
   nodes_head = node;
 }
@@ -96,11 +93,22 @@ int ll::ll_search(int num){
   return -1;
 }
 
-void ll::ll_search_and_edit(int num){
-  int search_result = ll_search(num);
+void ll::ll_search_and_edit(int old_num, int new_num){
+  int search_result = ll_search(old_num);
   if(search_result == -1){
     cerr<<"No such number found!"<<endl;
     return;
   }
-  edit_ll_node(num, search_result);
+  edit_ll_node(new_num, search_result);
+}
+
+void ll::ll_print(){
+  ll_node* current_ptr = this->nodes_head;
+  for(; current_ptr != nullptr; current_ptr = current_ptr->get_next_ptr()){
+    cout<<current_ptr->get_data();
+    if(current_ptr->get_next_ptr() != nullptr){
+      cout<<"\t";
+    }
+  }
+  cout<<endl;
 }
