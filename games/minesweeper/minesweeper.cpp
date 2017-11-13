@@ -36,7 +36,7 @@ minesweeper::minesweeper(){
 }
 
 minesweeper::~minesweeper(){
-  for(int i = 0; i < this->height; i++){
+  for(int i = 0; i < this->board_height; i++){
     delete[] information_board[i];
     information_board[i] = nullptr;
   }
