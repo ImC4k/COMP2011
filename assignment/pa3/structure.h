@@ -26,10 +26,10 @@ struct VehicleFrameInfo;
  *             raw_data: point to the 3 dimensional video data.
  *                       data of one frame.
  * num_processed_frames: the number of frames in the link list structure (processed number of frames).
- *          first_frame: the pointer to the first frame structure. All frames are chained by the link 
+ *          first_frame: the pointer to the first frame structure. All frames are chained by the link
  *                       list structure.
  *         num_vehicles: the number of detected vehicles in the video.
- *             vehicles: the array of pointers to all vehicles in this frame. All pointers are 
+ *             vehicles: the array of pointers to all vehicles in this frame. All pointers are
  *                       initialized as nullptr.
  */
 struct Video
@@ -69,7 +69,7 @@ struct Frame
 /*
  * Structure for describing one vehicle
  *
- *             index: the index of the vehicle, and the vehicles are indexed by the occurrence 
+ *             index: the index of the vehicle, and the vehicles are indexed by the occurrence
  *                    order (starting from 0). If several vehicles first appear in the same frame,
  *                    index them by ascending order of their position from top rows to bottle rows.
  * num_visible_frames: the number of frames the vehicle is visible to.
@@ -92,12 +92,12 @@ struct Vehicle
  *           speed: the speed of the vehicle (distance between the coordinates in two frames).
  *                  For the new vehicles detected (in the first column), initialize the speed
  *                  as 1.
- * next_frame_info: pointer to the information of this vehicle in next visible frame. If the 
+ * next_frame_info: pointer to the information of this vehicle in next visible frame. If the
  *                  current info is of the last visible frame then set it to nullptr.
  */
 struct VehicleFrameInfo
 {
-    int vehicle_index; 
+    int vehicle_index;
     int frame_index;
     int position[2];
     double speed;

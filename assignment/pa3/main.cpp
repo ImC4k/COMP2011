@@ -85,7 +85,7 @@ void PrintVehicleInfo(Video & video, const int vehicle_idx)
  * Note: only video.num_frames and video.raw_data will be initialized.
  *       All other variables in video should be filled in later processing
  */
-bool ReadVideoRawData(Video & video, const string & video_file)
+bool ReadVideoRawData(Video & video, const string & video_file) // read through the "video"
 {
 	ifstream video_stream;
 	video_stream.open(video_file);
@@ -95,7 +95,7 @@ bool ReadVideoRawData(Video & video, const string & video_file)
 
 	// read first line
 	string word;
-	video_stream >> word >> video.num_frames;
+	video_stream >> word >> video.num_frames; // stores the number of frames for the "video"
 	cout << "Totally " << video.num_frames << " frames. ";
 
 	// allocate memory for data
@@ -136,7 +136,7 @@ bool ProcessNextFrame(Video & video)
 	}
 	int new_frame_index = video.num_processed_frames - 1;
 	Frame * new_frame = GetFrame(video, video.num_processed_frames - 1);
-	
+
 	// 2. if not the first frame, track all vehicles between previous frame and new frame
 	// 3. update new infos in the vehicle and new frame
 	if (new_frame_index != 0)
@@ -181,7 +181,7 @@ int main()
 	// initialize video
 	Video video;
     InitVideo(video);
-    
+
 	// read the input video
 	const string video_file("video.txt");
 	if (!ReadVideoRawData(video, video_file))
@@ -204,7 +204,7 @@ int main()
 		PrintFrameInfo(video, frame_index);
 	}
 	cout << endl;
-    
+
 
 	// print vehicle information
 	for (int vehicle_index = 0; vehicle_index < video.num_vehicles; ++vehicle_index)
