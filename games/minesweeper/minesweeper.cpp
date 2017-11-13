@@ -36,7 +36,11 @@ minesweeper::minesweeper(){
 }
 
 minesweeper::~minesweeper(){
-  delete this->information_board;
+  for(int i = 0; i < this->height; i++){
+    delete[] information_board[i];
+    information_board[i] = nullptr;
+  }
+  delete[] this->information_board;
   this->information_board = nullptr;
 }
 
@@ -206,6 +210,8 @@ bool minesweeper::is_finished_game(){
       }
     }
   }
+  cout<<"\n\n"<<endl;
+  print_hider_board();
   return true;
 }
 

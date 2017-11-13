@@ -25,7 +25,7 @@ int main(){
       cout<<"input cannot be identified, input again!"<<endl;
       goto REQUEST_INPUT;
     }
-    if(row == 0 || col == 0){
+    if(row >= height || col >= width){
       cout<<"input cannot be identified, input again!"<<endl;
       goto REQUEST_INPUT;
     }
