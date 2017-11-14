@@ -48,9 +48,7 @@ void PrintFrameInfo(const Video & video, const int frame_index)
 			{
 				Vehicle * vehicle = GetVehicle(video, vehicle_index);
 				VehicleFrameInfo * vf_info = GetVFInfo(vehicle, frame_index);
-				cout << "    vehicle " << vf_info->vehicle_index
-                     << " in coordinate (" << vf_info->position[0] << ", " << vf_info->position[1] << ")"
-                     << " with speed of " << vf_info->speed << "\n";
+				cout << "    vehicle " << vf_info->vehicle_index<< " in coordinate (" << vf_info->position[0] << ", " << vf_info->position[1] << ")"<< " with speed of " << vf_info->speed << "\n";
 			}
 		}
 	}
@@ -136,7 +134,6 @@ bool ProcessNextFrame(Video & video)
 	}
 	int new_frame_index = video.num_processed_frames - 1;
 	Frame * new_frame = GetFrame(video, video.num_processed_frames - 1);
-
 	// 2. if not the first frame, track all vehicles between previous frame and new frame
 	// 3. update new infos in the vehicle and new frame
 	if (new_frame_index != 0)
@@ -163,6 +160,7 @@ bool ProcessNextFrame(Video & video)
 				}
 			}
 		}
+		cout<<"ended"<<endl;
 	}
 
 	// 4. detect new vehicles in all lanes, and add new vehicles and their infos to video
