@@ -74,15 +74,37 @@ bool InitializeNewFrame(Video & video)
   // handle all frame processed case
   if(video.num_processed_frames == video.num_frames) return false;
 
-  // handle a new frame
-  Frame* current_frame = video.first_frame;
-  for(; current_frame->next_frame != nullptr; current_frame = current_frame->next_frame);
+  // handle a new frame, index = 0
+  Frame* current_frame = new Frame();
+  if(video.num_processed_frames == 0){
+    current_frame->index = video.num_processed_frames;
+    current_frame->image = new char*[ROWS];
+    for(int i = 0; i < ROWS; i++){
+      current_frame->image[i] = new char[COLS];
+      for(int j = 0; j < COLS; j++){
+        current_frame->image[i][j] = video.raw_data[current_frame->index][i][j];
+      }
+    }
+    current_frame->num_vehicles = 0;
+    current_frame->next_frame = nullptr;
+    video.num_processed_frames++;
+    video.first_frame = current_frame;
+    return true;
+  }
+
+  // handle a new_frame, index > 0
   // current_frame is now changed to last frame's pointer
+  current_frame = video.first_frame;
+  for(; current_frame->next_frame != nullptr; current_frame = current_frame->next_frame)
+  ;
   Frame * new_frame = new Frame();
-  new_frame->index = video.num_processed_frames+1;
+  new_frame->index = video.num_processed_frames;
   new_frame->image = new char*[ROWS];
   for(int i = 0; i < ROWS; i++){
-    new_frame->image[i] = nullptr;
+    new_frame->image[i] = new char[COLS];
+    for(int j = 0; j < COLS; j++){
+      new_frame->image[i][j] = video.raw_data[new_frame->index][i][j];
+    }
   }
   new_frame->num_vehicles = 0;
   new_frame->next_frame = nullptr;
@@ -177,6 +199,7 @@ VehicleFrameInfo * TrackVehicle(const Vehicle * vehicle, const Frame * current_f
  */
 bool FindAndAddNewVehicles(Video & video)
 {
+  // cout<<"entered FindAndAddNewVehicles"<<endl;
 	// your implementation
   // TODO: haven't implemented output false case
   int frame_num = video.num_processed_frames+1;
@@ -185,11 +208,15 @@ bool FindAndAddNewVehicles(Video & video)
   for(; last_frame->next_frame != nullptr; last_frame = last_frame->next_frame) // finding the last frame
   ;
 	// detect new vehicles lane by lane
-  for(int i = 0; i < ROWS; i++){
-    if(last_frame->image[i][0] == '*'){
+  for(int i = 0; i < ROWS; i++){ // TODO: buggy loop
+    // cout<<"entering loop "<<i<<endl;
+    if(last_frame->image[i][0] == '*'){ // has a vehicle at image[i][0]
+      // cout<<"* detected at loop "<<i<<endl;
       Vehicle* new_vehicle = new Vehicle();
+      // cout<<"so far ok"<<endl;
       new_vehicle->index = video.num_vehicles+1; // set index to be 1 larger than current number of vehicles
       new_vehicle->num_visible_frames = 1; // set visible frame to 1
+
       VehicleFrameInfo* frame_info = new VehicleFrameInfo(); // initialize a new info object
       frame_info->vehicle_index = new_vehicle->index;
       frame_info->frame_index = last_frame->index;
@@ -198,17 +225,19 @@ bool FindAndAddNewVehicles(Video & video)
       frame_info->speed = 1; // speed
       frame_info->next_frame_info = nullptr; // set ll length = 1, so next is nullptr
 
-      video.vehicles[video.num_vehicles-1] = new_vehicle;
+      video.vehicles[video.num_vehicles] = new_vehicle;
       video.num_vehicles++;
-      last_frame->vehicles[last_frame->num_vehicles-1] = new_vehicle;
+      last_frame->vehicles[last_frame->num_vehicles] = new_vehicle;
       last_frame->num_vehicles++;
     }
+    // cout<<"ok until now in loop "<<i<<endl;
   }
 		// check if there is a new vehicle in the lane
 
 		// construct and add a new vehicle
 
 		// construct and add a new vf_info
+    // cout<<"finished FindAndAddNewVehicles"<<endl;
     return true;
 }
 
