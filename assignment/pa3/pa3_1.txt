@@ -73,51 +73,57 @@ VehicleFrameInfo * GetVFInfo(const Vehicle * vehicle, const int frame_index)
  *  video: input video structure.
  * return: true if finish and false if all frames has been processed.
  */
-bool InitializeNewFrame(Video & video)
-{
-	// your implementation
-  // handle all frame processed case
-  if(video.num_processed_frames == video.num_frames) return false;
+ bool InitializeNewFrame(Video & video)
+ {
+ 	// your implementation
+   // handle all frame processed case
+   if(video.num_processed_frames == video.num_frames) return false;
 
-  // handle a new frame, index = 0
-  Frame* current_frame = new Frame();
-  if(video.num_processed_frames == 0){
-    current_frame->index = video.num_processed_frames;
-    current_frame->image = new char*[ROWS];
-    for(int i = 0; i < ROWS; i++){
-      current_frame->image[i] = new char[COLS];
-      for(int j = 0; j < COLS; j++){
-        current_frame->image[i][j] = video.raw_data[current_frame->index][i][j];
-      }
-    }
-    current_frame->num_vehicles = 0;
-    current_frame->next_frame = nullptr;
-    video.num_processed_frames++;
-    video.first_frame = current_frame;
-    return true;
-  }
+   // handle a new frame, num_processed_frames = 0
+   Frame* current_frame = new Frame();
+   if(video.num_processed_frames == 0){
+     current_frame->index = video.num_processed_frames;
+     current_frame->image = new char*[ROWS];
+     for(int i = 0; i < ROWS; i++){
+       current_frame->image[i] = new char[COLS];
+       for(int j = 0; j < COLS; j++){
+         current_frame->image[i][j] = video.raw_data[current_frame->index][i][j];
+       }
+     }
+     current_frame->num_vehicles = 0;
+     current_frame->next_frame = nullptr;
+     video.num_processed_frames++;
+     video.first_frame = current_frame;
+     return true;
+   }
 
-  // handle a new_frame, index > 0
-  // current_frame is now changed to last frame's pointer
-  current_frame = video.first_frame;
-  for(; current_frame->next_frame != nullptr; current_frame = current_frame->next_frame)
-  ;
-  Frame * new_frame = new Frame();
-  new_frame->index = video.num_processed_frames;
-  new_frame->image = new char*[ROWS];
-  for(int i = 0; i < ROWS; i++){
-    new_frame->image[i] = new char[COLS];
-    for(int j = 0; j < COLS; j++){
-      new_frame->image[i][j] = video.raw_data[new_frame->index][i][j];
-    }
-  }
-  new_frame->num_vehicles = 0;
-  new_frame->next_frame = nullptr;
+   // handle a new_frame, num_processed_frames != 0
+   // current_frame is now changed to last frame's pointer
 
-  current_frame->next_frame = new_frame;
-  video.num_processed_frames++;
-  return true;
-}
+   
+   current_frame = video.first_frame;
+   for(; current_frame->next_frame != nullptr; current_frame = current_frame->next_frame)
+   ;
+
+   Frame* new_frame = new Frame(); // initialize a new frame
+   new_frame->index = video.num_processed_frames; // index of frame set to num_processed_frames + 1
+   new_frame->image = new char*[ROWS];
+   for(int i = 0; i < ROWS; i++){ // assign values to new_frame->image
+     new_frame->image[i] = new char[COLS];
+     for(int j = 0; j < COLS; j++){
+       new_frame->image[i][j] = video.raw_data[new_frame->index][i][j];
+     }
+   }
+   new_frame->num_vehicles = 0;
+   for(int i = 0; i < MAX_VEHICLE_NUM; i++){
+     new_frame->vehicles[i] = nullptr;
+   }
+   new_frame->next_frame = nullptr;
+
+   current_frame->next_frame = new_frame;
+   video.num_processed_frames++;
+   return true;
+ }
 
 /*
  * Description: add one vf_info to the video. You need to check if the vf_info, the
