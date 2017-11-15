@@ -60,7 +60,7 @@ void load_rating(Cafe cafes[], int cafe_num, User users[], int num_users, string
 // add a Cafe object to the Cafe array, cafes.
 void add_cafe(Cafe cafes[], int* cafe_num, const char cafe_name[],  const Point* location)
 {
-	cout<<*cafe_num<<endl;
+	// cout<<*cafe_num<<endl;
 	//TODO 2 Add Your Code Here
 	if(*cafe_num >= MAX_CAFE_NUM){
 		cout<<"Too many cafe"<<endl;
