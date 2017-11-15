@@ -20,10 +20,10 @@ using namespace std;
 Frame * GetFrame(const Video & video, const int frame_index)
 {
 	// your implementation
-  if(frame_index > video.num_frames || frame_index < 0) return nullptr;
+  if(frame_index > video.num_frames || frame_index < 0) return nullptr; // if frame_index is out of number of total frames, then return nullptr
   // return video.raw_data[frame_index];
   Frame* frame = video.first_frame;
-  for(int i = 0; i < frame_index; i++){
+  for(int i = 0; i < frame_index; i++){ // a counter to point to the wanted frame pointer
     frame = frame->next_frame;
   }
   return frame;
@@ -39,8 +39,8 @@ Frame * GetFrame(const Video & video, const int frame_index)
 Vehicle * GetVehicle(const Video & video, const int vehicle_index)
 {
 	// your implementation
-  if(vehicle_index > MAX_VEHICLE_NUM || vehicle_index < 0) return nullptr;
-  return video.vehicles[vehicle_index];
+  if(vehicle_index > MAX_VEHICLE_NUM || vehicle_index < 0) return nullptr; // if vehicle_index is out of bound, then return nullptr
+  return video.vehicles[vehicle_index]; // get the pointer from video.vehicles[] array
 }
 /*
  * Description: get the pointer to vf_info of a vehicle in one frame.
@@ -53,20 +53,17 @@ Vehicle * GetVehicle(const Video & video, const int vehicle_index)
 VehicleFrameInfo * GetVFInfo(const Vehicle * vehicle, const int frame_index)
 {
 	// your implementation
-  if(vehicle == nullptr) return nullptr;
-  // VehicleFrameInfo* current_info = vehicle->first_frame_info;
-  // for(int i = 0; i < frame_index; i++){
-  //   if(current_info->next_frame_info == nullptr) return nullptr;
-  //   current_info = current_info->next_frame_info;
-  // }
-  // return current_info;
-  for(VehicleFrameInfo* current_info = vehicle->first_frame_info; current_info->next_frame_info != nullptr; current_info = current_info->next_frame_info){
-    cout<<"so far ok"<<endl;
-    if(current_info->frame_index == frame_index){
-			return current_info;
-		}
-	}
-	return nullptr;
+  if(vehicle == nullptr) return nullptr; // if no such vehicle, then return nullptr
+  VehicleFrameInfo* temp_info = vehicle->first_frame_info; // obtain vehicle's first info
+  if(temp_info == nullptr){ // if no info, then return nullptr
+    return nullptr;
+  }
+	for(; temp_info->frame_index != frame_index; temp_info = temp_info->next_frame_info){ // loop until reach temp->frame_index reaches required frame_index
+    if(temp_info == nullptr){ // if nullptr is reached, then return nullptr
+      return nullptr;
+    }
+  }
+  return temp_info;
 }
 
 /*

@@ -1,0 +1,7 @@
+TODO list
+
+current bug:
+
+1: only added vehicles in frame 0
+
+2: all vehicles' speed are initialized wrongly (to 0, expexted 1)
