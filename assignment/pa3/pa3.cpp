@@ -62,20 +62,14 @@ VehicleFrameInfo * GetVFInfo(const Vehicle * vehicle, const int frame_index)
   if(temp_info == nullptr){ // if no info, then return nullptr
     return nullptr;
   }
-	// for(; temp_info->frame_index != frame_index && temp_info != nullptr; temp_info = temp_info->next_frame_info)// loop until reach temp->frame_index reaches required frame_index
-  // ;
-  int i = frame_index;
-  while(frame_index){
+  for(int i = 0; i < frame_index; i++){
     if(temp_info == nullptr){
       return nullptr;
     }
-    else{
-      cout<<"not nullptr";
-      temp_info = temp_info->next_frame_info;
-      i--;
-    }
+    else temp_info = temp_info->next_frame_info;
   }
   return temp_info;
+
 }
 
 /*
@@ -180,6 +174,8 @@ bool AddVFInfo(Video & video, VehicleFrameInfo * vehicle_frame_info)
 		  return false;
 	  }
   }
+
+
 
   // handle add case
   current_info->next_frame_info = vehicle_frame_info;
