@@ -160,7 +160,6 @@ bool ProcessNextFrame(Video & video)
 				}
 			}
 		}
-		cout<<"ended"<<endl;
 	}
 
 	// 4. detect new vehicles in all lanes, and add new vehicles and their infos to video

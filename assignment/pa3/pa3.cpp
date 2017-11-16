@@ -62,9 +62,19 @@ VehicleFrameInfo * GetVFInfo(const Vehicle * vehicle, const int frame_index)
   if(temp_info == nullptr){ // if no info, then return nullptr
     return nullptr;
   }
-	for(; temp_info->frame_index != frame_index && temp_info != nullptr; temp_info = temp_info->next_frame_info)// loop until reach temp->frame_index reaches required frame_index
-  ;
-
+	// for(; temp_info->frame_index != frame_index && temp_info != nullptr; temp_info = temp_info->next_frame_info)// loop until reach temp->frame_index reaches required frame_index
+  // ;
+  int i = frame_index;
+  while(frame_index){
+    if(temp_info == nullptr){
+      return nullptr;
+    }
+    else{
+      cout<<"not nullptr";
+      temp_info = temp_info->next_frame_info;
+      i--;
+    }
+  }
   return temp_info;
 }
 
@@ -83,11 +93,11 @@ bool InitializeNewFrame(Video & video)
 {
 	// your implementation
   // handle all frame processed case
-  if(video.num_processed_frames == video.num_frames) return false;
+  if(video.num_processed_frames >= video.num_frames) return false;
 
   // handle a new frame, num_processed_frames = 0
-  Frame* current_frame = new Frame();
   if(video.num_processed_frames == 0){
+    Frame* current_frame = new Frame();
     current_frame->index = video.num_processed_frames;
     current_frame->image = new char*[ROWS];
     for(int i = 0; i < ROWS; i++){
@@ -106,24 +116,7 @@ bool InitializeNewFrame(Video & video)
   // handle a new_frame, num_processed_frames != 0
   // current_frame is now changed to last frame's pointer
 
-  // current_frame = video.first_frame;
-  // for(; current_frame->next_frame != nullptr; current_frame = current_frame->next_frame)
-  // ;
-  // Frame * new_frame = new Frame();
-  // new_frame->index = video.num_processed_frames;
-  // new_frame->image = new char*[ROWS];
-  // for(int i = 0; i < ROWS; i++){
-  //   new_frame->image[i] = new char[COLS];
-  //   for(int j = 0; j < COLS; j++){
-  //     new_frame->image[i][j] = video.raw_data[new_frame->index][i][j];
-  //   }
-  // }
-  // new_frame->num_vehicles = 0;
-  // new_frame->next_frame = nullptr;
-  //
-  // current_frame->next_frame = new_frame;
-  // video.num_processed_frames++;
-  current_frame = video.first_frame;
+  Frame* current_frame = video.first_frame;
   for(; current_frame->next_frame != nullptr; current_frame = current_frame->next_frame)
   ;
 
