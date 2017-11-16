@@ -40,7 +40,7 @@ Frame * GetFrame(const Video & video, const int frame_index)
 Vehicle * GetVehicle(const Video & video, const int vehicle_index)
 {
 	// your implementation
-  if(vehicle_index > MAX_VEHICLE_NUM || vehicle_index < 0) // if vehicle_index is out of bound, then return nullptr
+  if(vehicle_index >= MAX_VEHICLE_NUM || vehicle_index < 0) // if vehicle_index is out of bound, then return nullptr
     return nullptr;
   return video.vehicles[vehicle_index]; // get the pointer from video.vehicles[] array
 }
@@ -62,11 +62,14 @@ VehicleFrameInfo * GetVFInfo(const Vehicle * vehicle, const int frame_index)
   if(temp_info == nullptr){ // if no info, then return nullptr
     return nullptr;
   }
-  for(int i = 0; i < frame_index; i++){
+  /*for(int i = 0; i < frame_index; i++){
     if(temp_info == nullptr){
       return nullptr;
     }
     else temp_info = temp_info->next_frame_info;
+  }*/
+  while (temp_info != nullptr && temp_info->frame_index != frame_index) {
+	  temp_info = temp_info->next_frame_info;
   }
   return temp_info;
 
