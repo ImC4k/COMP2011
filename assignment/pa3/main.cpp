@@ -148,7 +148,6 @@ bool ProcessNextFrame(Video & video)
 			// track the vehicle
 			Vehicle * vehicle = GetVehicle(video, v_idx);
 			VehicleFrameInfo * new_vf_info = TrackVehicle(vehicle, new_frame, prev_frame);
-
 			// if track success then add new info to the vehicle and new frame
 			if (new_vf_info != nullptr)
 			{

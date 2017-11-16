@@ -1,7 +1,5 @@
 TODO list
 
-current bug:
+current bug: 0
 
-1: only added vehicles in frame 0
-2: cannot properly create VFinfo, i think
-3: print frame 0 ok, frame 1: GetVFInfo returned nullptr at line 69
+TODO: finish CleanVideo()
