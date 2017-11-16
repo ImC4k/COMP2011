@@ -199,16 +199,17 @@ VehicleFrameInfo * TrackVehicle(const Vehicle * vehicle, const Frame * current_f
 {
 	// your implementation
 //  VehicleFrameInfo* current_info;
-  VehicleFrameInfo* prev_info = vehicle->first_frame_info;
-  for(; prev_info->next_frame_info != nullptr; prev_info = prev_info->next_frame_info)
-	  ; // current_info is now getting the last info of vehicle
+  // VehicleFrameInfo* prev_info = vehicle->first_frame_info;
+  // for(; prev_info->next_frame_info != nullptr; prev_info = prev_info->next_frame_info)
+	  // ; // current_info is now getting the last info of vehicle
+  VehicleFrameInfo* prev_info = GetVFInfo(vehicle, prev_info->frame_index);
   if(prev_frame->vehicles[prev_info->vehicle_index] == nullptr){ return nullptr;} // vehicle does not exist in prev_frame
 
-  int pos_col = prev_info->position[1]; // getting previous position from previous vehicle frame info object
+  int pos_col_old = prev_info->position[1]; // getting previous position from previous vehicle frame info object
   int i = 1; // counting speed index
   bool flag = false; // check if vehicle is found
-  for(; i <= 8 && pos_col+i < COLS; i++){
-    if(current_frame->image[prev_info->position[0]][pos_col+i] == '*'){ // if there is a star in the current frame
+  for(; i <= 8 && pos_col_old + i < COLS; i++){
+    if(current_frame->image[prev_info->position[0]][pos_col_old + i] == '*'){ // if there is a star in the current frame
       flag = true;
       break;
     }
@@ -219,7 +220,7 @@ VehicleFrameInfo * TrackVehicle(const Vehicle * vehicle, const Frame * current_f
   new_info->vehicle_index = prev_info->vehicle_index;
   new_info->frame_index = current_frame->index;
   new_info->position[0] = prev_info->position[0];
-  new_info->position[1] = pos_col+i; // the location of vehicle in previous frame + speed of this frame
+  new_info->position[1] = pos_col_old+i; // the location of vehicle in previous frame + speed of this frame
   new_info->speed = i;
   new_info->next_frame_info = nullptr;
 
