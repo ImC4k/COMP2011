@@ -20,14 +20,18 @@ using namespace std;
 Frame * GetFrame(const Video & video, const int frame_index)
 {
 	// your implementation
-  if(frame_index > video.num_frames || frame_index < 0) // if frame_index is out of number of total frames, then return nullptr
+  if(frame_index < 0 || frame_index >= video.num_frames){
     return nullptr;
-  // return video.raw_data[frame_index];
-  Frame* frame = video.first_frame;
-  for(int i = 0; i < frame_index; i++){ // a counter to point to the wanted frame pointer
-    frame = frame->next_frame;
   }
-  return frame;
+
+  Frame* temp_frame = video.first_frame;
+
+  for(; temp_frame->index != frame_index; temp_frame = temp_frame->next_frame){
+    if(temp_frame == nullptr){
+      return nullptr;
+    }
+  }
+  return temp_frame;
 }
 
 /*
@@ -40,9 +44,11 @@ Frame * GetFrame(const Video & video, const int frame_index)
 Vehicle * GetVehicle(const Video & video, const int vehicle_index)
 {
 	// your implementation
-  if(vehicle_index >= MAX_VEHICLE_NUM || vehicle_index < 0) // if vehicle_index is out of bound, then return nullptr
+  if(vehicle_index < 0 || vehicle_index > num_vehicles){
     return nullptr;
-  return video.vehicles[vehicle_index]; // get the pointer from video.vehicles[] array
+  }
+
+  return video.vehicles[vehicle_index];
 }
 /*
  * Description: get the pointer to vf_info of a vehicle in one frame.
@@ -55,24 +61,19 @@ Vehicle * GetVehicle(const Video & video, const int vehicle_index)
 VehicleFrameInfo * GetVFInfo(const Vehicle * vehicle, const int frame_index)
 {
 	// your implementation
-  if(vehicle == nullptr) // if no such vehicle, then return nullptr
-    return nullptr;
-
-  VehicleFrameInfo* temp_info = vehicle->first_frame_info; // obtain vehicle's first info
-  if(temp_info == nullptr){ // if no info, then return nullptr
+  VehicleFrameInfo* temp_info = vehicle->first_frame_info;
+  if(temp_info == nullptr){
     return nullptr;
   }
-  /*for(int i = 0; i < frame_index; i++){
-    if(temp_info == nullptr){
+
+  while(temp_info->frame_index != frame_index){
+    if(temp_info->next_frame_info == nullptr && temp_info->frame_index != frame_index){
       return nullptr;
     }
-    else temp_info = temp_info->next_frame_info;
-  }*/
-  while (temp_info != nullptr && temp_info->frame_index != frame_index) {
-	  temp_info = temp_info->next_frame_info;
+    temp_info = temp_info->next_frame_info;
   }
-  return temp_info;
 
+  return temp_info;
 }
 
 /*
@@ -89,51 +90,29 @@ VehicleFrameInfo * GetVFInfo(const Vehicle * vehicle, const int frame_index)
 bool InitializeNewFrame(Video & video)
 {
 	// your implementation
-  // handle all frame processed case
-  if(video.num_processed_frames >= video.num_frames) return false;
-
-  // handle a new frame, num_processed_frames = 0
-  if(video.num_processed_frames == 0){
-    Frame* current_frame = new Frame();
-    current_frame->index = video.num_processed_frames;
-    current_frame->image = new char*[ROWS];
-    for(int i = 0; i < ROWS; i++){
-      current_frame->image[i] = new char[COLS];
-      for(int j = 0; j < COLS; j++){
-        current_frame->image[i][j] = video.raw_data[current_frame->index][i][j];
-      }
-    }
-    current_frame->num_vehicles = 0;
-    current_frame->next_frame = nullptr;
-    video.num_processed_frames++;
-    video.first_frame = current_frame;
-    return true;
+  if(video.num_processed_frames >= video.num_frames){
+    return false;
   }
 
-  // handle a new_frame, num_processed_frames != 0
-  // current_frame is now changed to last frame's pointer
+  int new_frame_index = video.num_processed_frames;
 
-  Frame* current_frame = video.first_frame;
-  for(; current_frame->next_frame != nullptr; current_frame = current_frame->next_frame)
-  ;
-
-  Frame* new_frame = new Frame(); // initialize a new frame
-  new_frame->index = video.num_processed_frames; // index of frame set to num_processed_frames + 1
+  Frame* new_frame = new Frame;
+  new_frame->index = new_frame_index;
   new_frame->image = new char*[ROWS];
-  for(int i = 0; i < ROWS; i++){ // assign values to new_frame->image
+  for(int i = 0; i < ROWS; i++){
     new_frame->image[i] = new char[COLS];
     for(int j = 0; j < COLS; j++){
-      new_frame->image[i][j] = video.raw_data[new_frame->index][i][j];
+      new_frame->image[i][j] = video.raw_data[new_frame_index][i][j];
     }
   }
   new_frame->num_vehicles = 0;
-  for(int i = 0; i < MAX_VEHICLE_NUM; i++){
-    new_frame->vehicles[i] = nullptr;
-  }
+  new_frame->vehicles = nullptr;
   new_frame->next_frame = nullptr;
 
-  current_frame->next_frame = new_frame;
-  video.num_processed_frames++;
+  if(new_frame_index != 0){ // if there are other frame before this frame (frame index not 0)
+    Frame* last_frame = GetFrame(video, new_frame_index-1);
+    last_frame->next_frame = new_frame;
+  }
   return true;
 }
 
@@ -151,38 +130,21 @@ bool InitializeNewFrame(Video & video)
 bool AddVFInfo(Video & video, VehicleFrameInfo * vehicle_frame_info)
 {
 	// your implementation
-  // handle frame number not ok
-  if(vehicle_frame_info->frame_index >= video.num_processed_frames|| vehicle_frame_info->frame_index < 0){ return false;}
-  if(video.vehicles[vehicle_frame_info->vehicle_index] == nullptr){
+  if(vehicle_frame_info->frame_index > video.num_processed_frames){ // if frame index does not exist in the video
     return false;
   }
-//  if(video.vehicles[vehicle_frame_info->vehicle_index]){}
-//  // info already added
-//  Vehicle * vehicle = GetVehicle(video, vehicle_frame_info->vehicle_index);
-//
-//  VehicleFrameInfo* current_info = vehicle->first_frame_info;
-//  for(; current_info->next_frame_info; current_info = current_info->next_frame_info){
-//    if(current_info == vehicle_frame_info){
-//      return false;
-//    } // current_info is updated to the last node of info ll for the vehicle
-//  }
-//
-//  current_info->next_frame_info = vehicle_frame_info;
-
-  // handle info already added
-  int vehicle_index = vehicle_frame_info->vehicle_index;
-  VehicleFrameInfo* current_info = video.vehicles[vehicle_index]->first_frame_info;
-  for(; current_info->next_frame_info != nullptr; current_info = current_info->next_frame_info){
-	  if(current_info == vehicle_frame_info || current_info->frame_index == vehicle_frame_info->frame_index){ // if same copy of info already exist or if info for the frame already exist
-		  return false;
-	  }
+  if(vehicle_frame_info->vehicle_index < 0 || vehicle_frame_info->vehicle_index > video.num_vehicles){ // if vehicle index does not exist in the video
+    return false;
+  }
+  VehicleFrameInfo temp_info = GetVFInfo(GetVehicle(video, vehicle_frame_info->vehicle_index), vehicle_frame_info->frame_index);
+  if(temp_info != nullptr){
+    return false;
   }
 
-
-
-  // handle add case
-  current_info->next_frame_info = vehicle_frame_info;
-
+  // handle adding case
+  Vehicle* corr_vehicle = GetVehicle(video, vehicle_frame_info->vehicle_index);
+  VehicleFrameInfo* last_info = GetVFInfo(corr_vehicle, vehicle_frame_info->frame_index);
+  last_info->next_frame_info = vehicle_frame_info;
   return true;
 }
 
@@ -201,33 +163,39 @@ bool AddVFInfo(Video & video, VehicleFrameInfo * vehicle_frame_info)
 VehicleFrameInfo * TrackVehicle(const Vehicle * vehicle, const Frame * current_frame, const Frame * prev_frame)
 {
 	// your implementation
-//  VehicleFrameInfo* current_info;
-  // VehicleFrameInfo* prev_info = vehicle->first_frame_info;
-  // for(; prev_info->next_frame_info != nullptr; prev_info = prev_info->next_frame_info)
-	  // ; // current_info is now getting the last info of vehicle
-  VehicleFrameInfo* prev_info = GetVFInfo(vehicle, prev_info->frame_index);
-  if(prev_frame->vehicles[prev_info->vehicle_index] == nullptr){ return nullptr;} // vehicle does not exist in prev_frame
-
-  int pos_col_old = prev_info->position[1]; // getting previous position from previous vehicle frame info object
-  int i = 1; // counting speed index
-  bool flag = false; // check if vehicle is found
+  if(current_frame == nullptr || prev_frame == nullptr){ // if frames does not exist
+    return nullptr;
+  }
+  if(prev_frame->vehicles[vehicle->index] == nullptr){ // if the vehicle was not in prev frame
+    return nullptr;
+  }
+  VehicleFrameInfo* last_info = GetVFInfo(vehicle, prev_frame->index);
+  if(last_info == nullptr){ // if there is no last_info
+    cout<<"something's wrong"<<endl;
+    return nullptr;
+  }
+  int pos_col_old = last_info->position[1];
+  bool flag = false;
+  int i = 1;
   for(; i <= 8 && pos_col_old + i < COLS; i++){
-    if(current_frame->image[prev_info->position[0]][pos_col_old + i] == '*'){ // if there is a star in the current frame
+    if(current_frame->image[last_info->position[0]][pos_col_old + i] == '*'){
       flag = true;
       break;
     }
   }
-  if(!flag) return nullptr; // vehicle out of scope
+  if(!flag){ // cannot find the vehicle, out of scope
+    return nullptr;
+  }
+  VehicleFrameInfo* new_info = new VehicleFrameInfo;
+  vehicle->num_visible_frames++;
+  current_frame->vehicles[vehicle->index] = vehicle;
 
-  VehicleFrameInfo* new_info = new VehicleFrameInfo(); // create a new vehicle frame info object
-  new_info->vehicle_index = prev_info->vehicle_index;
-  new_info->frame_index = current_frame->index;
-  new_info->position[0] = prev_info->position[0];
-  new_info->position[1] = pos_col_old+i; // the location of vehicle in previous frame + speed of this frame
+  new_info->vehicle_index = last_info->vehicle_index;
+  new_info->frame_index = last_info->frame_index;
+  new_info->position[0] = last_info->position[0];
+  new_info->position[1] = pos_col_old + i;
   new_info->speed = i;
   new_info->next_frame_info = nullptr;
-
-  // current_info->next_frame_info = new_info;
   return new_info;
 }
 
@@ -242,73 +210,13 @@ VehicleFrameInfo * TrackVehicle(const Vehicle * vehicle, const Frame * current_f
  */
 bool FindAndAddNewVehicles(Video & video)
 {
-  // cout<<"entered FindAndAddNewVehicles"<<endl;
 	// your implementation
-  // TODO: haven't implemented output false case
-  if(video.num_processed_frames > video.num_frames){ //
-    return false;
-  }
-
-  if(video.num_processed_frames == 1){ // frame 0
-    for(int i = 0; i < ROWS; i++){
-      if(video.raw_data[0][i][0] == '*'){
-        Vehicle* new_vehicle = new Vehicle();
-        new_vehicle->index = video.num_vehicles;
-        new_vehicle->num_visible_frames = 1;
-
-        VehicleFrameInfo* new_info = new VehicleFrameInfo();
-        new_info->vehicle_index = new_vehicle->index;
-        new_info->frame_index = 0;
-        new_info->position[0] = i;
-        new_info->position[1] = 0;
-        new_info->speed = 1;
-        new_info->next_frame_info = nullptr;
-
-        new_vehicle->first_frame_info = new_info;
-
-        video.vehicles[video.num_vehicles] = new_vehicle;
-        video.first_frame->vehicles[video.first_frame->num_vehicles] = new_vehicle;
-        video.first_frame->num_vehicles++;
-        video.num_vehicles++;
-      }
-    }
-    return true;
-  }
-
-  // for frame != 0
-  Frame* last_frame = video.first_frame;
-  for(; last_frame->next_frame != nullptr; last_frame = last_frame->next_frame) // finding the last frame
-  ;
-  for(int i = 0; i < ROWS; i++){ // TODO: buggy loop
-    if(last_frame->image[i][0] == '*'){ // has a vehicle at image[i][0]
-      Vehicle* new_vehicle = new Vehicle();
-      new_vehicle->index = video.num_vehicles; // set index to be 1 larger than current number of vehicles
-      new_vehicle->num_visible_frames = 1; // set visible frame to 1
-
-      VehicleFrameInfo* frame_info = new VehicleFrameInfo(); // initialize a new info object
-      frame_info->vehicle_index = new_vehicle->index;
-      frame_info->frame_index = last_frame->index;
-      frame_info->position[0] = i; // row
-      frame_info->position[1] = 0; // col
-      frame_info->speed = 1; // speed
-      frame_info->next_frame_info = nullptr; // set ll length = 1, so next is nullptr
-
-      video.vehicles[video.num_vehicles] = new_vehicle;
-      video.num_vehicles++;
-      last_frame->vehicles[last_frame->num_vehicles] = new_vehicle;
-      last_frame->num_vehicles++;
-    }
-    // cout<<"ok until now in loop "<<i<<endl;
-  }
-
-    // detect new vehicles lane by lane
-
-		// check if there is a new vehicle in the lane
-
-		// construct and add a new vehicle
-
-		// construct and add a new vf_info
-    return true;
+  // detect new vehicles lane by lane
+	// check if there is a new vehicle in the lane
+	// construct and add a new vehicle
+	// construct and add a new vf_info
+  int check_frame_index = video.num_processed_frames - 1;
+  
 }
 
 /*
@@ -320,21 +228,7 @@ bool FindAndAddNewVehicles(Video & video)
 double AverageRoadSpeed(Video & video)
 {
 	// your implementation
-  double total_speed = 0;
-  // for(int i = 0; i < video.num_frames; i++){
-  //   double total_speed_in_frame = 0;
-  //   for(Frame* frame = video.first_frame; frame != nullptr; frame = frame->next_frame){
-  //     for(int k = 0; k < num_vehicles; k++){
-  //       total_speed_in_frame += frame->vehicles[k]->
-  //     }
-  //   }
-  // }
-  for(int i = 0; i < video.num_vehicles; i++){
-    for(VehicleFrameInfo* info = video.vehicles[i]->first_frame_info; info->next_frame_info != nullptr; info = info->next_frame_info){
-      total_speed += info->speed;
-    }
-  }
-  return total_speed/video.num_vehicles;
+
 }
 
 /*
