@@ -234,11 +234,11 @@ bool FindAndAddNewVehicles(Video & video)
   Frame* check_frame = GetFrame(video, check_frame_index);
   for(int i = 0; i < ROWS; i++){
     if(check_frame->image[i][0] == '*'){ // if located a vehicle
-      Vehicle* new_vehicle = new Vehicle;
+      Vehicle* new_vehicle = new Vehicle; // create a new vehicle object
       new_vehicle->index = video.num_vehicles;
       new_vehicle->num_visible_frames = 1;
 
-      VehicleFrameInfo* new_info = new VehicleFrameInfo;
+      VehicleFrameInfo* new_info = new VehicleFrameInfo; // create a new info object
       new_info->vehicle_index = new_vehicle->index;
       new_info->frame_index = check_frame_index;
       new_info->position[0] = i;
@@ -271,8 +271,8 @@ double AverageRoadSpeed(Video & video)
   }
   double total_speed = 0;
   int total_visible_vehicles = 0;
-  for(int i = 0; video.vehicles[i] != nullptr; i++){
-    for(VehicleFrameInfo* temp_info = video.vehicles[i]->first_frame_info; temp_info != nullptr; temp_info = temp_info->next_frame_info){
+  for(int i = 0; video.vehicles[i] != nullptr; i++){ // loop through every vehicles in video
+    for(VehicleFrameInfo* temp_info = video.vehicles[i]->first_frame_info; temp_info != nullptr; temp_info = temp_info->next_frame_info){ // loop through every info for the vehicle
       total_speed += temp_info->speed;
       total_visible_vehicles++;
     }
@@ -288,6 +288,7 @@ double AverageRoadSpeed(Video & video)
  */
 void CleanVideo(Video & video)
 {
+
 	// your implementation
   for(int i = 0; i < video.num_frames; i++){ // delete raw_data
     for(int j = 0; j < ROWS; j++){
@@ -300,7 +301,7 @@ void CleanVideo(Video & video)
   delete[] video.raw_data;
   video.raw_data = nullptr;
 
-  //TODO delete vehicles[]
+  //TODO delete video.vehicles[]->every_info, then every_vehicle, then video.vehicles[]
   for(int i = 0; i < MAX_VEHICLE_NUM; i++){
     Vehicle* temp_vehicle = video.vehicles[i];
     if(temp_vehicle == nullptr){ // should be useless
@@ -312,28 +313,58 @@ void CleanVideo(Video & video)
       temp_info = temp_info->next_frame_info;
       delete to_be_deleted_info;
       to_be_deleted_info = temp_info;
-    }
-    // delete temp_info;
-    // temp_info = nullptr;
+    } // NOTE: no need to deallocate nullptrs
   }
-  delete[] video.vehicles[0];
-  video.vehicles[0] = nullptr;
-  for(Frame* temp_frame = video.first_frame; temp_frame->next_frame != nullptr; temp_frame = temp_frame->next_frame){ // loop through every frame
-    for(int i = 0; i < MAX_VEHICLE_NUM; i++){
-      Vehicle* temp_vehicle = temp_frame->vehicles[i];
-      if(temp_vehicle == nullptr){ // should be useless
+  // delete[] video.vehicles[0]; // NOTE: seems that video.vehicles is not a dynamic array
+  // video.vehicles[0] = nullptr;
+
+  // NOTE: the lines commented below seems useless, because frame->vehicles[] seems not be a dynamic array, and every vehicles have been deallocated already
+  // for(Frame* temp_frame = video.first_frame; temp_frame->next_frame != nullptr; temp_frame = temp_frame->next_frame){ // loop through every frame
+  //   // for(int i = 0; i < MAX_VEHICLE_NUM; i++){ // loop through everything in frame->vehicles[], including nullptr
+  //   //   Vehicle* temp_vehicle = temp_frame->vehicles[i];
+  //   //   if(temp_vehicle == nullptr){ // if the object is a nullptr, just skip
+  //   //     continue;
+  //   //   }
+  //   //   // VehicleFrameInfo* temp_info = temp_vehicle->first_frame_info; // to delete every info for that vehicle
+  //   //   // while(temp_info != nullptr){ // delete every info for a vehicle
+  //   //   //   VehicleFrameInfo* to_be_deleted_info = temp_info;
+  //   //   //   temp_info = temp_info->next_frame_info;
+  //   //   //   delete to_be_deleted_info;
+  //   //   //   to_be_deleted_info = temp_info;
+  //   //   // }
+  //   //   // delete temp_info;
+  //   //   // temp_info = nullptr;
+  //   //   delete temp_vehicle;
+  //   //   temp_vehicle = nullptr;
+  //   // }
+  //   // delete[] temp_frame->vehicles[0];
+  //   if(temp_frame->vehicles[0] == nullptr){
+  //     continue;
+  //   }
+  //   delete[] temp_frame->vehicles[0]; // delete every vehicles[] for every frames
+  //   temp_frame->vehicles[0] = nullptr;
+  // }
+
+  //TODO delete image for every frames
+  for(int i = 0; i < video.num_frames; i++){
+      Frame* temp_frame = GetFrame(video, i);
+      if(temp_frame == nullptr){
         continue;
       }
-      VehicleFrameInfo* temp_info = temp_vehicle->first_frame_info;
-      while(temp_info != nullptr){ // delete every info for a vehicle
-        VehicleFrameInfo* to_be_deleted_info = temp_info;
-        temp_info = temp_info->next_frame_info;
-        delete to_be_deleted_info;
-        to_be_deleted_info = temp_info;
+      for(int j = 0; j < ROWS; j++){
+        delete[] temp_frame->image[j];
+        temp_frame->image[j] = nullptr;
       }
-      // delete temp_info;
-      // temp_info = nullptr;
-    }
-    delete[] temp_frame->vehicles[0];
+      delete[] temp_frame->image;
+      temp_frame->image = nullptr;
+  }
+
+  // FINALLY, delete all frames in the video
+  Frame* temp_frame = video.first_frame; // get first frame in video
+  while(temp_frame != nullptr){
+    Frame* to_be_deleted_frame = temp_frame;
+    temp_frame = temp_frame->next_frame;
+    delete to_be_deleted_frame;
+    to_be_deleted_frame = temp_frame;
   }
 }

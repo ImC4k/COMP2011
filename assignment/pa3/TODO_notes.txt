@@ -3,3 +3,8 @@ TODO list
 current bug: 0
 
 TODO: finish CleanVideo()
+      1: deleted something not dynamic pointers at line 320 TODO
+      2: I may have deleted every info twice
+      3: deleting frame->vehicles[]->every_vehicle seems unnecessary as well
+
+      clear every cout statements
