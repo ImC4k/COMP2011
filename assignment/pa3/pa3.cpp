@@ -290,7 +290,8 @@ void CleanVideo(Video & video)
 {
 
 	// your implementation
-  for(int i = 0; i < video.num_frames; i++){ // delete raw_data
+  //TODO delete all raw data
+  for(int i = 0; i < video.num_frames; i++){
     for(int j = 0; j < ROWS; j++){
       delete[] video.raw_data[i][j];
       video.raw_data[i][j] = nullptr;
@@ -301,24 +302,25 @@ void CleanVideo(Video & video)
   delete[] video.raw_data;
   video.raw_data = nullptr;
 
-  //TODO delete video.vehicles[]->every_info, then every_vehicle, then video.vehicles[]
+  //TODO delete video.vehicles[]->every_info, then every_vehicle
   for(int i = 0; i < MAX_VEHICLE_NUM; i++){
-    Vehicle* temp_vehicle = video.vehicles[i];
-    if(temp_vehicle == nullptr){ // should be useless
+    Vehicle* temp_vehicle = video.vehicles[i]; // get every vehicles
+    if(temp_vehicle == nullptr){
       continue;
     }
-    VehicleFrameInfo* temp_info = temp_vehicle->first_frame_info;
+    VehicleFrameInfo* temp_info = temp_vehicle->first_frame_info; // get info
     while(temp_info != nullptr){ // delete every info for a vehicle
       VehicleFrameInfo* to_be_deleted_info = temp_info;
       temp_info = temp_info->next_frame_info;
       delete to_be_deleted_info;
       to_be_deleted_info = temp_info;
-    } // NOTE: no need to deallocate nullptrs
+    }
+    delete temp_vehicle; // delete the vehicle after all info for the vehicle are deallocated
+    temp_vehicle = nullptr;
   }
-  // delete[] video.vehicles[0]; // NOTE: seems that video.vehicles is not a dynamic array
-  // video.vehicles[0] = nullptr;
+  // NOTE seems that video.vehicles is not a dynamic array, no need to deallocate
 
-  // NOTE: the lines commented below seems useless, because frame->vehicles[] seems not be a dynamic array, and every vehicles have been deallocated already
+  // NOTE the lines commented below seems useless, because frame->vehicles[] seems not be a dynamic array, and every vehicles have been deallocated already
   // for(Frame* temp_frame = video.first_frame; temp_frame->next_frame != nullptr; temp_frame = temp_frame->next_frame){ // loop through every frame
   //   // for(int i = 0; i < MAX_VEHICLE_NUM; i++){ // loop through everything in frame->vehicles[], including nullptr
   //   //   Vehicle* temp_vehicle = temp_frame->vehicles[i];
@@ -359,7 +361,7 @@ void CleanVideo(Video & video)
       temp_frame->image = nullptr;
   }
 
-  // FINALLY, delete all frames in the video
+  // TODO FINALLY, delete all frames in the video
   Frame* temp_frame = video.first_frame; // get first frame in video
   while(temp_frame != nullptr){
     Frame* to_be_deleted_frame = temp_frame;
