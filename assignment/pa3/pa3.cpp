@@ -291,7 +291,7 @@ void CleanVideo(Video & video)
 
 	// your implementation
   //TODO delete all raw data
-  for(int i = 0; i < video.num_frames; i++){
+ for(int i = 0; i < video.num_frames; i++){
     for(int j = 0; j < ROWS; j++){
       delete[] video.raw_data[i][j];
       video.raw_data[i][j] = nullptr;
@@ -318,34 +318,6 @@ void CleanVideo(Video & video)
     delete temp_vehicle; // delete the vehicle after all info for the vehicle are deallocated
     temp_vehicle = nullptr;
   }
-  // NOTE seems that video.vehicles is not a dynamic array, no need to deallocate
-
-  // NOTE the lines commented below seems useless, because frame->vehicles[] seems not be a dynamic array, and every vehicles have been deallocated already
-  // for(Frame* temp_frame = video.first_frame; temp_frame->next_frame != nullptr; temp_frame = temp_frame->next_frame){ // loop through every frame
-  //   // for(int i = 0; i < MAX_VEHICLE_NUM; i++){ // loop through everything in frame->vehicles[], including nullptr
-  //   //   Vehicle* temp_vehicle = temp_frame->vehicles[i];
-  //   //   if(temp_vehicle == nullptr){ // if the object is a nullptr, just skip
-  //   //     continue;
-  //   //   }
-  //   //   // VehicleFrameInfo* temp_info = temp_vehicle->first_frame_info; // to delete every info for that vehicle
-  //   //   // while(temp_info != nullptr){ // delete every info for a vehicle
-  //   //   //   VehicleFrameInfo* to_be_deleted_info = temp_info;
-  //   //   //   temp_info = temp_info->next_frame_info;
-  //   //   //   delete to_be_deleted_info;
-  //   //   //   to_be_deleted_info = temp_info;
-  //   //   // }
-  //   //   // delete temp_info;
-  //   //   // temp_info = nullptr;
-  //   //   delete temp_vehicle;
-  //   //   temp_vehicle = nullptr;
-  //   // }
-  //   // delete[] temp_frame->vehicles[0];
-  //   if(temp_frame->vehicles[0] == nullptr){
-  //     continue;
-  //   }
-  //   delete[] temp_frame->vehicles[0]; // delete every vehicles[] for every frames
-  //   temp_frame->vehicles[0] = nullptr;
-  // }
 
   //TODO delete image for every frames
   for(int i = 0; i < video.num_frames; i++){
