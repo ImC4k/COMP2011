@@ -99,13 +99,14 @@ bool InitializeNewFrame(Video & video)
 
   Frame* new_frame = new Frame;
   new_frame->index = new_frame_index;
-  new_frame->image = new char*[ROWS];
-  for(int i = 0; i < ROWS; i++){
-    new_frame->image[i] = new char[COLS];
-    for(int j = 0; j < COLS; j++){
-      new_frame->image[i][j] = video.raw_data[new_frame_index][i][j];
-    }
-  }
+  // new_frame->image = new char*[ROWS];
+  // for(int i = 0; i < ROWS; i++){
+  //   new_frame->image[i] = new char[COLS];
+  //   for(int j = 0; j < COLS; j++){
+  //     new_frame->image[i][j] = video.raw_data[new_frame_index][i][j];
+  //   }
+  // }
+  new_frame->image = video.raw_data[new_frame->index];
   new_frame->num_vehicles = 0;
   for(int i = 0; i < MAX_VEHICLE_NUM; i++){
     new_frame->vehicles[i] = nullptr;
@@ -313,25 +314,25 @@ void CleanVideo(Video & video)
       VehicleFrameInfo* to_be_deleted_info = temp_info;
       temp_info = temp_info->next_frame_info;
       delete to_be_deleted_info;
-      to_be_deleted_info = temp_info;
+      // to_be_deleted_info = temp_info;
     }
     delete temp_vehicle; // delete the vehicle after all info for the vehicle are deallocated
     temp_vehicle = nullptr;
   }
 
   //TODO delete image for every frames
-  for(int i = 0; i < video.num_frames; i++){
-      Frame* temp_frame = GetFrame(video, i);
-      if(temp_frame == nullptr){
-        continue;
-      }
-      for(int j = 0; j < ROWS; j++){
-        delete[] temp_frame->image[j];
-        temp_frame->image[j] = nullptr;
-      }
-      delete[] temp_frame->image;
-      temp_frame->image = nullptr;
-  }
+  // for(int i = 0; i < video.num_frames; i++){
+  //     Frame* temp_frame = GetFrame(video, i);
+  //     if(temp_frame == nullptr){
+  //       continue;
+  //     }
+  //     for(int j = 0; j < ROWS; j++){
+  //       delete[] temp_frame->image[j];
+  //       temp_frame->image[j] = nullptr;
+  //     }
+  //     delete[] temp_frame->image;
+  //     temp_frame->image = nullptr;
+  // }
 
   // TODO FINALLY, delete all frames in the video
   Frame* temp_frame = video.first_frame; // get first frame in video
