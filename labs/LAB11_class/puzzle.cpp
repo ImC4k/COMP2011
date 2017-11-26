@@ -13,8 +13,8 @@ WordPuzzle::WordPuzzle()
 
 // TODO 2: Implement the constructor to initialize a puzzle board of size n
 WordPuzzle::WordPuzzle(int n){
-  this->size = n;
-  this->board = new char* [n]; // a pointer array
+  size = n;
+  board = new char* [n]; // a pointer array
   for(int i = 0; i < n; i++){
     board[i] = new char[i+1]; // a char array
     for(int j = 0; j < i+1; j++){
@@ -47,7 +47,7 @@ bool WordPuzzle::add_word(const char* word, Position pos, Direction d){
   int temp_row = pos.row, temp_col = pos.col;
   char content;
 
-  while(count != len){
+  while(count != len){ // check if the space i am accessing is valid: must be either '_' or same as the word's corr. alphabet
     if(temp_col > temp_row){
       return false;
     }
@@ -79,7 +79,7 @@ bool WordPuzzle::add_word(const char* word, Position pos, Direction d){
   count = 0;
   temp_row = pos.row, temp_col = pos.col;
 
-  while(count != len){
+  while(count != len){ // after checking every space needed, then place the entire word
     board[temp_row][temp_col] = word[count];
     count++;
     switch(d){

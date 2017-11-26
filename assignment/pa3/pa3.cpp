@@ -45,7 +45,7 @@ Vehicle * GetVehicle(const Video & video, const int vehicle_index)
 {
 	// your implementation
 
-  if(vehicle_index < 0 || vehicle_index > video.num_vehicles){
+  if(vehicle_index < 0 || vehicle_index >= video.num_vehicles){
     return nullptr;
   }
 
@@ -91,7 +91,7 @@ VehicleFrameInfo * GetVFInfo(const Vehicle * vehicle, const int frame_index)
 bool InitializeNewFrame(Video & video)
 {
 	// your implementation
-  if(video.num_processed_frames >= video.num_frames){ // if all frames are processed
+  if(video.num_processed_frames >= video.num_frames || video.num_processed_frames < 0){ // if all frames are processed
     return false;
   }
 
@@ -138,10 +138,10 @@ bool InitializeNewFrame(Video & video)
 bool AddVFInfo(Video & video, VehicleFrameInfo * vehicle_frame_info)
 {
 	// your implementation
-  if(vehicle_frame_info->frame_index > video.num_processed_frames){ // if frame index does not exist in the video
+  if(vehicle_frame_info->frame_index >= video.num_processed_frames){ // if frame index does not exist in the video
     return false;
   }
-  if(vehicle_frame_info->vehicle_index < 0 || vehicle_frame_info->vehicle_index > video.num_vehicles){ // if vehicle index does not exist in the video
+  if(vehicle_frame_info->vehicle_index < 0 || vehicle_frame_info->vehicle_index >= video.num_vehicles){ // if vehicle index does not exist in the video
     return false;
   }
   VehicleFrameInfo* temp_info = GetVFInfo(GetVehicle(video, vehicle_frame_info->vehicle_index), vehicle_frame_info->frame_index);
