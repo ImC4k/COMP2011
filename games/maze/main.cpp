@@ -1,25 +1,38 @@
 #include <iostream>
+#include <string>
 #include "maze.h"
 
 using namespace std;
 
 int main(){
 RESTART:
-  cout<<"Please input board dimension: "<<endl;;
-  coordinates dimension;
-  cin>>dimension.row>>dimension.col;
-  cout<<"Use default start and exit point ( 0, 0 ) and ( "<<dimension.row-1<<", "<<dimension.col-1<<" ) ? y or n"<<endl;
-  char default_points;
-  cin>>default_points;
-
-  coordinates start_pt = {0, 0}, exit_pt = {dimension.row-1, dimension.col-1};
-  if(default_points == 'n'){
-    cout<<"Please input wanted location of Start point and Exit point"<<endl;
-    cin>>start_pt.row>>start_pt.col>>exit_pt.row>>exit_pt.col;
+  Maze* maze;
+  cout<<"Import a board? y or n"<<endl;
+  char import_choice;
+  cin>>import_choice;
+  if(import_choice == 'y'){
+    cout<<"What's the file name?"<<endl;
+    string file_name;
+    cin>>file_name;
+    maze = new Maze(file_name);
   }
+  else{
+    cout<<"Please input board dimension: "<<endl;;
+    coordinates dimension;
+    cin>>dimension.row>>dimension.col;
+    cout<<"Use default start and exit point ( 0, 0 ) and ( "<<dimension.row-1<<", "<<dimension.col-1<<" ) ? y or n"<<endl;
+    char default_points;
+    cin>>default_points;
+
+    coordinates start_pt = {0, 0}, exit_pt = {dimension.row-1, dimension.col-1};
+    if(default_points == 'n'){
+      cout<<"Please input wanted location of Start point and Exit point"<<endl;
+      cin>>start_pt.row>>start_pt.col>>exit_pt.row>>exit_pt.col;
+    }
 
 
-  Maze* maze = new Maze(dimension, start_pt, exit_pt);
+    maze = new Maze(dimension, start_pt, exit_pt);
+}
 
   int function_choice = -1;
 while(function_choice != 0){
@@ -31,6 +44,7 @@ while(function_choice != 0){
     cout<<"enter 4 to solve maze"<<endl;
     cout<<"enter 5 to clean maze"<<endl;
     cout<<"enter 6 for new maze board"<<endl;
+    cout<<"enter 7 to check dimension"<<endl;
     cout<<"******************"<<endl<<endl;
     cin>>function_choice;
     switch(function_choice){
@@ -70,6 +84,9 @@ while(function_choice != 0){
       case 6:
         delete maze;
         goto RESTART;
+
+      case 7:
+        cout<<"dimension of board is"<<maze->get_row()<<", "<<maze->get_col()<<endl;
 
       default: break;
     }

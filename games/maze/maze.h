@@ -2,6 +2,10 @@
 #define MAZE_H_
 
 #include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
 
 const char WALL = 'X';
 const char PATH = '*';
@@ -22,6 +26,7 @@ private:
 public:
   Maze();
   Maze(coordinates dimension, coordinates start_pt, coordinates exit_pt);
+  Maze(string file_name);
   ~Maze(); // manually destroy dynamic objects
   void set_dimension(coordinates dimension);
   int get_row();
