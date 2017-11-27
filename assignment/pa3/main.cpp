@@ -120,6 +120,7 @@ bool ReadVideoRawData(Video & video, const string & video_file) // read through 
 		}
 	}
 	cout << "Finished.\n\n";
+	video_stream.close();
 
 	return (true);
 }

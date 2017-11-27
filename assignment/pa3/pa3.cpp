@@ -99,13 +99,7 @@ bool InitializeNewFrame(Video & video)
 
   Frame* new_frame = new Frame;
   new_frame->index = new_frame_index;
-  // new_frame->image = new char*[ROWS];
-  // for(int i = 0; i < ROWS; i++){
-  //   new_frame->image[i] = new char[COLS];
-  //   for(int j = 0; j < COLS; j++){
-  //     new_frame->image[i][j] = video.raw_data[new_frame_index][i][j];
-  //   }
-  // }
+
   new_frame->image = video.raw_data[new_frame->index];
   new_frame->num_vehicles = 0;
   for(int i = 0; i < MAX_VEHICLE_NUM; i++){
@@ -289,9 +283,9 @@ double AverageRoadSpeed(Video & video)
  */
 void CleanVideo(Video & video)
 {
-
 	// your implementation
   //TODO delete all raw data
+  cout<<video.raw_data<<endl;
  for(int i = 0; i < video.num_frames; i++){
     for(int j = 0; j < ROWS; j++){
       delete[] video.raw_data[i][j];
@@ -309,14 +303,6 @@ void CleanVideo(Video & video)
     if(temp_vehicle == nullptr){
       continue;
     }
-    // VehicleFrameInfo* temp_info = temp_vehicle->first_frame_info; // get info
-    // VehicleFrameInfo* to_be_deleted_info = temp_info;
-    // while(temp_info != nullptr){ // delete every info for a vehicle
-    //   to_be_deleted_info = temp_info;
-    //   temp_info = temp_info->next_frame_info;
-    //   delete to_be_deleted_info;
-    //   // to_be_deleted_info = temp_info;
-    // }
     for(VehicleFrameInfo* temp_info = temp_vehicle->first_frame_info; temp_info != nullptr;){
       VehicleFrameInfo* to_be_deleted_info = temp_info;
       temp_info = temp_info->next_frame_info;
@@ -324,30 +310,11 @@ void CleanVideo(Video & video)
     }
     delete temp_vehicle; // delete the vehicle after all info for the vehicle are deallocated
     temp_vehicle = nullptr;
+    video.vehicles[i] = nullptr;
   }
 
-  //TODO delete image for every frames
-  // for(int i = 0; i < video.num_frames; i++){
-  //     Frame* temp_frame = GetFrame(video, i);
-  //     if(temp_frame == nullptr){
-  //       continue;
-  //     }
-  //     for(int j = 0; j < ROWS; j++){
-  //       delete[] temp_frame->image[j];
-  //       temp_frame->image[j] = nullptr;
-  //     }
-  //     delete[] temp_frame->image;
-  //     temp_frame->image = nullptr;
-  // }
-
   // TODO FINALLY, delete all frames in the video
-  // Frame* temp_frame = video.first_frame; // get first frame in video
-  // while(temp_frame != nullptr){
-  //   Frame* to_be_deleted_frame = temp_frame;
-  //   temp_frame = temp_frame->next_frame;
-  //   delete to_be_deleted_frame;
-  //   to_be_deleted_frame = temp_frame;
-  // }
+
   for(Frame* temp_frame = video.first_frame; temp_frame != nullptr;){
     Frame* to_be_deleted_frame = temp_frame;
     temp_frame = temp_frame->next_frame;
