@@ -20,6 +20,10 @@ RESTART:
     cout<<"Please input board dimension: "<<endl;;
     coordinates dimension;
     cin>>dimension.row>>dimension.col;
+    if(dimension.row <= 0 || dimension.col <= 0){
+      cout<<"Idiot"<<endl;
+      return 0;
+    }
     cout<<"Use default start and exit point ( 0, 0 ) and ( "<<dimension.row-1<<", "<<dimension.col-1<<" ) ? y or n"<<endl;
     char default_points;
     cin>>default_points;
@@ -116,6 +120,8 @@ while(function_choice != 0){
       default: break;
     }
   }
+  cout<<"Thanks for playing"<<endl;
+  system("pause");
 
   return 0;
 }

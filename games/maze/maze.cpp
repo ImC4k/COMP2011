@@ -77,7 +77,7 @@ Maze::Maze(string file_name){ // for directly importing a board from a file
 Maze::~Maze(){
   for(int i = 0; i < dimension.row; i++){
     delete[] board[i];
-    board[i] = nullptr;
+    // board[i] = nullptr;
   }
   delete[] board;
   board = nullptr;
