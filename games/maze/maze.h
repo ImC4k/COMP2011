@@ -17,7 +17,7 @@ const char TEMP = '?';
 const char START = 'S';
 const char EXIT = 'E';
 
-enum direction{DOWN, RIGHT, UP, LEFT, VOID};
+enum direction{DOWN, RIGHT, UP, LEFT, VOID}; // VOID is designed for start of game, no previous direction
 
 struct coordinates{
   int row;
@@ -49,6 +49,3 @@ public:
   void reset_board(int option = 1); // option 1: clean all; 2: clean path only
 };
 #endif
-
-// TODO randomly create walls
-// TODO try to turn things into pointers for better memory management

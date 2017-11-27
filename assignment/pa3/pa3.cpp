@@ -309,12 +309,18 @@ void CleanVideo(Video & video)
     if(temp_vehicle == nullptr){
       continue;
     }
-    VehicleFrameInfo* temp_info = temp_vehicle->first_frame_info; // get info
-    while(temp_info != nullptr){ // delete every info for a vehicle
+    // VehicleFrameInfo* temp_info = temp_vehicle->first_frame_info; // get info
+    // VehicleFrameInfo* to_be_deleted_info = temp_info;
+    // while(temp_info != nullptr){ // delete every info for a vehicle
+    //   to_be_deleted_info = temp_info;
+    //   temp_info = temp_info->next_frame_info;
+    //   delete to_be_deleted_info;
+    //   // to_be_deleted_info = temp_info;
+    // }
+    for(VehicleFrameInfo* temp_info = temp_vehicle->first_frame_info; temp_info != nullptr;){
       VehicleFrameInfo* to_be_deleted_info = temp_info;
       temp_info = temp_info->next_frame_info;
       delete to_be_deleted_info;
-      // to_be_deleted_info = temp_info;
     }
     delete temp_vehicle; // delete the vehicle after all info for the vehicle are deallocated
     temp_vehicle = nullptr;
@@ -335,11 +341,16 @@ void CleanVideo(Video & video)
   // }
 
   // TODO FINALLY, delete all frames in the video
-  Frame* temp_frame = video.first_frame; // get first frame in video
-  while(temp_frame != nullptr){
+  // Frame* temp_frame = video.first_frame; // get first frame in video
+  // while(temp_frame != nullptr){
+  //   Frame* to_be_deleted_frame = temp_frame;
+  //   temp_frame = temp_frame->next_frame;
+  //   delete to_be_deleted_frame;
+  //   to_be_deleted_frame = temp_frame;
+  // }
+  for(Frame* temp_frame = video.first_frame; temp_frame != nullptr;){
     Frame* to_be_deleted_frame = temp_frame;
     temp_frame = temp_frame->next_frame;
     delete to_be_deleted_frame;
-    to_be_deleted_frame = temp_frame;
   }
 }
