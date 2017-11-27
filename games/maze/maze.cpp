@@ -11,11 +11,11 @@ Maze::Maze(coordinates dimension, coordinates start_pt, coordinates exit_pt){ //
   for(int i = 0; i < dimension.row; i++){
     board[i] = new char[dimension.col];
     for(int j = 0; j < dimension.col; j++){
-      board[i][j] = '_';
+      board[i][j] = BLANK;
     }
   }
-  board[start_pt.row][start_pt.col] = 'S';
-  board[exit_pt.row][exit_pt.col] = 'E';
+  board[start_pt.row][start_pt.col] = START;
+  board[exit_pt.row][exit_pt.col] = EXIT;
 
   set_start_exit(start_pt, exit_pt);
   set_dimension(dimension);
@@ -27,12 +27,14 @@ Maze::Maze(string file_name){ // for directly importing a board from a file
   ifstream input_file;
   input_file.open(file_name);
 
-  int row_count;
+  int row_count = 0;
+
   while(!input_file.eof()){
     string trash;
     input_file>>trash;
     row_count++;
   }
+  cout<<row_count<<endl;
   input_file.close();
   board = new char* [row_count];
 
@@ -47,20 +49,21 @@ Maze::Maze(string file_name){ // for directly importing a board from a file
   for(int i = 0; i < col_count; i++){
     board[0][i] = temp_row_board[i];
   }
+  cout<<row_count<<" "<<col_count<<endl;
   for(int i = 1; i < row_count; i++){
-    if(input_file.eof()){
-      cout<<"something's wrong"<<endl;
-      return;
-    }
+    // if(input_file.eof()){
+    //   cout<<"something's wrong"<<endl;
+    //   return;
+    // }
     board[i] = new char[col_count];
     input_file>>temp_row_board;
     for(int j = 0; j < col_count; j++){
       board[i][j] = temp_row_board[j];
-      if(board[i][j] == 'S'){
+      if(board[i][j] == START){
         start_pt.row = i;
         start_pt.col = j;
       }
-      else if(board[i][j] == 'E'){
+      else if(board[i][j] == EXIT){
         exit_pt.row = i;
         exit_pt.col = j;
       }
@@ -115,6 +118,10 @@ bool Maze::add_wall(coordinates location){
   return true;
 }
 
+char Maze::get_element(coordinates location){
+  return board[location.row][location.col];
+}
+
 void Maze::print_maze(){
   cout<<"\n******************"<<endl;
   cout<<'\t';
@@ -133,46 +140,63 @@ void Maze::print_maze(){
 
 }
 
-char Maze::get_element(coordinates location){
-  return board[location.row][location.col];
+void Maze::random_wall(int prob_reci){
+  srand(time(NULL));
+  for(int i = 0; i < dimension.row; i++){
+    for(int j = 0; j < dimension.col; j++){
+      if((i == start_pt.row && j == start_pt.col) || (i == exit_pt.row && j == exit_pt.col)){
+        continue;
+      }
+      if(!(rand()%prob_reci)){
+        board[i][j] = WALL;
+      }
+    }
+  }
 }
 
 bool Maze::solve_maze(int row, int col, direction prev_d){
   if(row == exit_pt.row && col == exit_pt.col){
-    board[row][col] = '*';
+    board[row][col] = PATH;
     // cout<<"reached here"<<endl;
     // print_maze();
     return true;
   }
   else{
-    if(prev_d != UP && row + 1 < dimension.row && board[row + 1][col] != WALL){ // go down case
+    board[row][col] = TEMP;
+    if(prev_d != UP && row + 1 < dimension.row && board[row + 1][col] != WALL && board[row + 1][col] != TEMP){ // go down case
       if(solve_maze(row + 1, col, DOWN)){
-        board[row][col] = '*';
+        board[row][col] = PATH;
         // print_maze();
         return true;
       }
     }
-    if(prev_d != LEFT && col + 1 < dimension.col && board[row][col + 1] != WALL){ // go right case
+    if(prev_d != LEFT && col + 1 < dimension.col && board[row][col + 1] != WALL && board[row][col + 1] != TEMP){ // go right case
       if(solve_maze(row, col + 1, RIGHT)){
-        board[row][col] = '*';
+        board[row][col] = PATH;
         // print_maze();
         return true;
       }
     }
-    if(prev_d != DOWN && row - 1 >= 0 && board[row - 1][col] != WALL){ // go up case
+    if(prev_d != DOWN && row - 1 >= 0 && board[row - 1][col] != WALL && board[row - 1][col] != TEMP){ // go up case
       if(solve_maze(row - 1, col, UP)){
-        board[row][col] = '*';
+        board[row][col] = PATH;
         // print_maze();
         return true;
       }
     }
-    if( prev_d != RIGHT && col - 1 >= 0 && board[row][col - 1] != WALL){ // go left case
+    if( prev_d != RIGHT && col - 1 >= 0 && board[row][col - 1] != WALL && board[row][col - 1] != TEMP){ // go left case
       if(solve_maze(row, col - 1, LEFT)){
-        board[row][col] = '*';
+        board[row][col] = PATH;
         // print_maze();
         return true;
       }
     }
+  }
+  if(row == start_pt.row && col == start_pt.col){
+    board[row][col] = START;
+  }
+  else{
+    board[row][col] = BLANK;
   }
   return false;
 }
@@ -181,16 +205,16 @@ void Maze::reset_board(int option){
   for(int i = 0; i < dimension.row; i++){
     for(int j = 0; j < dimension.col; j++){
       if(option == 2){ // clean path only
-        if(board[i][j] == '*'){
-          board[i][j] = '_';
+        if(board[i][j] == PATH){
+          board[i][j] = BLANK;
         }
       }
       else if(option == 1){ // clean all
-        board[i][j] = '_';
+        board[i][j] = BLANK;
       }
       else return;
     }
   }
-  board[get_start().row][get_start().col] = 'S';
-  board[get_exit().row][get_exit().col] = 'E';
+  board[get_start().row][get_start().col] = START;
+  board[get_exit().row][get_exit().col] = EXIT;
 }

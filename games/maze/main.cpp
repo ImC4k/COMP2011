@@ -40,7 +40,7 @@ while(function_choice != 0){
     cout<<"enter 0 to quit program"<<endl;
     cout<<"enter 1 to print board"<<endl;
     cout<<"enter 2 to add wall"<<endl;
-    // cout<<"enter 3 to randomly create board"<<endl;
+    cout<<"enter 3 to randomly place walls"<<endl;
     cout<<"enter 4 to solve maze"<<endl;
     cout<<"enter 5 to clean maze"<<endl;
     cout<<"enter 6 for new maze board"<<endl;
@@ -49,45 +49,70 @@ while(function_choice != 0){
     cin>>function_choice;
     switch(function_choice){
       case 1: // print board
+      {
         maze->print_maze();
         break;
+      }
 
       case 2: // add wall
-        coordinates location;
-        cout<<"please enter location you want to put a wall at: "<<endl;
-        cin>>location.row>>location.col;
-        maze->add_wall(location);
-        break;
+        {
+          coordinates location;
+          cout<<"please enter location you want to put a wall at: "<<endl;
+          cin>>location.row>>location.col;
+          maze->add_wall(location);
+          break;
+        }
 
-      case 3:
-        cout<<"not developed yet!"<<endl;
-        break;
+      case 3: // food of thought: where's the scope of a switch statement?
+        {
+          cout<<"use default probability? y or n"<<endl;
+          char option;
+          cin>>option;
+          if(option == 'n'){
+            cout<<"input reciprical of probability: "<<endl;
+            int prob;
+            cin>>prob;
+            prob = static_cast<int>(prob);
+            maze->random_wall(prob);
+          }
+          else{
+            maze->random_wall();
+          }
+          break;
+        }
 
       case 4:
-        if(maze->get_element(maze->get_start()) == WALL || !maze->solve_maze(maze->get_start().row, maze->get_start().col, VOID)){ // useless direction if first placement
-          cout<<"there is no solution to this board!"<<endl;
+        {
+          if(maze->get_element(maze->get_start()) == WALL || !maze->solve_maze(maze->get_start().row, maze->get_start().col, VOID)){ // useless direction if first placement
+            cout<<"there is no solution to this board!"<<endl;
+          }
+          break;
         }
-        break;
 
       case 5:
-        cout<<"clean option: 1 for entire board; 2 for path only"<<endl;
-        int option;
-        cin>>option;
-        if(option == 1){
-          maze->reset_board();
+        {
+          cout<<"clean option: 1 for entire board; 2 for path only"<<endl;
+          int option;
+          cin>>option;
+          if(option == 1){
+            maze->reset_board();
+          }
+          else if(option == 2){
+            maze->reset_board(2);
+          }
+          break;
         }
-        else if(option == 2){
-          maze->reset_board(2);
-        }
-        break;
 
       case 6:
-        delete maze;
-        goto RESTART;
+        {
+          delete maze;
+          goto RESTART;
+        }
 
       case 7:
-        cout<<"dimension of board is"<<maze->get_row()<<", "<<maze->get_col()<<endl;
-
+        {
+          cout<<"dimension of board is"<<maze->get_row()<<", "<<maze->get_col()<<endl;
+        }
       default: break;
     }
   }

@@ -4,11 +4,17 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <cstdlib>
+#include <ctime>
 
 using namespace std;
 
 const char WALL = 'X';
 const char PATH = '*';
+const char BLANK = '_';
+const char TEMP = '?';
+const char START = 'S';
+const char EXIT = 'E';
 
 enum direction{DOWN, RIGHT, UP, LEFT, VOID};
 
@@ -37,6 +43,7 @@ public:
   bool add_wall(coordinates location); // add a wall if the given location is in the board
   char get_element(coordinates location);
   void print_maze();
+  void random_wall(int probability_reciprical = 5); // can input a custom reciprical of probability of placing walls
   bool solve_maze(int row, int col, direction d);
   void reset_board(int option = 1); // option 1: clean all; 2: clean path only
 };
