@@ -1,15 +1,18 @@
 #include "matrix.h"
 
+Matrix::Matrix(){
+    num_row = 0;
+    num_col = 0;
+    determinant = 0;
+    matrix = nullptr;
+}
+
 Matrix::Matrix(int num_row, int num_col){
   this->num_row = num_row;
   this->num_col = num_col;
-  matrix = new* double[num_row];
-  for(int i = 0; i < num_row; i++){
-    matrix[i] = new double[num_col];
-    for(int j = 0; j << num_col; j++){
-      matrix[i][j] = NULL;
-    }
-  }
+  determinant = 0;
+  initialize_matrix();
+  reset(0);
 }
 
 Matrix::~Matrix(){
@@ -17,6 +20,64 @@ Matrix::~Matrix(){
     delete[] matrix[i];
   }
   delete[] matrix;
+}
+
+bool initialize_matrix(){
+  if(num_row == 0 || num_col == 0){
+    cout<<"matrix dimension not defined properly"<<endl;
+    return false;
+  }
+
+  matrix = new double* [num_row];
+  for(int i = 0; i < num_row; i++){
+    matrix[i] = new double [num_col];
+  }
+  reset(0);
+  return true;
+}
+
+double Matrix::get_num_row(){
+  return num_row;
+}
+
+double Matrix::get_num_col(){
+  return num_col;
+}
+
+double Matrix::get_determinant(){
+  return determinant;
+}
+
+double** Matrix::get_matrix(){
+  return matrix;
+}
+
+double Matrix::get_element(int num_row, int num_col){
+  return matrix[num_row][num_col];
+}
+
+void Matrix::set_num_row(int num_row){
+  this->num_row = num_row;
+}
+
+void Matrix::set_num_col(int num_col){
+  this->num_col = num_col;
+}
+
+// void Matrix::set_determinant(double determinant){
+//   this->determinant = determinant;
+// }
+
+void set_element(int num_row, int num_col, double value){
+  matrix[num_row][num_col] = value;
+}
+
+void Matrix::set_matrix(double** matrix){
+  this->matrix = matrix;
+}
+
+void Matrix::input_elements(){ // allows users to input every element on console
+  //TODO
 }
 
 void Matrix::add(const Matrix src){
@@ -76,7 +137,7 @@ void Matrix::multiply_scaler(const double scaler){
   }
 }
 
-double Matrix::determinant(){
+double Matrix::determinant() const{
   if(num_row != num_col){
     cout<<"matrix is not square, cannot compute determinant"<<endl;
     return -1;
@@ -84,10 +145,15 @@ double Matrix::determinant(){
   int size = num_row;
   sign s = POSITIVE;
   double scaler = 1;
-  return determinant_r(size, s, scaler);
+  Matrix* temp_matrix = copy_matrix(this->matrix);
+  double determinant = determinant_r(temp_matrix, size, s, scaler);
+  delete temp_matrix;
+
+  return determinant;
 }
 
-double Matrix::determinant_r(int size, sign& s, double& scaler){
+double Matrix::determinant_r(Matrix* matrix, int size, sign& s, double& scaler){
+  // TODO
   if(size == 1){
     return (matrix[0][0])*scaler*((s == POSITIVE)? 1 : -1);
   }
@@ -115,7 +181,7 @@ double Matrix::determinant_r(int size, sign& s, double& scaler){
         row_replacement(matrix, j, size - 1, -1.0*matrix[j][size - 1]);
       }
     }
-    return matrix_determinant(matrix, size - 1, s, scaler);
+    return determinant_r(matrix, size - 1, s, scaler);
   }
 }
 
@@ -157,10 +223,80 @@ void Matrix::reset(int option){
   return;
 }
 
-Matrix* Matrix::multiply_matrix(const Matrix src){
-
+void Matrix::update_determinant(){
+  determinant = determinant();
 }
 
-Matrix* Matrix::get_inverse(const Matrix src){
-  
+
+
+
+
+
+
+
+Matrix* copy_matrix(const Matrix src){
+  Matrix* result = new Matrix();
+  int num_row = src->get_num_row();
+  int num_col = src->get_num_col();
+  result->set_num_row(num_row);
+  result->set_num_col(num_col);
+  result->initialize_matrix();
+  result->copy_matrix(src);
+  return result;
+}
+
+Matrix* multiply_matrix(const Matrix a, const Matrix b){
+  if(a->get_num_col() != b->get_num_row()){
+    cout<<"matrix dimension does not match, cannot multiply"<<endl;
+    return nullptr;
+  }
+  Matrix* result = new Matrix();
+  int num_row = a->get_num_row();
+  int num_col = b->get_num_col();
+  result->set_num_row(num_row);
+  reselt->set_num_col(num_col);
+
+  result->initialize_matrix();
+  double** matrix = result->get_matrix();
+  for(int i = 0; i < num_row; i++){ // real multiply part
+    for(int j = 0; j < num_col; j++){
+      for(int k = 0; k < a->get_num_col()){
+        matrix[i][k] += a->get_element(i, j)*b->get_element(j, k);
+      }
+    }
+  }
+  return result;
+}
+
+Matrix* inverse(const Matrix src){
+  // TODO
+  if(src->get_determinant() == 0){
+    cout<<"That matrix has no inverse"<<endl;
+    return nullptr;
+  }
+  Matrix* src_copy = new Matrix();
+  int num_row = src->get_num_row();
+  int num_col = src->get_num_col();
+  src_copy->initialize_matrix();
+  src_copy->set_num_row(num_row);
+  src_copy->set_num_col(num_col);
+  src_copy->copy_matrix(src); // save a copy for manipulation
+
+  Matrix* result = new Matrix();
+  result->reset(); // result matrix is set to identity
+
+
+  delete src_copy;
+  return result;
+}
+
+Matrix* transpose(const Matrix src){
+  Matrix* result = new Matrix(src->get_num_col(), src->get_num_row());
+  result->initialize_matrix();
+  for(int i = 0; i < result->get_num_row(); i++){
+    for(int j = 0; j < result->get_num_col(); j++){
+      result->set_element(i, j, src->get_element(j, i));
+    }
+  }
+  return result;
 }
