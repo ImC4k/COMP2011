@@ -16,7 +16,7 @@ private:
   double** matrix;
 
   double determinant_r(Matrix* matrix, int size, double& scaler); // TODO
-  double calc_determinant() const; // when called, must supply sign and scaler variable
+  double calc_determinant(); // when called, must supply sign and scaler variable
 
 public:
   Matrix();
@@ -24,8 +24,8 @@ public:
   ~Matrix();
   bool initialize_matrix(); // initialize_matrix pointers, and set all elements to 0
 
-  double get_num_row();
-  double get_num_col();
+  int get_num_row();
+  int get_num_col();
   double get_determinant();
   double** get_matrix();
   double get_element(int num_row, int num_col);
@@ -41,7 +41,7 @@ public:
   void row_interchange(const int num_row_1, const int num_col_2); // swap num_row_1 and num_row_2
   void row_replacement(const int target_row, const int add_row, const double scaler); //
   void multiply_scaler(const double scaler);
-  void copy(const Matrix* src);
+  void copy(double** matrix, int matrix_row, int matrix_col);
   void reset(int option = 1); // options: 0: all zero, 1: identity
   void update_determinant();
   void substitute_vector(Vector* vector, int num_col);
@@ -49,14 +49,10 @@ public:
   // span
   };
 
-Matrix* copy(const Matrix* src);
-Matrix* multiply_matrix_m(const Matrix src);
-Matrix* inverse(const Matrix src); // TODO put the inverse of src to another matrix object (square matrix)
-Matrix* transpose(const Matrix src); // get the transpose of a matrix
-// TODO functions: cramer's rule
-double* solve_unknowns(Matrix* matrix, Vector* vector);
+Matrix* copy_m(double** matrix, int matrix_row, int matrix_col);
+Matrix* multiply_matrix_m(Matrix* matrix_left, Matrix* matrix_right);
+Matrix* inverse(Matrix* src); // TODO put the inverse of src to another matrix object (square matrix)
+Matrix* transpose(Matrix* src); // get the transpose of a matrix
 // TODO functions: eigen values
-// TODO functions: least square
-double* least_square(Matrix* matrix, Vector* x, Vector* b); // find least square values
 
 #endif

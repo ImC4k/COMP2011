@@ -23,9 +23,9 @@ double Vector::get_element(int num_row){
   return vector[num_row];
 }
 
-// Vector* get_vector(){
-//   return vector;
-// }
+double* Vector::get_vector(){
+  return vector;
+}
 
 void Vector::set_dimension(int dimension){
   this->dimension = dimension;
@@ -58,18 +58,18 @@ void Vector::scaling(double scaler){
   }
 }
 
-void Vector::dot(Vector* vector){
-  if(this->dimension != vector->dimension){
+void Vector::dot(Vector* src){
+  if(this->dimension != src->dimension){
     cout<<"mismatch of dimension"<<endl;
     return;
   }
   for(int i = 0; i < this->dimension; i++){
-    this->vector[i] *= vector[i];
+    this->vector[i] *= src->vector[i];
   }
 }
 
-void Vector::copy(Vector* vector){
-  if(dimension == vector->dimension){
+void Vector::copy(double* vector, int dimension){
+  if(this->dimension != dimension){
     cout<<"mismatch dimension"<<endl;
     return;
   }
@@ -86,28 +86,16 @@ Vector* dot(Vector* vector_a, Vector* vector_b){
     cout<<"mismatch of dimension"<<endl;
     return nullptr;
   }
-  Vector* result = new Vector();
-  result->
-}
-
-Vector* copy(Vector* vector){
-  Vector* result = new Vector(vector->get_dimension());
-  result->copy_vector(vector);
+  Vector* result = new Vector(vector_a->get_dimension());
+  for(int i = 0; i < result->get_dimension(); i++){
+    double value = vector_a->get_element(i) * vector_b->get_element(i);
+    result->set_element(i, value);
+  }
   return result;
 }
 
-Vector* multiply_matrix_v(Matrix* matrix, Vector* vector){
-  if(matrix->get_num_col() != vector->get_dimension()){
-    cout<<"mismatch of dimension"<<endl;
-    return nullptr;
-  }
-  Vector* result = new Vector(matrix->get_num_row());
-  for(int i = 0; i < result->get_dimension(); i++){
-    double product = 0;
-    for(int j = 0; j < matrix->get_num_col()){
-      product += matrix->get_element(i, j)*vector->get_element(j);
-    }
-    result->set_element(i, product);
-  }
+Vector* copy_v(double* vector, int dimension){
+  Vector* result = new Vector(dimension);
+  result->copy(vector, dimension);
   return result;
 }

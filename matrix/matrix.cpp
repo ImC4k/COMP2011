@@ -36,11 +36,11 @@ bool Matrix::initialize_matrix(){
   return true;
 }
 
-double Matrix::get_num_row(){
+int Matrix::get_num_row(){
   return num_row;
 }
 
-double Matrix::get_num_col(){
+int Matrix::get_num_col(){
   return num_col;
 }
 
@@ -141,7 +141,7 @@ void Matrix::multiply_scaler(const double scaler){
   update_determinant();
 }
 
-double Matrix::calc_determinant() const{
+double Matrix::calc_determinant(){
   if(num_row != num_col){
     cout<<"matrix is not square, cannot compute determinant"<<endl;
     return -1;
@@ -149,54 +149,54 @@ double Matrix::calc_determinant() const{
   int size = num_row;
   // sign s = POSITIVE;
   double scaler = 1;
-  Matrix* temp_matrix = copy(this->matrix);
+  Matrix* temp_matrix = copy_m(matrix, num_row, num_col);
   double determinant = determinant_r(temp_matrix, size, scaler);
   delete temp_matrix;
 
   return determinant;
 }
 
-double Matrix::determinant_r(Matrix* matrix, int size, double& scaler){
+double Matrix::determinant_r(Matrix* src, int size, double& scaler){
   // TODO
   if(size == 1){
-    return (matrix[0][0])*scaler;
+    return (src->matrix[0][0])*scaler;
   }
   else{
-    if(matrix[size - 1][size - 1] != 0){
-      scaler *=matrix[size - 1][size - 1];
-      row_scaling(matrix, size - 1, 1.0/matrix[size - 1][size - 1]);
+    if(src->matrix[size - 1][size - 1] != 0){
+      scaler *=src->matrix[size - 1][size - 1];
+      row_scaling(size - 1, 1.0/src->matrix[size - 1][size - 1]);
     }
     else{
       int i = 0;
       for(; i < size - 1; i++){
-        if(matrix[i][size - 1] != 0){
+        if(src->matrix[i][size - 1] != 0){
           break;
         }
       }
-      row_interchange(matrix, i, size - 1);
+      row_interchange(i, size - 1);
       scaler *= -1; // change sign after row_interchange
-      if(matrix[size - 1][size - 1] != 1){
-        scaler *= matrix[size - 1][size - 1];
-        row_scaling(matrix, size - 1, (1.0/matrix[size - 1][size - 1]));
+      if(src->matrix[size - 1][size - 1] != 1){
+        scaler *= src->matrix[size - 1][size - 1];
+        row_scaling(size - 1, (1.0/src->matrix[size - 1][size - 1]));
       }
     }
     for(int j = 0; j < size - 1; j++){
-      if(matrix[j][size - 1] != 0){
-        row_replacement(matrix, j, size - 1, -1.0*matrix[j][size - 1]);
+      if(src->matrix[j][size - 1] != 0){
+        row_replacement(j, size - 1, -1.0*src->matrix[j][size - 1]);
       }
     }
-    return determinant_r(matrix, size - 1, scaler);
+    return determinant_r(src, size - 1, scaler);
   }
 }
 
-void Matrix::copy(const Matrix* src){
-  if(num_row != src->num_row || num_col != src->num_col){
+void Matrix::copy(double** matrix, int num_row, int num_col){
+  if(this->num_row != num_row || this->num_col != num_col){
     cout<<"different dimension matrix object, cannot copy"<<endl;
     return;
   }
   for(int i = 0; i < num_row; i++){
     for(int j = 0; j < num_col; j++){
-      matrix[i][j] = src->matrix[i][j];
+      this->matrix[i][j] = matrix[i][j];
     }
   }
   update_determinant();
@@ -223,7 +223,7 @@ void Matrix::reset(int option){
     }
     break;
 
-    default return;
+    default: return;
   }
   update_determinant();
   return;
@@ -251,13 +251,13 @@ void Matrix::substitute_vector(Vector* vector, int num_col){
 
 
 
-Matrix* copy(const Matrix* src){
-  Matrix* result = new Matrix(src->get_num_row(), src->get_num_col());
-  result->copy(src);
+Matrix* copy_m(double** matrix, int num_row, int num_col){
+  Matrix* result = new Matrix(num_row, num_col);
+  result->copy(matrix, num_row, num_col);
   return result;
 }
 
-Matrix* multiply_matrix_m(const Matrix a, const Matrix b){
+Matrix* multiply_matrix_m(Matrix* a, Matrix* b){
   if(a->get_num_col() != b->get_num_row()){
     cout<<"matrix dimension does not match, cannot multiply"<<endl;
     return nullptr;
@@ -266,13 +266,13 @@ Matrix* multiply_matrix_m(const Matrix a, const Matrix b){
   int num_row = a->get_num_row();
   int num_col = b->get_num_col();
   result->set_num_row(num_row);
-  reselt->set_num_col(num_col);
+  result->set_num_col(num_col);
 
   result->initialize_matrix();
   double** matrix = result->get_matrix();
   for(int i = 0; i < num_row; i++){ // real multiply part
     for(int j = 0; j < num_col; j++){
-      for(int k = 0; k < a->get_num_col()){
+      for(int k = 0; k < a->get_num_col(); k++){
         matrix[i][k] += a->get_element(i, j)*b->get_element(j, k);
       }
     }
@@ -280,9 +280,9 @@ Matrix* multiply_matrix_m(const Matrix a, const Matrix b){
   return result;
 }
 
-Matrix* inverse(const Matrix src){
+Matrix* inverse(Matrix* src){
   // TODO
-  if(src->get_determinant() == 0){
+  if(src->get_determinant() == 0){ // also checked if it's a square matrix
     cout<<"That matrix has no inverse"<<endl;
     return nullptr;
   }
@@ -292,15 +292,15 @@ Matrix* inverse(const Matrix src){
   src_copy->initialize_matrix();
   src_copy->set_num_row(num_row);
   src_copy->set_num_col(num_col);
-  src_copy->copy(src); // save a copy for manipulation
+  src_copy->copy(src->get_matrix(), src->get_num_row(), src->get_num_col()); // save a copy for manipulation
 
   Matrix* result = new Matrix();
   result->reset(); // result matrix is set to identity
 
-  for(int j = 0; j < SIZE; j++){
-    if(src_copy->get_element(j, j) == 0){
+  for(int j = 0; j < src_copy->get_num_col(); j++){
+    if(src_copy->get_element(j, j) == 0){ // check if diagonal element is 0
       int i = j;
-      for(; i < SIZE; i++){
+      for(; i < src_copy->get_num_row(); i++){
         if(src_copy->get_element(i, j) != 0){
           break;
         }
@@ -313,7 +313,7 @@ Matrix* inverse(const Matrix src){
       src_copy->row_scaling(j, scaler);
       result->row_scaling(j, scaler);
     }
-    for(int i = 0; i < SIZE; i++){ // row_replacement to create RREF
+    for(int i = 0; i < src->get_num_row(); i++){ // row_replacement to create RREF
       if(i == j || src_copy->get_element(i,j) == 0) continue;
       double scaler = -1.0*src_copy->get_element(i,j);
       src_copy->row_replacement(i, j, scaler);
@@ -325,7 +325,7 @@ Matrix* inverse(const Matrix src){
   return result;
 }
 
-Matrix* transpose(const Matrix src){
+Matrix* transpose(Matrix* src){
   Matrix* result = new Matrix(src->get_num_col(), src->get_num_row());
   result->initialize_matrix();
   for(int i = 0; i < result->get_num_row(); i++){
@@ -334,27 +334,4 @@ Matrix* transpose(const Matrix src){
     }
   }
   return result;
-}
-
-Vector* solve_unknowns(const Matrix* matrix, const Vector* vector){
-  double* solution = new double[matrix->get_num_col()];
-  for(int i = 0; i < matrix->get_num_col(); i++){ solution[i] = 0;} // initialize return array to 0
-
-  Vector* copy_vector = copy(vector);
-
-  for(int i = 0; i < matrix->get_num_col()){ // solve for every vatiable, apply cramer's rule here
-    Matrix* temp_matrix = copy(matrix);
-    temp_matrix->substitute_vector(copy_vector, i);
-    solution[i] = temp_matrix->get_determinant()/matrix->get_determinant();
-    delete copy_vector;
-  }
-
-  delete temp_matrix;
-}
-
-double* least_square(Matrix* matrix, Vector* x, Vector* b){
-  Matrix* UT = transpose();
-  Matrix* UUT = multiply_matrix_m(matrix, UT);
-  // Vector* b0 =
-  return 0;
 }
