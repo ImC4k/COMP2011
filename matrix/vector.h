@@ -27,7 +27,7 @@ public:
   void copy(Vector* vector);
 };
 
-Vector* multiply_matrix(Matrix* matrix, Vector* vector);
 Vector* dot(Vector* vector_a, Vector* vector_b);
 Vector* copy(Vector* vector);
+Vector* multiply_matrix_v(Matrix* matrix, Vector* vector);
 #endif

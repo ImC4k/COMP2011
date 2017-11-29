@@ -50,7 +50,7 @@ public:
   };
 
 Matrix* copy(const Matrix* src);
-Matrix* multiply_matrix(const Matrix src);
+Matrix* multiply_matrix_m(const Matrix src);
 Matrix* inverse(const Matrix src); // TODO put the inverse of src to another matrix object (square matrix)
 Matrix* transpose(const Matrix src); // get the transpose of a matrix
 // TODO functions: cramer's rule

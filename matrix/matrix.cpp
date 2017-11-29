@@ -257,7 +257,7 @@ Matrix* copy(const Matrix* src){
   return result;
 }
 
-Matrix* multiply_matrix(const Matrix a, const Matrix b){
+Matrix* multiply_matrix_m(const Matrix a, const Matrix b){
   if(a->get_num_col() != b->get_num_row()){
     cout<<"matrix dimension does not match, cannot multiply"<<endl;
     return nullptr;
@@ -354,7 +354,7 @@ Vector* solve_unknowns(const Matrix* matrix, const Vector* vector){
 
 double* least_square(Matrix* matrix, Vector* x, Vector* b){
   Matrix* UT = transpose();
-  Matrix* UUT = multiply_matrix(matrix, UT);
+  Matrix* UUT = multiply_matrix_m(matrix, UT);
   // Vector* b0 =
   return 0;
 }

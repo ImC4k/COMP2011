@@ -96,10 +96,18 @@ Vector* copy(Vector* vector){
   return result;
 }
 
-Vector* multiply_matrix(Matrix* matrix, Vector* vector){
+Vector* multiply_matrix_v(Matrix* matrix, Vector* vector){
   if(matrix->get_num_col() != vector->get_dimension()){
     cout<<"mismatch of dimension"<<endl;
     return nullptr;
   }
-  return nullptr;
+  Vector* result = new Vector(matrix->get_num_row());
+  for(int i = 0; i < result->get_dimension(); i++){
+    double product = 0;
+    for(int j = 0; j < matrix->get_num_col()){
+      product += matrix->get_element(i, j)*vector->get_element(j);
+    }
+    result->set_element(i, product);
+  }
+  return result;
 }
