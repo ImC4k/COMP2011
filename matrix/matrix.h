@@ -16,7 +16,7 @@ private:
   double** matrix;
 
   double determinant_r(Matrix* matrix, int size, double& scaler); // TODO
-  double determinant() const; // when called, must supply sign and scaler variable
+  double calc_determinant() const; // when called, must supply sign and scaler variable
 
 public:
   Matrix();
@@ -41,7 +41,7 @@ public:
   void row_interchange(const int num_row_1, const int num_col_2); // swap num_row_1 and num_row_2
   void row_replacement(const int target_row, const int add_row, const double scaler); //
   void multiply_scaler(const double scaler);
-  void copy(const Matrix src);
+  void copy(const Matrix* src);
   void reset(int option = 1); // options: 0: all zero, 1: identity
   void update_determinant();
   void substitute_vector(Vector* vector, int num_col);

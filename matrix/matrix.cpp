@@ -22,7 +22,7 @@ Matrix::~Matrix(){
   delete[] matrix;
 }
 
-bool initialize_matrix(){
+bool Matrix::initialize_matrix(){
   if(num_row == 0 || num_col == 0){
     cout<<"matrix dimension not defined properly"<<endl;
     return false;
@@ -64,7 +64,7 @@ void Matrix::set_num_col(int num_col){
   this->num_col = num_col;
 }
 
-void set_element(int num_row, int num_col, double value){
+void Matrix::set_element(int num_row, int num_col, double value){
   matrix[num_row][num_col] = value;
   update_determinant();
 }
@@ -79,7 +79,7 @@ void Matrix::input_elements(){ // allows users to input every element on console
   update_determinant();
 }
 
-void Matrix::add(const Matrix src){
+void Matrix::add(const Matrix* src){
   if(src->num_row != this->num_row || src->num_col != this->num_col){
     cout<<"Incompatible dimension, matrix cannot be added"<<endl;
     return;
@@ -141,7 +141,7 @@ void Matrix::multiply_scaler(const double scaler){
   update_determinant();
 }
 
-double Matrix::determinant() const{
+double Matrix::calc_determinant() const{
   if(num_row != num_col){
     cout<<"matrix is not square, cannot compute determinant"<<endl;
     return -1;
@@ -189,7 +189,7 @@ double Matrix::determinant_r(Matrix* matrix, int size, double& scaler){
   }
 }
 
-void Matrix::copy(const Matrix src){
+void Matrix::copy(const Matrix* src){
   if(num_row != src->num_row || num_col != src->num_col){
     cout<<"different dimension matrix object, cannot copy"<<endl;
     return;
@@ -230,7 +230,7 @@ void Matrix::reset(int option){
 }
 
 void Matrix::update_determinant(){
-  determinant = determinant();
+  determinant = calc_determinant();
 }
 
 void Matrix::substitute_vector(Vector* vector, int num_col){
@@ -354,4 +354,6 @@ Vector* solve_unknowns(const Matrix* matrix, const Vector* vector){
 
 double* least_square(Matrix* matrix, Vector* x, Vector* b){
   Matrix* UT = transpose();
+  Matrix* UUT = multiply_matrix(matrix, UT);
+  Vector* b0 =
 }

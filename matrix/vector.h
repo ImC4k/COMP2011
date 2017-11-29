@@ -2,6 +2,7 @@
 #define VECTOR_H_
 
 #include <iostream>
+#include "matrix.h"
 
 using namespace std;
 
