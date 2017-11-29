@@ -251,7 +251,7 @@ void Matrix::substitute_vector(Vector* vector, int num_col){
 
 
 
-Matrix* copy(const Matrix src){
+Matrix* copy(const Matrix* src){
   Matrix* result = new Matrix(src->get_num_row(), src->get_num_col());
   result->copy(src);
   return result;

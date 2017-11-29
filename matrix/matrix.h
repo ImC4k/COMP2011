@@ -35,7 +35,7 @@ public:
   void set_matrix(double** matrix);
 
   void input_elements(); // TODO allows users to input every element on console
-  void add(const Matrix src); // add two matrix together
+  void add(const Matrix* src); // add two matrix together
   void print();
   void row_scaling(const int num_row, const double scaler);
   void row_interchange(const int num_row_1, const int num_col_2); // swap num_row_1 and num_row_2
@@ -49,7 +49,7 @@ public:
   // span
   };
 
-Matrix* copy(const Matrix src);
+Matrix* copy(const Matrix* src);
 Matrix* multiply_matrix(const Matrix src);
 Matrix* inverse(const Matrix src); // TODO put the inverse of src to another matrix object (square matrix)
 Matrix* transpose(const Matrix src); // get the transpose of a matrix

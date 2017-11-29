@@ -95,3 +95,11 @@ Vector* copy(Vector* vector){
   result->copy_vector(vector);
   return result;
 }
+
+Vector* multiply_matrix(Matrix* matrix, Vector* vector){
+  if(matrix->get_num_col() != vector->get_dimension()){
+    cout<<"mismatch of dimension"<<endl;
+    return nullptr;
+  }
+  return nullptr;
+}
