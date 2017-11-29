@@ -64,20 +64,19 @@ void Matrix::set_num_col(int num_col){
   this->num_col = num_col;
 }
 
-// void Matrix::set_determinant(double determinant){
-//   this->determinant = determinant;
-// }
-
 void set_element(int num_row, int num_col, double value){
   matrix[num_row][num_col] = value;
+  update_determinant();
 }
 
 void Matrix::set_matrix(double** matrix){
   this->matrix = matrix;
+  update_determinant();
 }
 
 void Matrix::input_elements(){ // allows users to input every element on console
   //TODO
+  update_determinant();
 }
 
 void Matrix::add(const Matrix src){
@@ -90,9 +89,10 @@ void Matrix::add(const Matrix src){
       matrix[i][j] += src->matrix[i][j];
     }
   }
+  update_determinant();
 }
 
-void Matrix::print_matrix(){
+void Matrix::print(){
   for(int i = 0; i < num_row; i++){
     for(int j = 0; j < num_col; j++){
       cout<<matrix[i][j]<<"\t";
@@ -109,6 +109,7 @@ void Matrix::row_scaling(const int num_row, const double scaler){
   for(int i = 0; i < num_col; i++){
     matrix[num_row][i] *= scaler;
   }
+  update_determinant();
 }
 
 void Matrix::row_interchange(const int num_row_1, const int num_row_2){
@@ -119,6 +120,7 @@ void Matrix::row_interchange(const int num_row_1, const int num_row_2){
   double* temp_row_ptr = matrix[num_row_1];
   matrix[num_row_1] = matrix[num_row_2];
   matrix[num_row_2] = temp_row_ptr;
+  update_determinant();
 }
 
 void Matrix::row_replacement(const int target_row, const int add_row, const double scaler){
@@ -129,12 +131,14 @@ void Matrix::row_replacement(const int target_row, const int add_row, const doub
   for(int i = 0; i < num_col; i++){
     matrix[target_row][i] += matrix[add_row][i]*scaler;
   }
+  update_determinant();
 }
 
 void Matrix::multiply_scaler(const double scaler){
   for(int i = 0; i < num_row; i++){
     row_scaling(i, scaler);
   }
+  update_determinant();
 }
 
 double Matrix::determinant() const{
@@ -143,19 +147,19 @@ double Matrix::determinant() const{
     return -1;
   }
   int size = num_row;
-  sign s = POSITIVE;
+  // sign s = POSITIVE;
   double scaler = 1;
-  Matrix* temp_matrix = copy_matrix(this->matrix);
-  double determinant = determinant_r(temp_matrix, size, s, scaler);
+  Matrix* temp_matrix = copy(this->matrix);
+  double determinant = determinant_r(temp_matrix, size, scaler);
   delete temp_matrix;
 
   return determinant;
 }
 
-double Matrix::determinant_r(Matrix* matrix, int size, sign& s, double& scaler){
+double Matrix::determinant_r(Matrix* matrix, int size, double& scaler){
   // TODO
   if(size == 1){
-    return (matrix[0][0])*scaler*((s == POSITIVE)? 1 : -1);
+    return (matrix[0][0])*scaler;
   }
   else{
     if(matrix[size - 1][size - 1] != 0){
@@ -170,9 +174,9 @@ double Matrix::determinant_r(Matrix* matrix, int size, sign& s, double& scaler){
         }
       }
       row_interchange(matrix, i, size - 1);
-      (s == POSITIVE)? s = NEGATIVE : s = POSITIVE; // change sign after row_interchange
+      scaler *= -1; // change sign after row_interchange
       if(matrix[size - 1][size - 1] != 1){
-        scaler *=matrix[size - 1][size - 1];
+        scaler *= matrix[size - 1][size - 1];
         row_scaling(matrix, size - 1, (1.0/matrix[size - 1][size - 1]));
       }
     }
@@ -181,11 +185,11 @@ double Matrix::determinant_r(Matrix* matrix, int size, sign& s, double& scaler){
         row_replacement(matrix, j, size - 1, -1.0*matrix[j][size - 1]);
       }
     }
-    return determinant_r(matrix, size - 1, s, scaler);
+    return determinant_r(matrix, size - 1, scaler);
   }
 }
 
-void Matrix::copy_matrix(const Matrix src){
+void Matrix::copy(const Matrix src){
   if(num_row != src->num_row || num_col != src->num_col){
     cout<<"different dimension matrix object, cannot copy"<<endl;
     return;
@@ -195,6 +199,7 @@ void Matrix::copy_matrix(const Matrix src){
       matrix[i][j] = src->matrix[i][j];
     }
   }
+  update_determinant();
 }
 
 void Matrix::reset(int option){
@@ -220,6 +225,7 @@ void Matrix::reset(int option){
 
     default return;
   }
+  update_determinant();
   return;
 }
 
@@ -227,6 +233,16 @@ void Matrix::update_determinant(){
   determinant = determinant();
 }
 
+void Matrix::substitute_vector(Vector* vector, int num_col){
+  if(vector->get_dimension() != num_row){
+    cout<<"mismatch of dimension"<<endl;
+    return;
+  }
+  for(int i = 0; i < num_row; i++){
+    matrix[i][num_col] = vector->get_element(i);
+  }
+  update_determinant();
+}
 
 
 
@@ -234,14 +250,10 @@ void Matrix::update_determinant(){
 
 
 
-Matrix* copy_matrix(const Matrix src){
-  Matrix* result = new Matrix();
-  int num_row = src->get_num_row();
-  int num_col = src->get_num_col();
-  result->set_num_row(num_row);
-  result->set_num_col(num_col);
-  result->initialize_matrix();
-  result->copy_matrix(src);
+
+Matrix* copy(const Matrix src){
+  Matrix* result = new Matrix(src->get_num_row(), src->get_num_col());
+  result->copy(src);
   return result;
 }
 
@@ -280,11 +292,34 @@ Matrix* inverse(const Matrix src){
   src_copy->initialize_matrix();
   src_copy->set_num_row(num_row);
   src_copy->set_num_col(num_col);
-  src_copy->copy_matrix(src); // save a copy for manipulation
+  src_copy->copy(src); // save a copy for manipulation
 
   Matrix* result = new Matrix();
   result->reset(); // result matrix is set to identity
 
+  for(int j = 0; j < SIZE; j++){
+    if(src_copy->get_element(j, j) == 0){
+      int i = j;
+      for(; i < SIZE; i++){
+        if(src_copy->get_element(i, j) != 0){
+          break;
+        }
+      }
+      src_copy->row_interchange(j, i);
+      result->row_interchange(j, i);
+    }
+    double scaler = 1/src_copy->get_element(j, j);
+    if(scaler != 1){
+      src_copy->row_scaling(j, scaler);
+      result->row_scaling(j, scaler);
+    }
+    for(int i = 0; i < SIZE; i++){ // row_replacement to create RREF
+      if(i == j || src_copy->get_element(i,j) == 0) continue;
+      double scaler = -1.0*src_copy->get_element(i,j);
+      src_copy->row_replacement(i, j, scaler);
+      result->row_replacement(i, j, scaler);
+    }
+  }
 
   delete src_copy;
   return result;
@@ -299,4 +334,24 @@ Matrix* transpose(const Matrix src){
     }
   }
   return result;
+}
+
+Vector* solve_unknowns(const Matrix* matrix, const Vector* vector){
+  double* solution = new double[matrix->get_num_col()];
+  for(int i = 0; i < matrix->get_num_col(); i++){ solution[i] = 0;} // initialize return array to 0
+
+  Vector* copy_vector = copy(vector);
+
+  for(int i = 0; i < matrix->get_num_col()){ // solve for every vatiable, apply cramer's rule here
+    Matrix* temp_matrix = copy(matrix);
+    temp_matrix->substitute_vector(copy_vector, i);
+    solution[i] = temp_matrix->get_determinant()/matrix->get_determinant();
+    delete copy_vector;
+  }
+
+  delete temp_matrix;
+}
+
+double* least_square(Matrix* matrix, Vector* x, Vector* b){
+  Matrix* UT = transpose();
 }
