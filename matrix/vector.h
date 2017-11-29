@@ -19,6 +19,8 @@ public:
   double* get_vector();
   void set_dimension(int dimension);
   void set_element(int num_row, double value);
+  void set_vector(double* vector);
+  void input_elements(); // for user to input using console
   void print();
   void initialize_vector();
   void scaling(double scaler = 1); // scale the vector by the scaler
@@ -28,4 +30,5 @@ public:
 
 Vector* dot(Vector* vector_a, Vector* vector_b);
 Vector* copy_v(double* vector, int dimension);
+Vector* create(double* vector, int dimension);
 #endif

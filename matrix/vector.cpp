@@ -35,6 +35,17 @@ void Vector::set_element(int num_row, double value){
   vector[num_row] = value;
 }
 
+void Vector::set_vector(double* vector){
+  this->vector = vector;
+}
+
+void Vector::input_elements(){
+  cout<<"Please input values for your matrix: "<<endl;
+  for(int i = 0; i < dimension; i++){
+    cin>>vector[i];
+  }
+}
+
 void Vector::print(){
   cout<<endl;
   for(int i = 0; i < dimension; i++){
@@ -97,5 +108,12 @@ Vector* dot(Vector* vector_a, Vector* vector_b){
 Vector* copy_v(double* vector, int dimension){
   Vector* result = new Vector(dimension);
   result->copy(vector, dimension);
+  return result;
+}
+
+Vector* create(double* vector, int dimension){
+  Vector* result = new Vector();
+  result->set_dimension(dimension);
+  result->set_vector(vector);
   return result;
 }

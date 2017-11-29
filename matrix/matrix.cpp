@@ -20,6 +20,7 @@ Matrix::~Matrix(){
     delete[] matrix[i];
   }
   delete[] matrix;
+  // cout<<"deletion proper"<<endl;
 }
 
 bool Matrix::initialize_matrix(){
@@ -45,6 +46,7 @@ int Matrix::get_num_col(){
 }
 
 double Matrix::get_determinant(){
+  // update_determinant();
   return determinant;
 }
 
@@ -66,17 +68,27 @@ void Matrix::set_num_col(int num_col){
 
 void Matrix::set_element(int num_row, int num_col, double value){
   matrix[num_row][num_col] = value;
-  update_determinant();
+  // update_determinant();
 }
 
 void Matrix::set_matrix(double** matrix){
   this->matrix = matrix;
-  update_determinant();
+  // update_determinant();
 }
 
 void Matrix::input_elements(){ // allows users to input every element on console
   //TODO
-  update_determinant();
+  if(num_row == 0 || num_col == 0){
+    cout<<"Matrix not initialized properly"<<endl;
+    return;
+  }
+  cout<<"Please input values for your matrix: "<<endl;
+  for(int i = 0; i < num_row; i++){
+    for(int j = 0; j < num_col; j++){
+      cin>>matrix[i][j];
+    }
+  }
+  // update_determinant();
 }
 
 void Matrix::add(const Matrix* src){
@@ -89,10 +101,11 @@ void Matrix::add(const Matrix* src){
       matrix[i][j] += src->matrix[i][j];
     }
   }
-  update_determinant();
+  // update_determinant();
 }
 
 void Matrix::print(){
+  cout<<endl;
   for(int i = 0; i < num_row; i++){
     for(int j = 0; j < num_col; j++){
       cout<<matrix[i][j]<<"\t";
@@ -109,7 +122,7 @@ void Matrix::row_scaling(const int num_row, const double scaler){
   for(int i = 0; i < num_col; i++){
     matrix[num_row][i] *= scaler;
   }
-  update_determinant();
+  // update_determinant();
 }
 
 void Matrix::row_interchange(const int num_row_1, const int num_row_2){
@@ -120,7 +133,7 @@ void Matrix::row_interchange(const int num_row_1, const int num_row_2){
   double* temp_row_ptr = matrix[num_row_1];
   matrix[num_row_1] = matrix[num_row_2];
   matrix[num_row_2] = temp_row_ptr;
-  update_determinant();
+  // update_determinant();
 }
 
 void Matrix::row_replacement(const int target_row, const int add_row, const double scaler){
@@ -131,14 +144,14 @@ void Matrix::row_replacement(const int target_row, const int add_row, const doub
   for(int i = 0; i < num_col; i++){
     matrix[target_row][i] += matrix[add_row][i]*scaler;
   }
-  update_determinant();
+  // update_determinant();
 }
 
 void Matrix::multiply_scaler(const double scaler){
   for(int i = 0; i < num_row; i++){
     row_scaling(i, scaler);
   }
-  update_determinant();
+  // update_determinant();
 }
 
 double Matrix::calc_determinant(){
@@ -162,27 +175,32 @@ double Matrix::determinant_r(Matrix* src, int size, double& scaler){
     return (src->matrix[0][0])*scaler;
   }
   else{
-    if(src->matrix[size - 1][size - 1] != 0){
+    if(src->matrix[size - 1][size - 1] != 0){ // right-bottom is not 0
       scaler *=src->matrix[size - 1][size - 1];
-      row_scaling(size - 1, 1.0/src->matrix[size - 1][size - 1]);
+      src->row_scaling(size - 1, 1.0/src->matrix[size - 1][size - 1]);
     }
-    else{
+    else{ // right-bottom is 0
       int i = 0;
+      bool found_non_zero_row = false;
       for(; i < size - 1; i++){
         if(src->matrix[i][size - 1] != 0){
+          found_non_zero_row = true;
           break;
         }
       }
-      row_interchange(i, size - 1);
+      if(!found_non_zero_row){
+        return 0;
+      }
+      src->row_interchange(i, size - 1);
       scaler *= -1; // change sign after row_interchange
       if(src->matrix[size - 1][size - 1] != 1){
         scaler *= src->matrix[size - 1][size - 1];
-        row_scaling(size - 1, (1.0/src->matrix[size - 1][size - 1]));
+        src->row_scaling(size - 1, (1.0/src->matrix[size - 1][size - 1]));
       }
     }
     for(int j = 0; j < size - 1; j++){
       if(src->matrix[j][size - 1] != 0){
-        row_replacement(j, size - 1, -1.0*src->matrix[j][size - 1]);
+        src->row_replacement(j, size - 1, -1.0*src->matrix[j][size - 1]);
       }
     }
     return determinant_r(src, size - 1, scaler);
@@ -199,7 +217,7 @@ void Matrix::copy(double** matrix, int num_row, int num_col){
       this->matrix[i][j] = matrix[i][j];
     }
   }
-  update_determinant();
+  // update_determinant();
 }
 
 void Matrix::reset(int option){
@@ -210,6 +228,7 @@ void Matrix::reset(int option){
         matrix[i][j] = 0;
       }
     }
+    determinant = 0;
     break;
 
     case 1:
@@ -221,11 +240,11 @@ void Matrix::reset(int option){
         }
       }
     }
+    determinant = 1;
     break;
 
     default: return;
   }
-  update_determinant();
   return;
 }
 
@@ -241,7 +260,7 @@ void Matrix::substitute_vector(Vector* vector, int num_col){
   for(int i = 0; i < num_row; i++){
     matrix[i][num_col] = vector->get_element(i);
   }
-  update_determinant();
+  // update_determinant();
 }
 
 
@@ -262,6 +281,10 @@ Matrix* multiply_matrix_m(Matrix* a, Matrix* b){
     cout<<"matrix dimension does not match, cannot multiply"<<endl;
     return nullptr;
   }
+  // cout<<"a"<<endl;
+  // a->print();
+  // cout<<"b"<<endl;
+  // b->print();
   Matrix* result = new Matrix();
   int num_row = a->get_num_row();
   int num_col = b->get_num_col();
@@ -271,9 +294,10 @@ Matrix* multiply_matrix_m(Matrix* a, Matrix* b){
   result->initialize_matrix();
   double** matrix = result->get_matrix();
   for(int i = 0; i < num_row; i++){ // real multiply part
-    for(int j = 0; j < num_col; j++){
-      for(int k = 0; k < a->get_num_col(); k++){
+    for(int j = 0; j < a->get_num_col(); j++){
+      for(int k = 0; k < num_col; k++){
         matrix[i][k] += a->get_element(i, j)*b->get_element(j, k);
+        // result->print();
       }
     }
   }
@@ -287,15 +311,12 @@ Matrix* inverse(Matrix* src){
     return nullptr;
   }
   Matrix* src_copy = new Matrix();
-  int num_row = src->get_num_row();
-  int num_col = src->get_num_col();
+  src_copy->set_num_row(src->get_num_row());
+  src_copy->set_num_col(src->get_num_col());
   src_copy->initialize_matrix();
-  src_copy->set_num_row(num_row);
-  src_copy->set_num_col(num_col);
   src_copy->copy(src->get_matrix(), src->get_num_row(), src->get_num_col()); // save a copy for manipulation
-
-  Matrix* result = new Matrix();
-  result->reset(); // result matrix is set to identity
+  Matrix* result = new Matrix(src_copy->get_num_row(), src_copy->get_num_col()); // all set to 0;
+  result->reset(1); // set to identity
 
   for(int j = 0; j < src_copy->get_num_col(); j++){
     if(src_copy->get_element(j, j) == 0){ // check if diagonal element is 0
