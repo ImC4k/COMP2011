@@ -355,5 +355,6 @@ Vector* solve_unknowns(const Matrix* matrix, const Vector* vector){
 double* least_square(Matrix* matrix, Vector* x, Vector* b){
   Matrix* UT = transpose();
   Matrix* UUT = multiply_matrix(matrix, UT);
-  Vector* b0 =
+  // Vector* b0 =
+  return 0;
 }
