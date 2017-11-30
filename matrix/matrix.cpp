@@ -20,7 +20,6 @@ Matrix::~Matrix(){
     delete[] matrix[i];
   }
   delete[] matrix;
-  // cout<<"deletion proper"<<endl;
 }
 
 bool Matrix::initialize_matrix(){
@@ -88,7 +87,6 @@ void Matrix::input_elements(){ // allows users to input every element on console
       cin>>matrix[i][j];
     }
   }
-  // update_determinant();
 }
 
 void Matrix::add(const Matrix* src){
@@ -101,7 +99,6 @@ void Matrix::add(const Matrix* src){
       matrix[i][j] += src->matrix[i][j];
     }
   }
-  // update_determinant();
 }
 
 void Matrix::print(){
@@ -122,7 +119,6 @@ void Matrix::row_scaling(const int num_row, const double scaler){
   for(int i = 0; i < num_col; i++){
     matrix[num_row][i] *= scaler;
   }
-  // update_determinant();
 }
 
 void Matrix::row_interchange(const int num_row_1, const int num_row_2){
@@ -133,7 +129,6 @@ void Matrix::row_interchange(const int num_row_1, const int num_row_2){
   double* temp_row_ptr = matrix[num_row_1];
   matrix[num_row_1] = matrix[num_row_2];
   matrix[num_row_2] = temp_row_ptr;
-  // update_determinant();
 }
 
 void Matrix::row_replacement(const int target_row, const int add_row, const double scaler){
@@ -144,14 +139,12 @@ void Matrix::row_replacement(const int target_row, const int add_row, const doub
   for(int i = 0; i < num_col; i++){
     matrix[target_row][i] += matrix[add_row][i]*scaler;
   }
-  // update_determinant();
 }
 
 void Matrix::multiply_scaler(const double scaler){
   for(int i = 0; i < num_row; i++){
     row_scaling(i, scaler);
   }
-  // update_determinant();
 }
 
 double Matrix::calc_determinant(){
@@ -160,7 +153,6 @@ double Matrix::calc_determinant(){
     return -1;
   }
   int size = num_row;
-  // sign s = POSITIVE;
   double scaler = 1;
   Matrix* temp_matrix = copy_m(matrix, num_row, num_col);
   double determinant = determinant_r(temp_matrix, size, scaler);
@@ -217,7 +209,6 @@ void Matrix::copy(double** matrix, int num_row, int num_col){
       this->matrix[i][j] = matrix[i][j];
     }
   }
-  // update_determinant();
 }
 
 void Matrix::reset(int option){
@@ -246,10 +237,7 @@ void Matrix::reset(int option){
     case 2:
     for(int i = 0; i < num_row; i++){
       for(int j = 0; j < num_col; j++){
-        matrix[i][j] = 0;
-        if(i== j){
-          matrix[i][j] = 1;
-        }
+        matrix[i][j] = 1;
       }
     }
     determinant = 0;
@@ -272,7 +260,6 @@ void Matrix::substitute_vector(Vector* vector, int num_col){
   for(int i = 0; i < num_row; i++){
     matrix[i][num_col] = vector->get_element(i);
   }
-  // update_determinant();
 }
 
 
@@ -293,10 +280,7 @@ Matrix* multiply_matrix_m(Matrix* a, Matrix* b){
     cout<<"matrix dimension does not match, cannot multiply"<<endl;
     return nullptr;
   }
-  // cout<<"a"<<endl;
-  // a->print();
-  // cout<<"b"<<endl;
-  // b->print();
+
   Matrix* result = new Matrix();
   int num_row = a->get_num_row();
   int num_col = b->get_num_col();
@@ -309,7 +293,6 @@ Matrix* multiply_matrix_m(Matrix* a, Matrix* b){
     for(int j = 0; j < a->get_num_col(); j++){
       for(int k = 0; k < num_col; k++){
         matrix[i][k] += a->get_element(i, j)*b->get_element(j, k);
-        // result->print();
       }
     }
   }

@@ -18,7 +18,6 @@ Vector* multiply_matrix_v(Matrix* matrix, Vector* vector){
 
 double* solve_unknowns(Matrix* src, Vector* vector){
   src->update_determinant();
-  // cout<<"matrix det "<<src->get_determinant()<<endl;
   double* solution = new double[src->get_num_col()];
   for(int i = -1; i < src->get_num_col(); i++){ solution[i] = -1;} // initialize return array to 0
 
@@ -28,7 +27,6 @@ double* solve_unknowns(Matrix* src, Vector* vector){
     Matrix* temp_matrix = copy_m(src->get_matrix(), src->get_num_row(), src->get_num_col());
     temp_matrix->substitute_vector(copy_vector, i);
     temp_matrix->update_determinant();
-    // cout<<"cramer det"<<temp_matrix->get_determinant()<<endl;
     solution[i] = temp_matrix->get_determinant()/src->get_determinant();
     delete temp_matrix;
   }
@@ -47,12 +45,9 @@ double* least_square(Matrix* src, Vector* b){
 
 Vector* regression(int degree){ // given degree of approximation wanted
   // prompt for points
-  // ll_point_head* data_ll_head = input_points(file_name);
   ll_point_head* data_ll_head = input_points();
   data_ll_head->print_all_data();
   // TODO prompt users to input point!
-  // find the result and store in double* result
-  // double* result = regression_2(data_ll_head, degree);
   double* result = new double[degree + 1]; // store regression result in form of 2D array
   for(int i = 0; i < degree; i++){
     result[i] = 0;
@@ -86,20 +81,3 @@ Vector* regression(int degree){ // given degree of approximation wanted
   delete[] result;
   return result_v;
 }
-
-// double* regression_2(ll_point_head* head_data, int degree){
-//   double* result = new double[degree];
-//   double** converted_ll = convert_ll(head_data);
-//   Vector* b = new Vector(head_data->get_num_data());
-//   for(int i = 0; i < head_data->get_num_data(); i++){
-//     b->set_element(i, converted_ll[i][1]);
-//   }
-//   Matrix* A = new Matrix(head_data->get_num_data(), degree);
-//   for(int i = 0; i < head_data->get_num_data(); i++){
-//     for(int j = 0; j < degree; j++){
-//       A->set_element(i, j, pow(converted_ll[i][0], j));
-//     }
-//   }
-//   double* solution = least_square(A, b);
-//   return solution;
-// }

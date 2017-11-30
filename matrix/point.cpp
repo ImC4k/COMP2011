@@ -53,30 +53,7 @@ void ll_point_head::print_all_data(){
 
 
 
-// buggy attempt for fileio
-// ll_point_head* input_points(string file_name){
-//   ll_point_head* data_ll_head = new ll_point_head();
-//   ifstream in_pts;
-//   in_pts.open("file_name");
-//   while(!in_pts.eof()){
-//     // char point[] = "";
-//     // in_pts.getline(point, 100);
-//     string trash, x, y;
-//     cin>>trash>>x>>trash>>y>>trash;
-//     cout<<"running"<<endl;
-//     point input_values;
-//     input_values.x = stod(x);
-//     input_values.y = stod(y);
-//
-//     ll_point* data_ll;
-//     data_ll->data = &input_values;
-//     data_ll->next_data = nullptr;
-//
-//     data_ll_head->add_to_last(data_ll);
-//   }
-//   in_pts.close();
-//   return data_ll_head;
-// }
+
 
 ll_point_head* input_points(){
   ll_point_head* data_ll_head = new ll_point_head();

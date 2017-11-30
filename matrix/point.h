@@ -23,6 +23,5 @@ public:
   void print_all_data();
 };
 
-// ll_point_head* input_points(string file_name); // let users input points for regression()
 ll_point_head* input_points();
 double** convert_ll(ll_point_head* data); // convert a ll_point_head linked list to a 2D double array, arr[][0] stores x, arr[][1] stores y
