@@ -31,4 +31,5 @@ public:
 Vector* dot(Vector* vector_a, Vector* vector_b);
 Vector* copy_v(double* vector, int dimension);
 Vector* create(double* vector, int dimension);
+Vector* convert(double* vector_arr, int dimension); // convert an array to a vector
 #endif

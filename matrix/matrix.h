@@ -2,11 +2,11 @@
 #define MATRIX_H_
 
 #include <iostream>
+#include <cmath>
 #include "vector.h"
+#include "point.h"
 
 using namespace std;
-
-// enum sign{NEGATIVE = -1, POSITIVE = 1};
 
 class Matrix{
 private:
@@ -42,11 +42,11 @@ public:
   void row_replacement(const int target_row, const int add_row, const double scaler); //
   void multiply_scaler(const double scaler);
   void copy(double** matrix, int matrix_row, int matrix_col);
-  void reset(int option = 1); // options: 0: all zero, 1: identity
+  void reset(int option = 1); // options: 0: all 0, 1: identity, 2: all 1
   void update_determinant();
   void substitute_vector(Vector* vector, int num_col);
-  // orthonormal
   // span
+  // gram_schmidt process
   };
 
 Matrix* copy_m(double** matrix, int matrix_row, int matrix_col);
@@ -54,5 +54,6 @@ Matrix* multiply_matrix_m(Matrix* matrix_left, Matrix* matrix_right);
 Matrix* inverse(Matrix* src); // TODO put the inverse of src to another matrix object (square matrix)
 Matrix* transpose(Matrix* src); // get the transpose of a matrix
 // TODO functions: eigen values
+// TODO functions: orthonormal matrix
 
 #endif

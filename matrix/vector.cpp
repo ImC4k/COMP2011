@@ -40,7 +40,7 @@ void Vector::set_vector(double* vector){
 }
 
 void Vector::input_elements(){
-  cout<<"Please input values for your matrix: "<<endl;
+  cout<<"Please input values for your vector: "<<endl;
   for(int i = 0; i < dimension; i++){
     cin>>vector[i];
   }
@@ -115,5 +115,13 @@ Vector* create(double* vector, int dimension){
   Vector* result = new Vector();
   result->set_dimension(dimension);
   result->set_vector(vector);
+  return result;
+}
+
+Vector* convert(double* vector, int dimension){
+  Vector* result = new Vector(dimension);
+  for(int i = 0; i < dimension; i++){
+    result->set_element(i, vector[i]);
+  }
   return result;
 }

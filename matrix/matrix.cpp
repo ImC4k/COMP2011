@@ -243,6 +243,18 @@ void Matrix::reset(int option){
     determinant = 1;
     break;
 
+    case 2:
+    for(int i = 0; i < num_row; i++){
+      for(int j = 0; j < num_col; j++){
+        matrix[i][j] = 0;
+        if(i== j){
+          matrix[i][j] = 1;
+        }
+      }
+    }
+    determinant = 0;
+    break;
+
     default: return;
   }
   return;
