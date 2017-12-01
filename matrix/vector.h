@@ -1,9 +1,8 @@
 #ifndef VECTOR_H_
 #define VECTOR_H_
 
-#include <iostream>
+#include "utils.h"
 
-using namespace std;
 
 class Vector{
 private:

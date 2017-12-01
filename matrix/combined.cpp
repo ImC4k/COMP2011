@@ -47,7 +47,6 @@ Vector* regression(int degree){ // given degree of approximation wanted
   // prompt for points
   ll_point_head* data_ll_head = input_points();
   data_ll_head->print_all_data();
-  // TODO prompt users to input point!
   double* result = new double[degree + 1]; // store regression result in form of 2D array
   for(int i = 0; i < degree; i++){
     result[i] = 0;

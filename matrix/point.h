@@ -1,3 +1,8 @@
+#ifndef POINT_H_
+#define POINT_H_
+
+#include "utils.h"
+
 struct point{
   double x;
   double y;
@@ -25,3 +30,6 @@ public:
 
 ll_point_head* input_points();
 double** convert_ll(ll_point_head* data); // convert a ll_point_head linked list to a 2D double array, arr[][0] stores x, arr[][1] stores y
+
+
+#endif

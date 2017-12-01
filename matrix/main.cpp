@@ -1,4 +1,7 @@
+#include "matrix.h"
+// #include "vector.h"
 #include "combined.h"
+#include "point.h"
 
 int main(){
   cout<<"*******************************"<<endl;

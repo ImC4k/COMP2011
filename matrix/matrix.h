@@ -1,12 +1,8 @@
 #ifndef MATRIX_H_
 #define MATRIX_H_
 
-#include <iostream>
-#include <cmath>
+#include "utils.h"
 #include "vector.h"
-#include "point.h"
-
-using namespace std;
 
 class Matrix{
 private:
@@ -15,7 +11,7 @@ private:
   double determinant;
   double** matrix;
 
-  double determinant_r(Matrix* matrix, int size, double& scaler); // TODO
+  double determinant_r(Matrix* matrix, int size, double& scaler);
   double calc_determinant(); // when called, must supply sign and scaler variable
 
 public:
@@ -34,7 +30,7 @@ public:
   void set_element(int num_row, int num_col, double value);
   void set_matrix(double** matrix);
 
-  void input_elements(); // TODO allows users to input every element on console
+  void input_elements(); // allows users to input every element on console
   void add(const Matrix* src); // add two matrix together
   void print();
   void row_scaling(const int num_row, const double scaler);
@@ -51,7 +47,7 @@ public:
 
 Matrix* copy_m(double** matrix, int matrix_row, int matrix_col);
 Matrix* multiply_matrix_m(Matrix* matrix_left, Matrix* matrix_right);
-Matrix* inverse(Matrix* src); // TODO put the inverse of src to another matrix object (square matrix)
+Matrix* inverse(Matrix* src); // put the inverse of src to another matrix object (square matrix)
 Matrix* transpose(Matrix* src); // get the transpose of a matrix
 // TODO functions: eigen values
 // TODO functions: orthonormal matrix

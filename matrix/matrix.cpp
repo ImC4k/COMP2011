@@ -76,7 +76,6 @@ void Matrix::set_matrix(double** matrix){
 }
 
 void Matrix::input_elements(){ // allows users to input every element on console
-  //TODO
   if(num_row == 0 || num_col == 0){
     cout<<"Matrix not initialized properly"<<endl;
     return;
@@ -162,7 +161,6 @@ double Matrix::calc_determinant(){
 }
 
 double Matrix::determinant_r(Matrix* src, int size, double& scaler){
-  // TODO
   if(size == 1){
     return (src->matrix[0][0])*scaler;
   }
@@ -300,7 +298,6 @@ Matrix* multiply_matrix_m(Matrix* a, Matrix* b){
 }
 
 Matrix* inverse(Matrix* src){
-  // TODO
   if(src->get_determinant() == 0){ // also checked if it's a square matrix
     cout<<"That matrix has no inverse"<<endl;
     return nullptr;
