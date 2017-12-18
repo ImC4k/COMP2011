@@ -80,3 +80,51 @@ Vector* regression(int degree){ // given degree of approximation wanted
   delete[] result;
   return result_v;
 }
+
+Vector* projection(Vector* vector, Matrix* subspace){
+
+  return nullptr;
+  //TODO
+}
+
+Vector* get_column(Matrix* matrix, int num_col){
+  if(num_col > matrix->get_num_col()){
+    return nullptr;
+  }
+  Vector* column = new Vector(matrix->get_num_row());
+  for(int i = 0; i < matrix->get_num_row(); i++){
+    vector->set_element(i, matrix->get_element(i, num_col));
+  }
+  return column;
+}
+
+Matrix* orthogonalize(Matrix* matrix){ // for 3 vectors only
+  if(matrix->get_num_col() < 2){
+    cout<<"problem occured"<<endl;
+    return nullptr;
+  }
+  if(!dot(get_column(matrix, 0), get_column(matrix, 1))){
+    return matrix;
+  }
+
+  int dimension = matrix->get_num_row();
+  Vector* u1 = new Vector(dimension);
+  Vector* u2 = new Vector(dimension);
+  Vector* u3 = new Vector(dimension);
+  Vector* temp = new Vector(dimension);
+
+  u1 = get_column(matrix, 0);
+  temp->copy(u1->get_vector(), dimension);
+
+  delete temp;
+}
+
+void Matrix::substitute_vector(Vector* vector, int num_col){
+  if(vector->get_dimension() != num_row){
+    cout<<"mismatch of dimension"<<endl;
+    return;
+  }
+  for(int i = 0; i < num_row; i++){
+    matrix[i][num_col] = vector->get_element(i);
+  }
+}

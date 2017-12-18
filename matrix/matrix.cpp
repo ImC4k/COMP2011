@@ -20,6 +20,7 @@ Matrix::~Matrix(){
     delete[] matrix[i];
   }
   delete[] matrix;
+  matrix = nullptr;
 }
 
 bool Matrix::initialize_matrix(){
@@ -250,15 +251,6 @@ void Matrix::update_determinant(){
   determinant = calc_determinant();
 }
 
-void Matrix::substitute_vector(Vector* vector, int num_col){
-  if(vector->get_dimension() != num_row){
-    cout<<"mismatch of dimension"<<endl;
-    return;
-  }
-  for(int i = 0; i < num_row; i++){
-    matrix[i][num_col] = vector->get_element(i);
-  }
-}
 
 
 

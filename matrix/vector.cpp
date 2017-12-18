@@ -69,14 +69,16 @@ void Vector::scaling(double scaler){
   }
 }
 
-void Vector::dot(Vector* src){
+double Vector::dot(Vector* src){
   if(this->dimension != src->dimension){
     cout<<"mismatch of dimension"<<endl;
     return;
   }
+  double value = 0;
   for(int i = 0; i < this->dimension; i++){
-    this->vector[i] *= src->vector[i];
+    value += this->get_element(i) * src->get_element(i);
   }
+  return value;
 }
 
 void Vector::copy(double* vector, int dimension){
@@ -92,17 +94,16 @@ void Vector::copy(double* vector, int dimension){
 
 
 
-Vector* dot(Vector* vector_a, Vector* vector_b){
+double dot(Vector* vector_a, Vector* vector_b){
   if(vector_a->get_dimension() != vector_b->get_dimension()){
     cout<<"mismatch of dimension"<<endl;
     return nullptr;
   }
-  Vector* result = new Vector(vector_a->get_dimension());
-  for(int i = 0; i < result->get_dimension(); i++){
-    double value = vector_a->get_element(i) * vector_b->get_element(i);
-    result->set_element(i, value);
+  double value = 0;
+  for(int i = 0; i < vector_a->get_dimension(); i++){
+    value += vector_a->get_element(i) * vector_b->get_element();
   }
-  return result;
+  return value;
 }
 
 Vector* copy_v(double* vector, int dimension){
@@ -122,6 +123,18 @@ Vector* convert(double* vector, int dimension){
   Vector* result = new Vector(dimension);
   for(int i = 0; i < dimension; i++){
     result->set_element(i, vector[i]);
+  }
+  return result;
+}
+
+Vector* add(Vector* vector_a, Vector* vector_b){
+  if(vector_a->get_dimension() != vector_b->get_dimension()){
+    cout<<"mismatch of dimension"<<endl;
+    return nullptr;
+  }
+  Vector* result = new Vector(vector_a->get_dimension());
+  for(int i = 0; i < vector_a->get_dimension(); i++){
+    result->set_element(i, vector_a->get_element(i) + vector_b->get_element(i));
   }
   return result;
 }

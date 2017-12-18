@@ -23,12 +23,14 @@ public:
   void print();
   void initialize_vector();
   void scaling(double scaler = 1); // scale the vector by the scaler
-  void dot(Vector* vector);
+  double dot(Vector* vector);
   void copy(double* vector, int dimension);
 };
 
-Vector* dot(Vector* vector_a, Vector* vector_b);
+double dot(Vector* vector_a, Vector* vector_b);
+Vector* add(Vector* vector_a, Vector* vector_b);
 Vector* copy_v(double* vector, int dimension);
+
 Vector* create(double* vector, int dimension);
 Vector* convert(double* vector_arr, int dimension); // convert an array to a vector
 #endif

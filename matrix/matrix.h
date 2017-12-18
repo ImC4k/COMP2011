@@ -40,7 +40,6 @@ public:
   void copy(double** matrix, int matrix_row, int matrix_col);
   void reset(int option = 1); // options: 0: all 0, 1: identity, 2: all 1
   void update_determinant();
-  void substitute_vector(Vector* vector, int num_col);
   // span
   // gram_schmidt process
   };
