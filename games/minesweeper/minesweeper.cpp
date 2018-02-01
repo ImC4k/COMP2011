@@ -113,17 +113,18 @@ void minesweeper::place_numbers(){
           }
         }
       }
-      switch(neighbour_bomb_count){
-        case 1: information_board[i][j] = '1'; break;
-        case 2: information_board[i][j] = '2'; break;
-        case 3: information_board[i][j] = '3'; break;
-        case 4: information_board[i][j] = '4'; break;
-        case 5: information_board[i][j] = '5'; break;
-        case 6: information_board[i][j] = '6'; break;
-        case 7: information_board[i][j] = '7'; break;
-        case 8: information_board[i][j] = '8'; break;
-        default: information_board[i][j] = BLANK;
-      }
+      // switch(neighbour_bomb_count){
+      //   case 1: information_board[i][j] = '1'; break;
+      //   case 2: information_board[i][j] = '2'; break;
+      //   case 3: information_board[i][j] = '3'; break;
+      //   case 4: information_board[i][j] = '4'; break;
+      //   case 5: information_board[i][j] = '5'; break;
+      //   case 6: information_board[i][j] = '6'; break;
+      //   case 7: information_board[i][j] = '7'; break;
+      //   case 8: information_board[i][j] = '8'; break;
+      //   default: information_board[i][j] = BLANK;
+      // }
+      information_board[i][j] = '0' + neighbour_bomb_count;
     }
   }
 }

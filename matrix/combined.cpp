@@ -40,6 +40,7 @@ double* least_square(Matrix* src, Vector* b){
   Matrix* UTU = multiply_matrix_m(UT, src);
   Vector* b0 = multiply_matrix_v(UT, b);
   double* solution = solve_unknowns(UTU, b0);
+  delete UT; delete UTU; delete b0;
   return solution;
 }
 
@@ -52,19 +53,11 @@ Vector* regression(int degree){ // given degree of approximation wanted
     result[i] = 0;
   }
   double** converted_ll = convert_ll(data_ll_head);
-  cout<<"converted_ll"<<endl;
-  for(int i = 0; i < data_ll_head->get_num_data(); i++){
-    for(int j = 0; j < 2; j++){
-      cout<<converted_ll[i][j]<<"\t";
-    }
-    cout<<endl;
-  }
+
   Vector* b = new Vector(data_ll_head->get_num_data());
   for(int i = 0; i < b->get_dimension(); i++){
     b->set_element(i, converted_ll[i][1]);
   }
-  cout<<"b"<<endl;
-  b->print();
 
   Matrix* A = new Matrix(data_ll_head->get_num_data(), degree + 1);
   for(int i = 0; i < A->get_num_row(); i++){
@@ -72,8 +65,6 @@ Vector* regression(int degree){ // given degree of approximation wanted
       A->set_element(i, j, pow(converted_ll[i][0], j));
     }
   }
-  cout<<"A"<<endl;
-  A->print();
 
   result = least_square(A, b);
   Vector* result_v = convert(result, degree + 1);
@@ -82,9 +73,21 @@ Vector* regression(int degree){ // given degree of approximation wanted
 }
 
 Vector* projection(Vector* vector, Matrix* subspace){
-
-  return nullptr;
-  //TODO
+  Vector* fit_dimension_vector = expand_dimension(vector, subspace->get_num_row());
+  if(!fit_dimension_vector){
+    cout<<"vector dimension larger than subspace dimension, not supported"<<endl;
+    return nullptr;
+  }
+  Matrix* orth_m = orthogonalize(subspace);
+  Vector* projected_v = new Vector(subspace->get_num_row());
+  for(int i = 0; i < orth_m->get_num_col(); i++){ // loop through every vector in orthogonalized matrix
+    Vector* temp = get_column(orth_m, i); // selects one vector from the matrix, scale it and add it to projected_v
+    temp->scaling(dot(fit_dimension_vector, temp)/dot(temp, temp));
+    projected_v->add(temp);
+    delete temp;
+  }
+  delete fit_dimension_vector; delete orth_m;
+  return projected_v;
 }
 
 Vector* get_column(Matrix* matrix, int num_col){
@@ -103,20 +106,28 @@ Matrix* orthogonalize(Matrix* matrix){ // for 3 vectors only
     cout<<"problem occured"<<endl;
     return nullptr;
   }
-  if(!dot(get_column(matrix, 0), get_column(matrix, 1))){
-    return matrix;
+  Matrix* orth_mat = new Matrix(matrix->get_num_row, matrix->get_num_col);
+  for(int i = 0; i < matrix->get_num_col(); i++){ // loop through each vector
+    /*  need to subtract vector from original vector
+    *   eg u2 = x2 - x2->scaling(dot(x2, u1)/dot(u1, u1));
+    *      u3 = x3 - x3->scaling(dot(x3, u1)/dot(u1, u1)) - x3->scaling(dot(x3, u2)/dot(u2, u2));
+    *   for-loop required, add the orthogonalized vector into orth_mat immediately after,
+    *   remember to delete the vector after adding into matrix, or else the vector will be lost
+    */
+    Vector* in_v = get_column(matrix, i); // the input vector to be processed
+    Vector* orth_v = copy_v(in_v);
+    for(int j = 0; j < orth_mat->get_num_row(); j++){ // loop through each element in a vector
+      double orth_element = in_v->get_element(j);
+      for(int k = 0; k < i; k++){ // count number of vectors to subtract
+        Vector* subtract_vector = get_column(matrix, k);
+        orth_element -= dot(in_v, subtract_vector)/dot(subtract_vector, subtract_vector)*subtract_vector->get_element(j);
+        delete subtract_vector;
+      }
+      orth_v->set_element(j, orth_element);
+    }
+    orth_mat->set_column(orth_v, i);
+    delete orth_v;
   }
-
-  int dimension = matrix->get_num_row();
-  Vector* u1 = new Vector(dimension);
-  Vector* u2 = new Vector(dimension);
-  Vector* u3 = new Vector(dimension);
-  Vector* temp = new Vector(dimension);
-
-  u1 = get_column(matrix, 0);
-  temp->copy(u1->get_vector(), dimension);
-
-  delete temp;
 }
 
 void Matrix::substitute_vector(Vector* vector, int num_col){

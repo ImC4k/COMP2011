@@ -69,6 +69,26 @@ void Vector::scaling(double scaler){
   }
 }
 
+void Vector::add(Vector* src){
+  if(this->dimension != src->dimension){
+    cout<<"mismatch of dimension"<<endl;
+    return;
+  }
+  for(int i = 0; i < this->dimension; i++){
+    this->vector[i] += src->vector[i];
+  }
+}
+
+void Vector::subtract(Vector* src){
+  if(this->dimension != src->dimension){
+    cout<<"mismatch of dimension"<<endl;
+    return;
+  }
+  for(int i = 0; i < this->dimension; i++){
+    this->vector[i] -= src->vector[i];
+  }
+}
+
 double Vector::dot(Vector* src){
   if(this->dimension != src->dimension){
     cout<<"mismatch of dimension"<<endl;
@@ -91,7 +111,16 @@ void Vector::copy(double* vector, int dimension){
   }
 }
 
+void Vector::copy(Vector* vector){
+  if(this->vector != nullptr) delete[] vector;
+  this->dimension = vector->dimension;
+  this->vector = new double[this->dimension];
+  for(int i = 0; i < this->dimension; i++){
+    this->vector[i] = vector->vector[i];
+  }
+}
 
+/* Non member functions */
 
 
 double dot(Vector* vector_a, Vector* vector_b){
@@ -110,6 +139,32 @@ Vector* copy_v(double* vector, int dimension){
   Vector* result = new Vector(dimension);
   result->copy(vector, dimension);
   return result;
+}
+
+Vector* copy_v(Vector* src){
+  Vector* result = new Vector(src->get_dimension());
+  result->copy(src->get_vector(), src->get_dimension());
+  return result;
+}
+
+Vector* expand_dimension(Vector* src, int dimension){
+  if(src->get_dimension() > dimension){
+    cout<<"original dimension larger than wanted dimension"<<endl;
+    return nullptr;
+  }
+  else if(src->get_dimension() == dimension) return src;
+  else{
+    Vector* expanded_v = new Vector(dimension);
+    double* new_vector = new double[dimension];
+    for(int i = 0; i < src->get_dimension(); i++){
+      new_vector[i] = src->get_element(i);
+    }
+    for(int i = src->get_dimension(); i < dimension; i++){
+      new_vector[i] = 0;
+    }
+    expanded_v->set_vector(new_vector);
+    return expanded_v;
+  }
 }
 
 Vector* create(double* vector, int dimension){
@@ -135,6 +190,18 @@ Vector* add(Vector* vector_a, Vector* vector_b){
   Vector* result = new Vector(vector_a->get_dimension());
   for(int i = 0; i < vector_a->get_dimension(); i++){
     result->set_element(i, vector_a->get_element(i) + vector_b->get_element(i));
+  }
+  return result;
+}
+
+Vector* subtract(Vector* vector_a, Vector* vector_b){
+  if(vector_a->get_dimension() != vector_b->get_dimension()){
+    cout<<"mismatch of dimension"<<endl;
+    return nullptr;
+  }
+  Vector* result = new Vector(vector_a->get_dimension());
+  for(int i = 0; i < vector_a->get_dimension(); i++){
+    result->set_element(i, vector_a->get_element(i) - vector_b->get_element(i));
   }
   return result;
 }

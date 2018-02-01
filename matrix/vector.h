@@ -6,8 +6,8 @@
 
 class Vector{
 private:
-  int dimension;
-  double* vector;
+  int dimension; // num_row
+  double* vector; // double array for data
 
 public:
   Vector();
@@ -23,13 +23,20 @@ public:
   void print();
   void initialize_vector();
   void scaling(double scaler = 1); // scale the vector by the scaler
+  void add(Vector* src);
+  void subtract(Vector* src);
   double dot(Vector* vector);
   void copy(double* vector, int dimension);
+  void copy(Vector* vector); // overloaded function
+  void expand_dimension(int dimension);
 };
 
 double dot(Vector* vector_a, Vector* vector_b);
-Vector* add(Vector* vector_a, Vector* vector_b);
+Vector* add(Vector* vector_a, Vector* vector_b); // return a new vector, element is sum of two vectors
+Vector* subtract(Vector* vector_a, Vector* vector_b);
 Vector* copy_v(double* vector, int dimension);
+Vector* copy_v(Vector* vector);
+Vector* expand_dimension(Vector* vector, int dimension);
 
 Vector* create(double* vector, int dimension);
 Vector* convert(double* vector_arr, int dimension); // convert an array to a vector

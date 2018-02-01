@@ -71,7 +71,24 @@ void Matrix::set_element(int num_row, int num_col, double value){
   // update_determinant();
 }
 
+void Matrix::set_column(Vector* vector, int num_col){
+  if(vector->get_dimension() != num_row){
+    cout<<"mismatch of dimension"<<endl;
+    return;
+  }
+  for(int i = 0; i < num_row; i++){
+    matrix[i][num_col] = vector->get_element(i);
+  }
+}
+
 void Matrix::set_matrix(double** matrix){
+  for(int i = 0; i < num_row; i++){
+    for(int j = 0; j < num_col; j++){
+      delete this->matrix[i][j];
+    }
+    delete[] this->matrix[i];
+  }
+  delete[] this->matrix;
   this->matrix = matrix;
   // update_determinant();
 }
@@ -97,6 +114,18 @@ void Matrix::add(const Matrix* src){
   for(int i = 0; i < num_row; i++){
     for(int j = 0; j < num_col; j++){
       matrix[i][j] += src->matrix[i][j];
+    }
+  }
+}
+
+void Matrix::subtract(const Matrix* src){
+  if(src->num_row != this->num_row || src->num_col != this->num_col){
+    cout<<"Incompatible dimension, matrix cannot be added"<<endl;
+    return;
+  }
+  for(int i = 0; i < num_row; i++){
+    for(int j = 0; j < num_col; j++){
+      matrix[i][j] -= src->matrix[i][j];
     }
   }
 }
@@ -262,6 +291,12 @@ void Matrix::update_determinant(){
 Matrix* copy_m(double** matrix, int num_row, int num_col){
   Matrix* result = new Matrix(num_row, num_col);
   result->copy(matrix, num_row, num_col);
+  return result;
+}
+
+Matrix* copy_m(Matrix* src){
+  Matrix* result = new Matrix(src->get_num_row(), src->get_num_col());
+  result->copy(src->get_matrix(), src->get_num_row(), src->get_num_col());
   return result;
 }
 
